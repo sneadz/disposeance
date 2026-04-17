@@ -6,19 +6,25 @@
 - [x] Définition du PLAN.md
 - [x] Script SQL pour les tables et comptes
 - [x] Configuration Supabase client & server (Migration vers @supabase/ssr pour Next.js 14)
-- [x] Page de Login (Adaptée pour Email/Password selon demande utilisateur)
-- [x] Page d'Accueil : Liste des films en cours (Multi-films support)
-- [x] Phase 1 : Recherche de film (Admin) via TMDB
-- [x] Phase 2 : Vote jours (Tous) avec Polling 30s - Interface Grid Mobile optimisée (2 cols)
-- [x] Phase 3 : Saisie horaires (Admin)
-- [x] Phase 4 : Vote horaires (Tous) avec Polling 30s - Interface Grid Mobile optimisée (2 cols)
-- [x] Phase 5 : Clôture et export (Admin/Tous) - Carte récap, .ics, Snapchat
+- [x] Page de Login (authentification par pseudo/password, insensible à la casse)
+- [x] Page d'Accueil : Dashboard multi-films, design mobile-first glassmorphism
+- [x] Phase 1 : Recherche de film (Admin) via TMDB + sélection des jours disponibles
+- [x] Phase 2 : Vote jours (Tous) - Interface Grid Mobile optimisée
+- [x] Phase 3 : Saisie horaires (Admin) - datetime complet
+- [x] Phase 4 : Vote horaires (Tous) - Interface Grid Mobile optimisée
+- [x] Phase 5 : Carte finale exportable (ShareCard) + partage natif (Web Share API) + .ics
+- [x] Correction URL images TMDB (getPosterUrl gère path seul ou URL complète)
+- [x] Suppression film avec confirmation (DeleteMovieButton, server action)
+- [x] Navigation standardisée avec window.location.href
+- [x] Création film via REST API (/api/movies)
 
 ## Décisions techniques finales
-- Passage d'une application "Mono-film" à une application "Multi-films" avec routes dynamiques `/movies/[id]`.
-- Utilisation de `@supabase/ssr` au lieu de `auth-helpers` pour une meilleure compatibilité Next.js 14.
-- Authentification par Email/Password suite à la mise en place des vrais comptes par l'utilisateur.
-- Interface utilisateur "Mobile-First" avec grilles compactes 2 colonnes et arrondis prononcés (3xl).
-- Polling 30s via `setInterval` pour garder les votes à jour sans surcharger la DB.
-- Navigation fluide avec bouton Retour (Home) et bouton Déconnexion explicite.
-- Export `.ics` généré côté client pour compatibilité immédiate iOS/Android.
+- Multi-films via routes dynamiques `/movies/[id]`.
+- `@supabase/ssr` pour compatibilité Next.js 14.
+- Authentification par pseudo (pas email) — login case-insensitive via `.ilike()`.
+- Interface Mobile-First, design sombre zinc/violet, glassmorphism.
+- Navigation via `window.location.href` (pas next/navigation) pour éviter les bugs de cache.
+- Export `.ics` généré côté client.
+- ShareCard : html2canvas capture le composant visuel → Web Share API (Snap, WhatsApp…), fallback download.
+- Images TMDB : `getPosterUrl()` dans `lib/tmdb/api.ts` — détecte URL complète vs path relatif.
+- Participants de la carte finale : `time_votes` filtrés sur `final_showtime_id + available=true`, jointure `profiles`.

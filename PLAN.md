@@ -40,6 +40,12 @@ Ce document détaille l'architecture et les décisions techniques pour le projet
 
 ## Décisions Techniques
 - **Architecture** : Support Multi-films via routes dynamiques.
-- **Auth** : Utilisation de `@supabase/ssr` avec sessions sécurisées.
-- **UI/UX** : Design compact "3xl" arrondi, optimisé pour usage mobile à une main.
-- **Navigation** : Header avec retour à l'accueil et déconnexion explicite.
+- **Auth** : `@supabase/ssr` avec sessions sécurisées. Login par pseudo (pas email), case-insensitive.
+- **UI/UX** : Design sombre zinc/violet, mobile-first, glassmorphism. Pas de polling — actions serveur + navigation complète.
+- **Navigation** : `window.location.href` partout (pas next/navigation) pour éviter les bugs de cache SSR.
+- **Images** : `getPosterUrl(path, size)` dans `lib/tmdb/api.ts` — gère URL complète ou path TMDB.
+- **ShareCard** : `html2canvas` + Web Share API (`navigator.share({ files })`) pour partage natif mobile. Fallback download sur desktop. Composant `ShareCard` pur visuel (pas de boutons), `FinalSummary` orchestre les actions.
+- **Création film** : REST API `/api/movies` (POST) au lieu de server action pour éviter les problèmes de navigation.
+
+## État des fonctionnalités — Toutes complètes ✅
+L'application est fonctionnelle de bout en bout. Aucune phase en attente.
