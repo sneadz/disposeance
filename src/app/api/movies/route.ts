@@ -10,13 +10,18 @@ export async function POST(request: Request) {
   if (!profile?.is_admin) return NextResponse.json({ error: 'Accès refusé' }, { status: 403 })
 
   const body = await request.json()
-  const { movie, availableDates } = body as {
+  const { movie, availableDates, participantIds } = body as {
     movie: { id: number; title: string; poster_path: string | null; release_date: string }
     availableDates: string[]
+    participantIds: string[]
   }
 
   if (!movie || !availableDates || availableDates.length === 0) {
     return NextResponse.json({ error: 'Sélectionne au moins une date' }, { status: 400 })
+  }
+
+  if (!participantIds || participantIds.length === 0) {
+    return NextResponse.json({ error: 'Sélectionne au moins un participant' }, { status: 400 })
   }
 
   const { data: rows, error: movieError } = await supabase
@@ -27,6 +32,7 @@ export async function POST(request: Request) {
       poster_url: movie.poster_path ?? null,
       release_date: movie.release_date || null,
       status: 'picking_days',
+      participant_ids: participantIds,
     })
     .select('id')
 

@@ -19,6 +19,20 @@ export async function searchMoviesAction(query: string): Promise<{ movies: TmdbM
   }
 }
 
+export async function getProfilesAction(): Promise<{ profiles: { id: string; pseudo: string }[]; error: string | null }> {
+  try {
+    const supabase = createClient()
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) return { profiles: [], error: 'Non authentifié' }
+
+    const { data, error } = await supabase.from('profiles').select('id, pseudo').order('pseudo')
+    if (error) return { profiles: [], error: error.message }
+    return { profiles: data ?? [], error: null }
+  } catch (e: unknown) {
+    return { profiles: [], error: String(e) }
+  }
+}
+
 export async function createMovieSessionAction(movie: TmdbMovie, availableDates: string[]) {
   try {
     const supabase = createClient()
