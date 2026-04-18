@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
-import { Check, Users, Pencil } from 'lucide-react'
+import { Check, Users, Pencil, RotateCcw } from 'lucide-react'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { confirmDayVotesAction } from '@/app/actions/votes'
+import { resetMovieAction } from '@/app/actions/movie'
 
 function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)) }
 
@@ -40,6 +41,8 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
   const [confirmed, setConfirmed] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [confirmingReset, setConfirmingReset] = useState(false)
+  const [resetting, setResetting] = useState(false)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -207,13 +210,38 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
       ))}
 
       {isAdmin && (
-        <div className="pt-2 border-t border-zinc-800">
+        <div className="pt-2 border-t border-zinc-800 space-y-2">
           <button
             onClick={() => { window.location.href = `/movies/${movieId}/showtimes` }}
             className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white py-4 rounded-xl font-bold text-base shadow-lg shadow-violet-500/20 active:scale-[0.99] transition-transform"
           >
             Passer au vote des horaires →
           </button>
+          {confirmingReset ? (
+            <div className="flex gap-2">
+              <button
+                onClick={() => setConfirmingReset(false)}
+                className="flex-1 py-3 rounded-xl font-semibold text-zinc-400 border border-zinc-700 text-sm active:bg-zinc-800 transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={async () => { setResetting(true); await resetMovieAction(movieId) }}
+                disabled={resetting}
+                className="flex-1 py-3 rounded-xl font-semibold text-white bg-red-600 border border-red-500 text-sm active:bg-red-700 transition-colors disabled:opacity-60"
+              >
+                {resetting ? 'Réinitialisation...' : 'Confirmer'}
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setConfirmingReset(true)}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-red-500 border border-red-900/40 text-sm active:bg-red-950/30 transition-colors"
+            >
+              <RotateCcw className="w-4 h-4" />
+              Recommencer le vote
+            </button>
+          )}
         </div>
       )}
     </div>
