@@ -39,6 +39,7 @@ export default async function MoviePage({ params }: { params: { id: string } }) 
   if (!movie) notFound();
 
   const participantCount = (movie.participant_ids ?? []).length;
+  const isParticipant = (movie.participant_ids ?? []).includes(user.id);
 
   let finalDatetime: string | null = null;
   let participants: string[] = [];
@@ -137,10 +138,10 @@ export default async function MoviePage({ params }: { params: { id: string } }) 
         {/* Voting / Summary */}
         <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
           {movie.status === "picking_days" && (
-            <DayVoting movieId={movie.id} userId={user.id} isAdmin={isAdmin} participantCount={participantCount} />
+            <DayVoting movieId={movie.id} userId={user.id} isAdmin={isAdmin} participantCount={participantCount} isParticipant={isParticipant} />
           )}
           {movie.status === "picking_times" && (
-            <TimeVoting movieId={movie.id} userId={user.id} isAdmin={isAdmin} participantCount={participantCount} />
+            <TimeVoting movieId={movie.id} userId={user.id} isAdmin={isAdmin} participantCount={participantCount} isParticipant={isParticipant} />
           )}
           {movie.status === "closed" && finalDatetime && (
             <FinalSummary

@@ -14,6 +14,7 @@ interface DayVotingProps {
   userId: string
   isAdmin: boolean
   participantCount: number
+  isParticipant: boolean
 }
 
 interface AvailableDay {
@@ -31,7 +32,7 @@ function formatDate(dateStr: string): string {
   return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`
 }
 
-export default function DayVoting({ movieId, userId, isAdmin, participantCount }: DayVotingProps) {
+export default function DayVoting({ movieId, userId, isAdmin, participantCount, isParticipant }: DayVotingProps) {
   const [days, setDays] = useState<AvailableDay[]>([])
   const [loading, setLoading] = useState(true)
   // Local pending selection (not yet confirmed)
@@ -142,9 +143,11 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount }
       <div className="space-y-0.5">
         <h2 className="text-lg font-bold">Quel jour tu es dispo ?</h2>
         <p className="text-zinc-400 text-sm">
-          {confirmed
-            ? 'Tes disponibilités sont confirmées.'
-            : 'Sélectionne tous les jours qui te conviennent'}
+          {!isParticipant
+            ? 'Résultats en cours — tu ne participes pas à ce vote.'
+            : confirmed
+              ? 'Tes disponibilités sont confirmées.'
+              : 'Sélectionne tous les jours qui te conviennent'}
         </p>
       </div>
 
@@ -161,15 +164,15 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount }
           {displayDays.map(day => (
             <button
               key={day.date}
-              onClick={() => !confirmed && togglePending(day.date)}
-              disabled={confirmed}
+              onClick={() => isParticipant && !confirmed && togglePending(day.date)}
+              disabled={!isParticipant || confirmed}
               className={cn(
                 'flex items-center justify-between px-3.5 py-3.5 rounded-xl border transition-all min-h-[52px]',
                 day.userVoted
                   ? 'bg-violet-600 border-violet-500 text-white shadow-lg shadow-violet-500/20'
                   : 'bg-zinc-800 border-zinc-700 text-zinc-300',
-                !confirmed && 'active:scale-95 cursor-pointer',
-                confirmed && 'cursor-default',
+                isParticipant && !confirmed && 'active:scale-95 cursor-pointer',
+                (!isParticipant || confirmed) && 'cursor-default',
               )}
             >
               <span className="font-semibold text-sm">{day.label}</span>
@@ -185,7 +188,7 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount }
         </div>
       )}
 
-      {confirmed ? (
+      {isParticipant && (confirmed ? (
         <button
           onClick={handleEdit}
           className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-zinc-400 border border-zinc-700 active:border-violet-500 active:text-violet-400 transition-colors text-sm"
@@ -201,7 +204,7 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount }
         >
           {submitting ? 'Confirmation...' : `Confirmer mes disponibilités${pending.size > 0 ? ` (${pending.size})` : ''}`}
         </button>
-      )}
+      ))}
 
       {isAdmin && (
         <div className="pt-2 border-t border-zinc-800">

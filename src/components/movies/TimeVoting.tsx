@@ -14,6 +14,7 @@ interface TimeVotingProps {
   userId: string
   isAdmin: boolean
   participantCount: number
+  isParticipant: boolean
 }
 
 interface Showtime {
@@ -35,7 +36,7 @@ function formatShowtime(datetimeStr: string): { timeLabel: string; dateLabel: st
   }
 }
 
-export default function TimeVoting({ movieId, userId, isAdmin, participantCount }: TimeVotingProps) {
+export default function TimeVoting({ movieId, userId, isAdmin, participantCount, isParticipant }: TimeVotingProps) {
   const [showtimes, setShowtimes] = useState<Showtime[]>([])
   const [loading, setLoading] = useState(true)
   const [pending, setPending] = useState<Set<string>>(new Set())
@@ -146,9 +147,11 @@ export default function TimeVoting({ movieId, userId, isAdmin, participantCount 
       <div className="space-y-0.5">
         <h2 className="text-lg font-bold">À quelle heure tu es dispo ?</h2>
         <p className="text-zinc-400 text-sm">
-          {confirmed
-            ? 'Tes disponibilités sont confirmées.'
-            : 'Vote pour les horaires qui te conviennent'}
+          {!isParticipant
+            ? 'Résultats en cours — tu ne participes pas à ce vote.'
+            : confirmed
+              ? 'Tes disponibilités sont confirmées.'
+              : 'Vote pour les horaires qui te conviennent'}
         </p>
       </div>
 
@@ -162,15 +165,15 @@ export default function TimeVoting({ movieId, userId, isAdmin, participantCount 
         {displayShowtimes.map(st => (
           <button
             key={st.id}
-            onClick={() => !confirmed && togglePending(st.id)}
-            disabled={confirmed}
+            onClick={() => isParticipant && !confirmed && togglePending(st.id)}
+            disabled={!isParticipant || confirmed}
             className={cn(
               'w-full flex items-center justify-between px-4 py-3.5 rounded-xl border transition-all min-h-[60px]',
               st.userVoted
                 ? 'bg-violet-600 border-violet-500 text-white shadow-lg shadow-violet-500/20'
                 : 'bg-zinc-800 border-zinc-700 text-zinc-300',
-              !confirmed && 'active:scale-[0.99] cursor-pointer',
-              confirmed && 'cursor-default',
+              isParticipant && !confirmed && 'active:scale-[0.99] cursor-pointer',
+              (!isParticipant || confirmed) && 'cursor-default',
             )}
           >
             <div className="text-left">
@@ -188,7 +191,7 @@ export default function TimeVoting({ movieId, userId, isAdmin, participantCount 
         ))}
       </div>
 
-      {confirmed ? (
+      {isParticipant && (confirmed ? (
         <button
           onClick={handleEdit}
           className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-zinc-400 border border-zinc-700 active:border-violet-500 active:text-violet-400 transition-colors text-sm"
@@ -204,7 +207,7 @@ export default function TimeVoting({ movieId, userId, isAdmin, participantCount 
         >
           {submitting ? 'Confirmation...' : `Confirmer mes disponibilités${pending.size > 0 ? ` (${pending.size})` : ''}`}
         </button>
-      )}
+      ))}
 
       {isAdmin && (
         <div className="pt-4 border-t border-zinc-800">
