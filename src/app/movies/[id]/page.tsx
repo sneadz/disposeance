@@ -32,11 +32,13 @@ export default async function MoviePage({ params }: { params: { id: string } }) 
 
   const { data: movie } = await supabase
     .from("movies")
-    .select("id, title, poster_url, status, final_showtime_id")
+    .select("id, title, poster_url, status, final_showtime_id, participant_ids")
     .eq("id", params.id)
     .single();
 
   if (!movie) notFound();
+
+  const participantCount = (movie.participant_ids ?? []).length;
 
   let finalDatetime: string | null = null;
   let participants: string[] = [];
@@ -50,12 +52,18 @@ export default async function MoviePage({ params }: { params: { id: string } }) 
 
     const { data: votes } = await supabase
       .from("time_votes")
-      .select("profiles(pseudo)")
+      .select("user_id")
       .eq("showtime_id", movie.final_showtime_id)
       .eq("available", true);
-    participants = (votes ?? [])
-      .map((v: { profiles: { pseudo: string }[] | null }) => Array.isArray(v.profiles) ? v.profiles[0]?.pseudo : undefined)
-      .filter(Boolean) as string[];
+
+    const voterIds = (votes ?? []).map((v: any) => v.user_id).filter(Boolean);
+    if (voterIds.length > 0) {
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("pseudo")
+        .in("id", voterIds);
+      participants = (profileData ?? []).map((p: any) => p.pseudo).filter(Boolean) as string[];
+    }
   }
 
   const resetMovie = deleteMovieAction.bind(null, params.id);
@@ -129,10 +137,10 @@ export default async function MoviePage({ params }: { params: { id: string } }) 
         {/* Voting / Summary */}
         <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
           {movie.status === "picking_days" && (
-            <DayVoting movieId={movie.id} userId={user.id} isAdmin={isAdmin} />
+            <DayVoting movieId={movie.id} userId={user.id} isAdmin={isAdmin} participantCount={participantCount} />
           )}
           {movie.status === "picking_times" && (
-            <TimeVoting movieId={movie.id} userId={user.id} isAdmin={isAdmin} />
+            <TimeVoting movieId={movie.id} userId={user.id} isAdmin={isAdmin} participantCount={participantCount} />
           )}
           {movie.status === "closed" && finalDatetime && (
             <FinalSummary
@@ -141,6 +149,7 @@ export default async function MoviePage({ params }: { params: { id: string } }) 
               finalDatetime={finalDatetime}
               participants={participants}
               isAdmin={isAdmin}
+              movieId={movie.id}
               onReset={resetMovie}
             />
           )}

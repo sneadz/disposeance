@@ -31,6 +31,9 @@ export async function confirmDayVotesAction(movieId: string, selectedDates: stri
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) return { error: 'Non authentifié' }
 
+  const { data: movieData } = await supabase.from('movies').select('participant_ids').eq('id', movieId).single()
+  if (!movieData?.participant_ids?.includes(user.id)) return { error: 'Non autorisé' }
+
   // Delete all existing votes for this user on this movie
   const { error: delError } = await supabase
     .from('day_votes')
@@ -54,6 +57,9 @@ export async function confirmTimeVotesAction(movieId: string, showtimeIds: strin
   const supabase = createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) return { error: 'Non authentifié' }
+
+  const { data: movieData } = await supabase.from('movies').select('participant_ids').eq('id', movieId).single()
+  if (!movieData?.participant_ids?.includes(user.id)) return { error: 'Non autorisé' }
 
   const { data: showtimes } = await supabase
     .from('showtimes')

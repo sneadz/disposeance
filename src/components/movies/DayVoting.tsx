@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
-import * as Lucide from 'lucide-react'
+import { Check, Users, Pencil } from 'lucide-react'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { voteDayAction } from '@/app/actions/votes'
+import { confirmDayVotesAction } from '@/app/actions/votes'
 
 function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)) }
 
@@ -13,6 +13,7 @@ interface DayVotingProps {
   movieId: string
   userId: string
   isAdmin: boolean
+  participantCount: number
 }
 
 interface AvailableDay {
@@ -30,11 +31,14 @@ function formatDate(dateStr: string): string {
   return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`
 }
 
-export default function DayVoting({ movieId, userId, isAdmin }: DayVotingProps) {
-  const { Check, Users } = Lucide
+export default function DayVoting({ movieId, userId, isAdmin, participantCount }: DayVotingProps) {
   const [days, setDays] = useState<AvailableDay[]>([])
   const [loading, setLoading] = useState(true)
-  const [voteError, setVoteError] = useState<string | null>(null)
+  // Local pending selection (not yet confirmed)
+  const [pending, setPending] = useState<Set<string>>(new Set())
+  const [confirmed, setConfirmed] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -56,32 +60,65 @@ export default function DayVoting({ movieId, userId, isAdmin }: DayVotingProps) 
       supabase.from('day_votes').select('user_id, date').eq('movie_id', movieId).eq('available', true),
     ])
 
+    const myVotedDates = new Set(
+      (dayVotes ?? []).filter(v => v.user_id === userId).map(v => v.date)
+    )
+    const hasExistingVotes = myVotedDates.size > 0
+
     const formatted = (availableDays ?? []).map(ad => ({
       id: ad.id,
       date: ad.date,
       label: formatDate(ad.date),
       voterCount: (dayVotes ?? []).filter(v => v.date === ad.date).length,
-      userVoted: (dayVotes ?? []).some(v => v.date === ad.date && v.user_id === userId),
+      userVoted: myVotedDates.has(ad.date),
     }))
 
     setDays(formatted)
+    // On first load, init pending from existing votes and mark as confirmed if they exist
+    setPending(prev => {
+      if (prev.size === 0 && hasExistingVotes) {
+        setConfirmed(true)
+        return myVotedDates
+      }
+      return prev
+    })
     setLoading(false)
   }
 
-  const toggleVote = async (date: string, hasVoted: boolean) => {
-    const prevDays = days
-    setDays(prev => prev.map(d =>
-      d.date === date
-        ? { ...d, userVoted: !hasVoted, voterCount: hasVoted ? d.voterCount - 1 : d.voterCount + 1 }
-        : d
-    ))
-    setVoteError(null)
-    try {
-      const result = await voteDayAction(movieId, date, hasVoted)
-      if (result?.error) { setDays(prevDays); setVoteError('Erreur lors du vote, réessaie.') }
-    } catch {
-      setDays(prevDays); setVoteError('Erreur lors du vote, réessaie.')
+  const togglePending = (date: string) => {
+    setPending(prev => {
+      const next = new Set(prev)
+      if (next.has(date)) next.delete(date)
+      else next.add(date)
+      return next
+    })
+  }
+
+  const handleConfirm = async () => {
+    setSubmitting(true)
+    setError(null)
+    const result = await confirmDayVotesAction(movieId, Array.from(pending))
+    if (result?.error) {
+      setError('Erreur lors de la confirmation, réessaie.')
+    } else {
+      setConfirmed(true)
+      // Sync days immediately so confirmed view reflects the just-saved selection
+      setDays(prev => prev.map(d => {
+        const wasVoted = d.userVoted
+        const isNowVoted = pending.has(d.date)
+        return {
+          ...d,
+          userVoted: isNowVoted,
+          voterCount: d.voterCount + (isNowVoted ? 1 : 0) - (wasVoted ? 1 : 0),
+        }
+      }))
     }
+    setSubmitting(false)
+  }
+
+  const handleEdit = () => {
+    setConfirmed(false)
+    setError(null)
   }
 
   if (loading) return (
@@ -90,16 +127,30 @@ export default function DayVoting({ movieId, userId, isAdmin }: DayVotingProps) 
     </div>
   )
 
+  // Merge pending selection with server state for display
+  const displayDays = days.map(d => ({
+    ...d,
+    userVoted: confirmed ? d.userVoted : pending.has(d.date),
+    // In edit mode, voterCount excludes my own vote to avoid double-counting pending
+    voterCount: confirmed
+      ? d.voterCount
+      : d.voterCount - (d.userVoted ? 1 : 0) + (pending.has(d.date) ? 1 : 0),
+  }))
+
   return (
     <div className="space-y-5">
       <div className="space-y-0.5">
         <h2 className="text-lg font-bold">Quel jour tu es dispo ?</h2>
-        <p className="text-zinc-400 text-sm">Sélectionne tous les jours qui te conviennent</p>
+        <p className="text-zinc-400 text-sm">
+          {confirmed
+            ? 'Tes disponibilités sont confirmées.'
+            : 'Sélectionne tous les jours qui te conviennent'}
+        </p>
       </div>
 
-      {voteError && (
+      {error && (
         <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center rounded-xl p-3">
-          {voteError}
+          {error}
         </div>
       )}
 
@@ -107,32 +158,53 @@ export default function DayVoting({ movieId, userId, isAdmin }: DayVotingProps) 
         <p className="text-center text-zinc-500 py-8 text-sm">Aucun jour disponible défini.</p>
       ) : (
         <div className="grid grid-cols-2 gap-2">
-          {days.map(day => (
+          {displayDays.map(day => (
             <button
               key={day.date}
-              onClick={() => toggleVote(day.date, day.userVoted)}
+              onClick={() => !confirmed && togglePending(day.date)}
+              disabled={confirmed}
               className={cn(
-                'flex items-center justify-between px-3.5 py-3.5 rounded-xl border transition-all active:scale-95 min-h-[52px]',
+                'flex items-center justify-between px-3.5 py-3.5 rounded-xl border transition-all min-h-[52px]',
                 day.userVoted
                   ? 'bg-violet-600 border-violet-500 text-white shadow-lg shadow-violet-500/20'
-                  : 'bg-zinc-800 border-zinc-700 text-zinc-300'
+                  : 'bg-zinc-800 border-zinc-700 text-zinc-300',
+                !confirmed && 'active:scale-95 cursor-pointer',
+                confirmed && 'cursor-default',
               )}
             >
               <span className="font-semibold text-sm">{day.label}</span>
               <div className="flex items-center gap-1.5">
                 {day.userVoted
                   ? <Check className="w-4 h-4" />
-                  : <span className="flex items-center gap-1 text-xs text-zinc-500"><Users className="w-3 h-3" />{day.voterCount}</span>
+                  : <span className="flex items-center gap-1 text-xs text-zinc-500"><Users className="w-3 h-3" />{day.voterCount}/{participantCount}</span>
                 }
-                {day.userVoted && <span className="text-xs opacity-70">{day.voterCount}</span>}
+                {day.userVoted && <span className="text-xs opacity-70">{day.voterCount}/{participantCount}</span>}
               </div>
             </button>
           ))}
         </div>
       )}
 
+      {confirmed ? (
+        <button
+          onClick={handleEdit}
+          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-zinc-400 border border-zinc-700 active:border-violet-500 active:text-violet-400 transition-colors text-sm"
+        >
+          <Pencil className="w-4 h-4" />
+          Modifier mes votes
+        </button>
+      ) : (
+        <button
+          onClick={handleConfirm}
+          disabled={submitting || pending.size === 0}
+          className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white py-4 rounded-xl font-bold text-base shadow-lg shadow-violet-500/20 active:scale-[0.99] transition-transform disabled:opacity-40"
+        >
+          {submitting ? 'Confirmation...' : `Confirmer mes disponibilités${pending.size > 0 ? ` (${pending.size})` : ''}`}
+        </button>
+      )}
+
       {isAdmin && (
-        <div className="pt-4 border-t border-zinc-800">
+        <div className="pt-2 border-t border-zinc-800">
           <button
             onClick={() => { window.location.href = `/movies/${movieId}/showtimes` }}
             className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white py-4 rounded-xl font-bold text-base shadow-lg shadow-violet-500/20 active:scale-[0.99] transition-transform"

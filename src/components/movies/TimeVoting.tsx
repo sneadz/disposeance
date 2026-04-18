@@ -13,6 +13,7 @@ interface TimeVotingProps {
   movieId: string
   userId: string
   isAdmin: boolean
+  participantCount: number
 }
 
 interface Showtime {
@@ -34,7 +35,7 @@ function formatShowtime(datetimeStr: string): { timeLabel: string; dateLabel: st
   }
 }
 
-export default function TimeVoting({ movieId, userId, isAdmin }: TimeVotingProps) {
+export default function TimeVoting({ movieId, userId, isAdmin, participantCount }: TimeVotingProps) {
   const [showtimes, setShowtimes] = useState<Showtime[]>([])
   const [loading, setLoading] = useState(true)
   const [pending, setPending] = useState<Set<string>>(new Set())
@@ -179,7 +180,7 @@ export default function TimeVoting({ movieId, userId, isAdmin }: TimeVotingProps
             <div className="flex items-center gap-2">
               <span className={cn('text-sm font-semibold flex items-center gap-1', st.userVoted ? 'opacity-80' : 'text-zinc-400')}>
                 <Users className="w-3.5 h-3.5" />
-                {st.voterCount}
+                {st.voterCount}/{participantCount}
               </span>
               {st.userVoted && <Check className="w-5 h-5" />}
             </div>
