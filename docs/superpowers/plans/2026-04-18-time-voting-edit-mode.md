@@ -1,3 +1,73 @@
+# Time Voting Edit Mode Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Ajouter un mode "Modifier mes votes" au composant TimeVoting, symétrique au pattern pending/confirm de DayVoting.
+
+**Architecture:** Ajout d'une Server Action bulk (`confirmTimeVotesAction`) dans votes.ts, puis refactoring de TimeVoting pour utiliser un état local `pending: Set<string>` + `confirmed: boolean` au lieu de toggles directs en DB.
+
+**Tech Stack:** Next.js 14 App Router, Supabase, TypeScript, Tailwind CSS
+
+---
+
+### Task 1 : Ajouter `confirmTimeVotesAction` dans votes.ts
+
+**Files:**
+- Modify: `src/app/actions/votes.ts`
+
+- [ ] **Step 1: Ajouter l'action bulk à la fin du fichier**
+
+```ts
+export async function confirmTimeVotesAction(movieId: string, showtimeIds: string[]) {
+  const supabase = createClient()
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  if (authError || !user) return { error: 'Non authentifié' }
+
+  // Récupérer tous les showtime_ids du film pour savoir quoi supprimer
+  const { data: showtimes } = await supabase
+    .from('showtimes')
+    .select('id')
+    .eq('movie_id', movieId)
+  const allIds = (showtimes ?? []).map((s: { id: string }) => s.id)
+
+  if (allIds.length > 0) {
+    const { error: delError } = await supabase
+      .from('time_votes')
+      .delete()
+      .eq('user_id', user.id)
+      .in('showtime_id', allIds)
+    if (delError) return { error: delError.message }
+  }
+
+  if (showtimeIds.length > 0) {
+    const { error: insError } = await supabase
+      .from('time_votes')
+      .insert(showtimeIds.map(id => ({ user_id: user.id, showtime_id: id, available: true })))
+    if (insError) return { error: insError.message }
+  }
+
+  return { error: null }
+}
+```
+
+- [ ] **Step 2: Vérifier que le fichier compile**
+
+```bash
+cd /Users/robinperso/Documents/perso/disposeance && npx tsc --noEmit 2>&1 | head -20
+```
+
+Expected: aucune erreur sur votes.ts
+
+---
+
+### Task 2 : Refactorer TimeVoting vers le pattern pending/confirm
+
+**Files:**
+- Modify: `src/components/movies/TimeVoting.tsx`
+
+- [ ] **Step 1: Remplacer le contenu complet du composant**
+
+```tsx
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -218,3 +288,19 @@ export default function TimeVoting({ movieId, userId, isAdmin }: TimeVotingProps
     </div>
   )
 }
+```
+
+- [ ] **Step 2: Vérifier que le fichier compile**
+
+```bash
+cd /Users/robinperso/Documents/perso/disposeance && npx tsc --noEmit 2>&1 | head -20
+```
+
+Expected: aucune erreur
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add src/app/actions/votes.ts src/components/movies/TimeVoting.tsx
+git commit -m "feat: add edit mode to time voting (pending/confirm pattern)"
+```
