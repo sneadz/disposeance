@@ -28,7 +28,6 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, participan
             <div className="w-1 self-stretch rounded-full flex-shrink-0" style={{ backgroundColor: '#FFC426', minHeight: '40px' }} />
             <div>
               <p className="text-sm font-bold tracking-tight" style={{ color: '#FFC426' }}>DispoSéance</p>
-              <p className="text-xs" style={{ color: '#555' }}>Cinémas Pathé</p>
             </div>
           </div>
           {/* Confirmation badge */}
@@ -90,13 +89,6 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, participan
           </div>
         )}
 
-        {/* Footer */}
-        <div className="flex items-center justify-between pt-1" style={{ borderTop: '1px solid #1a1a1a' }}>
-          <span className="text-xs" style={{ color: '#444' }}>disposeance.app</span>
-          <span className="text-xs font-bold px-2 py-0.5 rounded" style={{ backgroundColor: '#FFC426', color: '#0A0A0A' }}>
-            PATHÉ
-          </span>
-        </div>
       </div>
     </div>
   )

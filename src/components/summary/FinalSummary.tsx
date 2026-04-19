@@ -177,7 +177,7 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
 
           <button
             onClick={() => onReset()}
-            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-zinc-500 border border-zinc-800 active:border-red-900/50 active:text-red-400 transition-colors text-sm"
+            className="w-full flex items-center justify-center gap-2 py-4 rounded-xl font-semibold text-[#f87171] bg-[#2a0a0a] border border-[#5f1f1f] transition-colors"
           >
             <RotateCcw className="w-4 h-4" />
             Supprimer cette séance
