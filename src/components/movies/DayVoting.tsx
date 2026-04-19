@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
-import { Check, Users, Pencil, RotateCcw } from 'lucide-react'
+import { Check, Users, Pencil, RotateCcw, Link } from 'lucide-react'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { confirmDayVotesAction } from '@/app/actions/votes'
@@ -42,6 +42,14 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [confirmingReset, setConfirmingReset] = useState(false)
+  const [copied, setCopied] = useState(false)
+
+  const handleCopyLink = () => {
+    const text = `Vote pour les jours ici 👉 ${window.location.href}`
+    navigator.clipboard.writeText(text)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
   const [resetting, setResetting] = useState(false)
 
   const supabase = createBrowserClient(
@@ -172,19 +180,19 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
               className={cn(
                 'flex items-center justify-between px-3.5 py-3.5 rounded-xl border transition-all min-h-[52px]',
                 day.userVoted
-                  ? 'bg-violet-600 border-violet-500 text-white shadow-lg shadow-violet-500/20'
+                  ? 'bg-[#FFC426] border-[#FFC426] text-[#0A0A0A] shadow-lg shadow-[#FFC426]/20'
                   : 'bg-zinc-800 border-zinc-700 text-zinc-300',
                 isParticipant && !confirmed && 'active:scale-95 cursor-pointer',
                 (!isParticipant || confirmed) && 'cursor-default',
               )}
             >
               <span className="font-semibold text-sm">{day.label}</span>
-              <div className="flex items-center gap-1.5">
-                {day.userVoted
-                  ? <Check className="w-4 h-4" />
-                  : <span className="flex items-center gap-1 text-xs text-zinc-500"><Users className="w-3 h-3" />{day.voterCount}/{participantCount}</span>
-                }
-                {day.userVoted && <span className="text-xs opacity-70">{day.voterCount}/{participantCount}</span>}
+              <div className="flex items-center gap-2">
+                <span className={cn('text-xs font-semibold flex items-center gap-1', day.userVoted ? 'opacity-80' : 'text-zinc-500')}>
+                  <Users className="w-3 h-3" />
+                  {day.voterCount}/{participantCount}
+                </span>
+                {day.userVoted && <Check className="w-4 h-4" />}
               </div>
             </button>
           ))}
@@ -194,7 +202,7 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
       {isParticipant && (confirmed ? (
         <button
           onClick={handleEdit}
-          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-zinc-400 border border-zinc-700 active:border-violet-500 active:text-violet-400 transition-colors text-sm"
+          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-[#E5E5E5] bg-[#222] border border-[#333] transition-colors text-sm"
         >
           <Pencil className="w-4 h-4" />
           Modifier mes votes
@@ -203,7 +211,7 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
         <button
           onClick={handleConfirm}
           disabled={submitting || pending.size === 0}
-          className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white py-4 rounded-xl font-bold text-base shadow-lg shadow-violet-500/20 active:scale-[0.99] transition-transform disabled:opacity-40"
+          className="w-full bg-[#FFC426] text-[#0A0A0A] py-4 rounded-xl font-bold text-base shadow-lg shadow-[#FFC426]/20 active:scale-[0.99] transition-transform disabled:opacity-40"
         >
           {submitting ? 'Confirmation...' : `Confirmer mes disponibilités${pending.size > 0 ? ` (${pending.size})` : ''}`}
         </button>
@@ -212,8 +220,16 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
       {isAdmin && (
         <div className="pt-2 border-t border-zinc-800 space-y-2">
           <button
+            onClick={handleCopyLink}
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-[#E5E5E5] bg-[#222] border border-[#333] text-sm transition-colors"
+          >
+            <Link className="w-4 h-4" />
+            {copied ? 'Copié !' : 'Copier le lien du vote'}
+          </button>
+          <button
             onClick={() => { window.location.href = `/movies/${movieId}/showtimes` }}
-            className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white py-4 rounded-xl font-bold text-base shadow-lg shadow-violet-500/20 active:scale-[0.99] transition-transform"
+            disabled={days.every(d => d.voterCount === 0)}
+            className="w-full bg-[#FFC426] text-[#0A0A0A] py-4 rounded-xl font-bold text-base shadow-lg shadow-[#FFC426]/20 active:scale-[0.99] transition-transform disabled:opacity-40 disabled:pointer-events-none"
           >
             Passer au vote des horaires →
           </button>
@@ -221,14 +237,14 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
             <div className="flex gap-2">
               <button
                 onClick={() => setConfirmingReset(false)}
-                className="flex-1 py-3 rounded-xl font-semibold text-zinc-400 border border-zinc-700 text-sm active:bg-zinc-800 transition-colors"
+                className="flex-1 py-3.5 rounded-xl font-semibold text-[#E5E5E5] bg-[#222] border border-[#333] text-sm transition-colors"
               >
                 Annuler
               </button>
               <button
                 onClick={async () => { setResetting(true); await resetMovieAction(movieId) }}
                 disabled={resetting}
-                className="flex-1 py-3 rounded-xl font-semibold text-white bg-red-600 border border-red-500 text-sm active:bg-red-700 transition-colors disabled:opacity-60"
+                className="flex-1 py-3.5 rounded-xl font-semibold text-white bg-red-600 border border-red-500 text-sm active:bg-red-700 transition-colors disabled:opacity-60"
               >
                 {resetting ? 'Réinitialisation...' : 'Confirmer'}
               </button>
@@ -236,7 +252,7 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
           ) : (
             <button
               onClick={() => setConfirmingReset(true)}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-red-500 border border-red-900/40 text-sm active:bg-red-950/30 transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-[#f87171] bg-[#2a0a0a] border border-[#5f1f1f] text-sm transition-colors"
             >
               <RotateCcw className="w-4 h-4" />
               Recommencer le vote

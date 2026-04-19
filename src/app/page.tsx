@@ -7,8 +7,8 @@ import { Plus, LogOut, Film } from "lucide-react";
 import { getPosterUrl } from "@/lib/tmdb/api";
 
 const STATUS = {
-  picking_days:  { label: "Vote des jours",     pill: "bg-violet-500/15 text-violet-300 ring-1 ring-violet-500/30" },
-  picking_times: { label: "Vote des horaires",   pill: "bg-amber-500/15 text-amber-300 ring-1 ring-amber-500/30" },
+  picking_days:  { label: "Vote des jours",     pill: "bg-[#FFC426]/15 text-[#FFC426] ring-1 ring-[#FFC426]/30" },
+  picking_times: { label: "Vote des horaires",   pill: "bg-[#FFC426]/15 text-[#FFC426] ring-1 ring-[#FFC426]/30" },
   closed:        { label: "Séance confirmée",    pill: "bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-500/30" },
 } as const;
 
@@ -40,14 +40,14 @@ export default async function Home() {
       <header className="sticky top-0 z-10 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800/60 px-4 py-3">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="bg-gradient-to-br from-violet-600 to-fuchsia-600 p-1.5 rounded-xl">
-              <Film className="w-5 h-5 text-white" />
+            <div className="bg-[#FFC426] p-1.5 rounded-xl">
+              <Film className="w-5 h-5 text-[#0A0A0A]" />
             </div>
             <span className="text-base font-bold tracking-tight">DispoSéance</span>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-xs font-bold">
+              <div className="w-7 h-7 rounded-full bg-[#FFC426] flex items-center justify-center text-xs font-bold text-[#0A0A0A]">
                 {pseudo[0]?.toUpperCase()}
               </div>
               <span className="text-sm text-zinc-400 hidden sm:inline">{pseudo}</span>
@@ -73,7 +73,7 @@ export default async function Home() {
           {isAdmin && (
             <a
               href="/movies/new"
-              className="flex items-center gap-1.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white px-4 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-violet-500/20 active:scale-95 transition-transform"
+              className="flex items-center gap-1.5 bg-[#FFC426] text-[#0A0A0A] px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-[#FFC426]/20 active:scale-95 transition-transform"
             >
               <Plus className="w-4 h-4" />
               Nouvelle
@@ -94,7 +94,7 @@ export default async function Home() {
             {isAdmin && (
               <a
                 href="/movies/new"
-                className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white px-6 py-3.5 rounded-xl font-semibold shadow-lg shadow-violet-500/20 active:scale-95 transition-transform"
+                className="bg-[#FFC426] text-[#0A0A0A] px-6 py-3.5 rounded-xl font-bold shadow-lg shadow-[#FFC426]/20 active:scale-95 transition-transform"
               >
                 Organiser une séance
               </a>

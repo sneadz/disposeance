@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { Calendar, Share2, Check, RotateCcw } from 'lucide-react'
+import { Calendar, Share2, Check, RotateCcw, Link } from 'lucide-react'
 import ShareCard from './ShareCard'
 
 interface FinalSummaryProps {
@@ -10,6 +10,7 @@ interface FinalSummaryProps {
   finalDatetime: string
   participants: string[]
   isAdmin: boolean
+  movieId: string
   onReset: () => void
 }
 
@@ -28,11 +29,28 @@ function formatDisplay(datetimeStr: string): { day: string; time: string } {
   }
 }
 
-export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, participants, isAdmin, onReset }: FinalSummaryProps) {
+export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, participants, isAdmin, movieId, onReset }: FinalSummaryProps) {
   const cardRef = useRef<HTMLDivElement>(null)
   const [sharing, setSharing] = useState(false)
   const [shared, setShared] = useState(false)
+  const [linkCopied, setLinkCopied] = useState(false)
   const { day, time } = formatDisplay(finalDatetime)
+
+  const handleCopyLink = async () => {
+    const url = `${window.location.origin}/movies/${movieId}`
+    try {
+      await navigator.clipboard.writeText(url)
+    } catch {
+      const el = document.createElement('textarea')
+      el.value = url
+      document.body.appendChild(el)
+      el.select()
+      document.execCommand('copy')
+      document.body.removeChild(el)
+    }
+    setLinkCopied(true)
+    setTimeout(() => setLinkCopied(false), 2000)
+  }
 
   const handleDownloadIcs = () => {
     const start = new Date(finalDatetime)
@@ -61,12 +79,36 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
     setSharing(true)
     try {
       const html2canvas = (await import('html2canvas')).default
+
+      // Swap TMDB image sources to proxied URLs before capture
+      const images = cardRef.current.querySelectorAll<HTMLImageElement>('img')
+      const originals = new Map<HTMLImageElement, string>()
+      images.forEach((img) => {
+        const src = img.src
+        if (src.includes('image.tmdb.org')) {
+          originals.set(img, src)
+          img.src = `/api/image-proxy?url=${encodeURIComponent(src)}`
+        }
+      })
+      // Wait for images to reload
+      await Promise.all(
+        Array.from(originals.keys()).map(
+          (img) => new Promise<void>((resolve) => {
+            img.onload = () => resolve()
+            img.onerror = () => resolve()
+          })
+        )
+      )
+
       const canvas = await html2canvas(cardRef.current, {
         scale: 2,
         useCORS: true,
         allowTaint: false,
         logging: false,
       } as any)
+
+      // Restore original sources
+      originals.forEach((src, img) => { img.src = src })
       canvas.toBlob(async (blob) => {
         if (!blob) { setSharing(false); return }
         const filename = `disposeance-${movieTitle.replace(/\s+/g, '-').toLowerCase()}.png`
@@ -107,7 +149,7 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
       <button
         onClick={handleShare}
         disabled={sharing}
-        className="w-full flex items-center justify-center gap-2.5 bg-violet-600 disabled:opacity-60 text-white py-4 rounded-xl font-bold active:scale-[0.99] transition-all shadow-lg"
+        className="w-full flex items-center justify-center gap-2.5 bg-[#FFC426] disabled:opacity-60 text-[#0A0A0A] py-4 rounded-xl font-bold active:scale-[0.99] transition-all shadow-lg shadow-[#FFC426]/20"
       >
         {shared ? <Check className="w-5 h-5" /> : <Share2 className="w-5 h-5" />}
         {sharing ? 'Préparation...' : shared ? 'Partagé !' : 'Partager la carte'}
@@ -122,13 +164,25 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
       </button>
 
       {isAdmin && (
-        <button
-          onClick={onReset}
-          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-zinc-500 border border-zinc-800 active:border-red-900/50 active:text-red-400 transition-colors text-sm"
-        >
-          <RotateCcw className="w-4 h-4" />
-          Supprimer cette séance
-        </button>
+        <>
+          <button
+            onClick={handleCopyLink}
+            className="w-full flex items-center justify-center gap-2.5 bg-[#222] border border-[#333] text-[#E5E5E5] py-4 rounded-xl font-bold active:scale-[0.99] transition-all"
+          >
+            {linkCopied ? <Check className="w-5 h-5 text-[#FFC426]" /> : <Link className="w-5 h-5" />}
+            <span className={linkCopied ? 'text-[#FFC426]' : ''}>
+              {linkCopied ? 'Lien copié !' : 'Copier le lien de la séance'}
+            </span>
+          </button>
+
+          <button
+            onClick={() => onReset()}
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-zinc-500 border border-zinc-800 active:border-red-900/50 active:text-red-400 transition-colors text-sm"
+          >
+            <RotateCcw className="w-4 h-4" />
+            Supprimer cette séance
+          </button>
+        </>
       )}
     </div>
   )

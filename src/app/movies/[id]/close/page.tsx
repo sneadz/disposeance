@@ -7,9 +7,9 @@ function formatDatetime(datetimeStr: string): string {
   const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']
   const months = ['jan', 'fév', 'mar', 'avr', 'mai', 'juin', 'jul', 'aoû', 'sep', 'oct', 'nov', 'déc']
   const d = new Date(datetimeStr)
-  const h = String(d.getHours()).padStart(2, '0')
-  const m = String(d.getMinutes()).padStart(2, '0')
-  return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} · ${h}:${m}`
+  const h = String(d.getUTCHours()).padStart(2, '0')
+  const m = String(d.getUTCMinutes()).padStart(2, '0')
+  return `${days[d.getUTCDay()]} ${d.getUTCDate()} ${months[d.getUTCMonth()]} · ${h}:${m}`
 }
 
 export default async function CloseMoviePage({ params }: { params: { id: string } }) {
@@ -20,8 +20,10 @@ export default async function CloseMoviePage({ params }: { params: { id: string 
   const { data: profile } = await supabase.from('profiles').select('is_admin').eq('id', user.id).single()
   if (!profile?.is_admin) redirect(`/movies/${params.id}`)
 
-  const { data: movie } = await supabase.from('movies').select('id, title, status').eq('id', params.id).single()
+  const { data: movie } = await supabase.from('movies').select('id, title, status, participant_ids').eq('id', params.id).single()
   if (!movie) notFound()
+
+  const participantCount = (movie.participant_ids ?? []).length
 
   const { data: showtimes } = await supabase.from('showtimes').select('id, datetime').eq('movie_id', params.id).order('datetime')
   const { data: timeVotes } = await supabase.from('time_votes').select('showtime_id').eq('available', true)
@@ -47,7 +49,7 @@ export default async function CloseMoviePage({ params }: { params: { id: string 
       </header>
 
       <div className="max-w-2xl mx-auto px-4 py-6">
-        <CloseMovieForm movieId={params.id} showtimes={showtimesWithVotes} />
+        <CloseMovieForm movieId={params.id} showtimes={showtimesWithVotes} participantCount={participantCount} />
       </div>
     </main>
   )

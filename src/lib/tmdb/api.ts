@@ -1,10 +1,10 @@
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3'
 
-function getHeaders() {
-  return {
-    Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
-    'Content-Type': 'application/json',
-  }
+function tmdbUrl(path: string, params: Record<string, string> = {}): string {
+  const url = new URL(`${TMDB_BASE_URL}${path}`)
+  url.searchParams.set('api_key', process.env.TMDB_API_KEY ?? '')
+  for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v)
+  return url.toString()
 }
 
 export interface TmdbMovie {
@@ -17,10 +17,7 @@ export interface TmdbMovie {
 }
 
 export async function searchMovies(query: string): Promise<TmdbMovie[]> {
-  const res = await fetch(
-    `${TMDB_BASE_URL}/search/movie?query=${encodeURIComponent(query)}&language=fr-FR`,
-    { headers: getHeaders() }
-  )
+  const res = await fetch(tmdbUrl('/search/movie', { query, language: 'fr-FR' }))
   if (!res.ok) return []
   const data = await res.json()
   return data.results ?? []
@@ -33,10 +30,7 @@ export function getPosterUrl(posterPath: string | null, size: 'w200' | 'w500' | 
 }
 
 export async function getMovieDetails(tmdbId: number): Promise<TmdbMovie | null> {
-  const res = await fetch(
-    `${TMDB_BASE_URL}/movie/${tmdbId}?language=fr-FR`,
-    { headers: getHeaders() }
-  )
+  const res = await fetch(tmdbUrl(`/movie/${tmdbId}`, { language: 'fr-FR' }))
   if (!res.ok) return null
   return res.json()
 }

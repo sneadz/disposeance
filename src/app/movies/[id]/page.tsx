@@ -10,8 +10,8 @@ import { LogOut, Film, ChevronLeft } from "lucide-react";
 import { getPosterUrl } from "@/lib/tmdb/api";
 
 const STATUS = {
-  picking_days:  { label: "Vote des jours",   pill: "bg-violet-500/15 text-violet-300 ring-1 ring-violet-500/30" },
-  picking_times: { label: "Vote des horaires", pill: "bg-amber-500/15 text-amber-300 ring-1 ring-amber-500/30" },
+  picking_days:  { label: "Vote des jours",   pill: "bg-[#FFC426]/15 text-[#FFC426] ring-1 ring-[#FFC426]/30" },
+  picking_times: { label: "Vote des horaires", pill: "bg-[#FFC426]/15 text-[#FFC426] ring-1 ring-[#FFC426]/30" },
   closed:        { label: "Séance confirmée",  pill: "bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-500/30" },
 } as const;
 
@@ -78,15 +78,15 @@ export default async function MoviePage({ params }: { params: { id: string } }) 
           <a href="/" className="flex items-center gap-1.5 text-zinc-400 active:text-white transition-colors">
             <ChevronLeft className="w-5 h-5" />
             <div className="flex items-center gap-2">
-              <div className="bg-gradient-to-br from-violet-600 to-fuchsia-600 p-1.5 rounded-xl">
-                <Film className="w-4 h-4 text-white" />
+              <div className="bg-[#FFC426] p-1.5 rounded-xl">
+                <Film className="w-4 h-4 text-[#0A0A0A]" />
               </div>
               <span className="text-sm font-semibold text-white">DispoSéance</span>
             </div>
           </a>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-xs font-bold">
+              <div className="w-7 h-7 rounded-full bg-[#FFC426] flex items-center justify-center text-xs font-bold text-[#0A0A0A]">
                 {pseudo[0]?.toUpperCase()}
               </div>
               <span className="text-sm text-zinc-400 hidden sm:inline">{pseudo}</span>

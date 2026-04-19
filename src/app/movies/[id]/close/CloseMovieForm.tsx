@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { closeMovieAction } from './actions'
-import { Clock, Check, Trophy } from 'lucide-react'
+import { Clock, Check, Trophy, Users } from 'lucide-react'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -10,7 +10,7 @@ function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)) }
 
 interface Showtime { id: string; label: string; voteCount: number }
 
-export default function CloseMovieForm({ movieId, showtimes }: { movieId: string; showtimes: Showtime[] }) {
+export default function CloseMovieForm({ movieId, showtimes, participantCount }: { movieId: string; showtimes: Showtime[]; participantCount: number }) {
   const sorted = [...showtimes].sort((a, b) => b.voteCount - a.voteCount)
   const [selectedId, setSelectedId] = useState<string>(sorted[0]?.id ?? '')
   const [error, setError] = useState<string | null>(null)
@@ -44,18 +44,19 @@ export default function CloseMovieForm({ movieId, showtimes }: { movieId: string
               className={cn(
                 'w-full flex items-center justify-between p-4 rounded-xl border transition-all active:scale-[0.99] min-h-[60px]',
                 isSelected
-                  ? 'bg-violet-600 border-violet-500 text-white shadow-lg shadow-violet-500/20'
+                  ? 'bg-[#FFC426] border-[#FFC426] text-[#0A0A0A] shadow-lg shadow-[#FFC426]/20'
                   : 'bg-zinc-900 border-zinc-800 text-zinc-300'
               )}
             >
               <div className="flex items-center gap-3">
-                {isWinner && !isSelected && <Trophy className="w-4 h-4 text-amber-400 flex-shrink-0" />}
+                {isWinner && <Trophy className={cn('w-4 h-4 flex-shrink-0', isSelected ? 'text-[#0A0A0A] opacity-70' : 'text-amber-400')} />}
                 <Clock className={cn('w-4 h-4 flex-shrink-0', isSelected ? 'opacity-70' : 'opacity-40')} />
                 <span className="font-bold text-left">{st.label}</span>
               </div>
               <div className="flex items-center gap-2.5 flex-shrink-0">
-                <span className={cn('text-sm font-semibold', isSelected ? 'opacity-80' : 'text-zinc-500')}>
-                  {st.voteCount} vote{st.voteCount !== 1 ? 's' : ''}
+                <span className={cn('text-sm font-semibold flex items-center gap-1', isSelected ? 'opacity-80' : 'text-zinc-500')}>
+                  <Users className="w-3.5 h-3.5" />
+                  {st.voteCount}/{participantCount}
                 </span>
                 {isSelected && <Check className="w-5 h-5" />}
               </div>
@@ -73,7 +74,7 @@ export default function CloseMovieForm({ movieId, showtimes }: { movieId: string
       <button
         onClick={handleClose}
         disabled={loading || !selectedId}
-        className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-4 rounded-xl font-bold text-base shadow-lg shadow-emerald-500/20 active:scale-[0.99] transition-transform disabled:opacity-40 mt-2"
+        className="w-full bg-[#FFC426] text-[#0A0A0A] py-4 rounded-xl font-bold text-base shadow-lg shadow-[#FFC426]/20 active:scale-[0.99] transition-transform disabled:opacity-40 mt-2"
       >
         {loading ? 'Confirmation...' : '🎬 Confirmer cette séance'}
       </button>

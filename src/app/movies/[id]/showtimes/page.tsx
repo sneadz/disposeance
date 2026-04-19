@@ -26,7 +26,15 @@ export default async function SelectShowtimesPage({ params }: { params: { id: st
 
   const counts: Record<string, number> = {}
   for (const v of dayVotes ?? []) counts[v.date] = (counts[v.date] ?? 0) + 1
-  const winningDate = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0]
+
+  const maxVotes = Math.max(...Object.values(counts), 0)
+  const tiedDates: { date: string; label: string; votes: number }[] =
+    maxVotes > 0
+      ? Object.entries(counts)
+          .filter(([, v]) => v === maxVotes)
+          .map(([date, votes]) => ({ date, label: formatDate(date), votes }))
+          .sort((a, b) => a.date.localeCompare(b.date))
+      : []
 
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
@@ -43,21 +51,27 @@ export default async function SelectShowtimesPage({ params }: { params: { id: st
       </header>
 
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
-        {winningDate ? (
-          <div className="bg-violet-600/10 border border-violet-500/20 rounded-2xl p-4 flex items-center gap-3">
-            <span className="text-2xl">📅</span>
+        {tiedDates.length > 0 ? (
+          <div className="rounded-2xl p-4 flex items-center gap-3 bg-[#FFC426]/10 border border-[#FFC426]/20">
+            <span className="text-2xl">{tiedDates.length > 1 ? '⚖️' : '📅'}</span>
             <div>
-              <p className="text-xs text-violet-300 uppercase font-semibold tracking-wider">Jour le plus voté</p>
-              <p className="text-xl font-bold mt-0.5">{formatDate(winningDate)}</p>
+              <p className="text-xs uppercase font-semibold tracking-wider text-[#FFC426]">
+                {tiedDates.length > 1
+                  ? `${tiedDates.length} jours ex-æquo — ${tiedDates[0].votes} vote${tiedDates[0].votes > 1 ? 's' : ''} chacun`
+                  : 'Jour le plus voté'}
+              </p>
+              <p className="text-xl font-bold mt-0.5">
+                {tiedDates.map(d => d.label).join(' · ')}
+              </p>
             </div>
           </div>
         ) : (
-          <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 text-amber-300 text-sm">
+          <div className="bg-[#FFC426]/10 border border-[#FFC426]/20 rounded-2xl p-4 text-[#FFC426] text-sm">
             Aucun vote pour le moment — tu peux quand même saisir des horaires.
           </div>
         )}
 
-        <ShowtimesForm movieId={params.id} winningDate={winningDate ?? ''} />
+        <ShowtimesForm movieId={params.id} tiedDates={tiedDates} />
       </div>
     </main>
   )

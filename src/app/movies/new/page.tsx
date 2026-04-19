@@ -145,7 +145,7 @@ export default function NewMoviePage() {
                       className={cn(
                         'w-full flex items-center justify-between px-4 py-3.5 rounded-xl border transition-all active:scale-[0.99] min-h-[52px]',
                         sel
-                          ? 'bg-violet-600 border-violet-500 text-white shadow-lg shadow-violet-500/20'
+                          ? 'bg-[#FFC426] border-[#FFC426] text-[#0A0A0A] shadow-lg shadow-[#FFC426]/20'
                           : 'bg-zinc-900 border-zinc-800 text-zinc-300'
                       )}
                     >
@@ -167,7 +167,7 @@ export default function NewMoviePage() {
           <button
             onClick={handleSubmit}
             disabled={submitting || selectedParticipants.length === 0}
-            className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white py-4 rounded-xl font-bold text-base shadow-lg shadow-violet-500/20 active:scale-[0.99] transition-transform disabled:opacity-40"
+            className="w-full bg-[#FFC426] text-[#0A0A0A] py-4 rounded-xl font-bold text-base shadow-lg shadow-[#FFC426]/20 active:scale-[0.99] transition-transform disabled:opacity-40"
           >
             {submitting ? 'Création...' : `Lancer le vote — ${selectedParticipants.length} participant${selectedParticipants.length > 1 ? 's' : ''}`}
           </button>
@@ -232,7 +232,7 @@ export default function NewMoviePage() {
                     className={cn(
                       'flex items-center justify-between px-4 py-3.5 rounded-xl border transition-all active:scale-95 min-h-[52px]',
                       sel
-                        ? 'bg-violet-600 border-violet-500 text-white shadow-lg shadow-violet-500/20'
+                        ? 'bg-[#FFC426] border-[#FFC426] text-[#0A0A0A] shadow-lg shadow-[#FFC426]/20'
                         : 'bg-zinc-900 border-zinc-800 text-zinc-300'
                     )}
                   >
@@ -253,7 +253,7 @@ export default function NewMoviePage() {
           <button
             onClick={goToStep3}
             disabled={selectedDates.length === 0}
-            className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white py-4 rounded-xl font-bold text-base shadow-lg shadow-violet-500/20 active:scale-[0.99] transition-transform disabled:opacity-40"
+            className="w-full bg-[#FFC426] text-[#0A0A0A] py-4 rounded-xl font-bold text-base shadow-lg shadow-[#FFC426]/20 active:scale-[0.99] transition-transform disabled:opacity-40"
           >
             {`Suivant — ${selectedDates.length} jour${selectedDates.length > 1 ? 's' : ''}`}
           </button>
@@ -282,7 +282,7 @@ export default function NewMoviePage() {
           <input
             type="text"
             placeholder="Rechercher un film..."
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl py-3.5 pl-11 pr-4 text-base focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 placeholder-zinc-500 transition-colors"
+            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl py-3.5 pl-11 pr-4 text-base focus:outline-none focus:border-[#FFC426] focus:ring-1 focus:ring-[#FFC426] placeholder-zinc-500 transition-colors"
             value={query}
             onChange={e => setQuery(e.target.value)}
             autoFocus
@@ -335,8 +335,8 @@ export default function NewMoviePage() {
                 </div>
               </div>
               <div className="flex items-center pr-3.5">
-                <div className="w-7 h-7 rounded-full bg-violet-600/20 flex items-center justify-center flex-shrink-0">
-                  <Plus className="w-4 h-4 text-violet-400" />
+                <div className="w-7 h-7 rounded-full bg-[#FFC426]/20 flex items-center justify-center flex-shrink-0">
+                  <Plus className="w-4 h-4 text-[#FFC426]" />
                 </div>
               </div>
             </button>
