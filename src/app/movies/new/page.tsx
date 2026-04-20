@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { Search, Plus, Calendar, Star, Check, ChevronLeft, ChevronRight, Film, Users } from 'lucide-react'
-import { searchMoviesAction, getProfilesAction } from './actions'
+import { Search, Plus, Calendar, Star, Check, ChevronLeft, ChevronRight, Film, Users, Zap } from 'lucide-react'
+import { searchMoviesAction, getProfilesAction, createQuickCardAction } from './actions'
 import type { TmdbMovie } from '@/lib/tmdb/api'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -39,7 +39,7 @@ export default function NewMoviePage() {
   const [loadingSearch, setLoadingSearch] = useState(false)
   const [selectedMovie, setSelectedMovie] = useState<TmdbMovie | null>(null)
   const [selectedDates, setSelectedDates] = useState<string[]>([])
-  const [step, setStep] = useState<1 | 2 | 3>(1)
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1)
 
   const [profiles, setProfiles] = useState<{ id: string; pseudo: string }[]>([])
   const [loadingProfiles, setLoadingProfiles] = useState(false)
@@ -48,6 +48,9 @@ export default function NewMoviePage() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [weekOffset, setWeekOffset] = useState(0)
+  const [selectedTime, setSelectedTime] = useState('')
+  const [submittingQuick, setSubmittingQuick] = useState(false)
+  const [quickError, setQuickError] = useState<string | null>(null)
   const dates = getWeekDays(weekOffset)
 
   useEffect(() => {
@@ -95,6 +98,19 @@ export default function NewMoviePage() {
       else window.location.href = '/'
     } catch (e) {
       setError(String(e)); setSubmitting(false)
+    }
+  }
+
+  const handleQuickCardSubmit = async () => {
+    if (!selectedMovie || selectedDates.length !== 1 || !selectedTime) return
+    setSubmittingQuick(true)
+    setQuickError(null)
+    const result = await createQuickCardAction(selectedMovie, selectedDates[0], selectedTime, selectedParticipants)
+    if (result.error) {
+      setQuickError(result.error)
+      setSubmittingQuick(false)
+    } else {
+      window.location.href = `/movies/${result.movieId}`
     }
   }
 
@@ -170,6 +186,78 @@ export default function NewMoviePage() {
             className="w-full bg-[#FFC426] text-[#0A0A0A] py-4 rounded-xl font-bold text-base shadow-lg shadow-[#FFC426]/20 active:scale-[0.99] transition-transform disabled:opacity-40"
           >
             {submitting ? 'Création...' : `Lancer le vote — ${selectedParticipants.length} participant${selectedParticipants.length > 1 ? 's' : ''}`}
+          </button>
+
+          {selectedDates.length === 1 && (
+            <button
+              onClick={() => setStep(4)}
+              disabled={selectedParticipants.length === 0}
+              className="w-full flex items-center justify-center gap-2 bg-zinc-800 border border-zinc-700 text-zinc-200 py-4 rounded-xl font-semibold active:scale-[0.99] transition-all disabled:opacity-40"
+            >
+              <Zap className="w-4 h-4 text-[#FFC426]" />
+              Faire une carte rapide
+            </button>
+          )}
+        </div>
+      </main>
+    )
+  }
+
+  /* ── Step 4 : quick card — choix horaire ── */
+  if (step === 4 && selectedMovie && selectedDates.length === 1) {
+    const dateLabel = (() => {
+      const d = new Date(selectedDates[0] + 'T12:00:00')
+      return `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`
+    })()
+
+    return (
+      <main className="min-h-screen bg-zinc-950 text-white">
+        <header className="sticky top-0 z-10 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800/60 px-4 py-3">
+          <div className="max-w-2xl mx-auto flex items-center gap-3">
+            <button onClick={() => setStep(3)} className="p-1.5 text-zinc-400 active:text-white transition-colors">
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <span className="text-base font-semibold">Carte rapide</span>
+          </div>
+        </header>
+
+        <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
+          {/* Récap film + date */}
+          <div className="flex items-center gap-3 bg-zinc-900 border border-zinc-800 rounded-2xl p-3">
+            {selectedMovie.poster_path && (
+              <div className="relative w-12 h-16 rounded-xl overflow-hidden flex-shrink-0">
+                <Image src={`https://image.tmdb.org/t/p/w200${selectedMovie.poster_path}`} alt={selectedMovie.title} fill sizes="48px" className="object-cover" />
+              </div>
+            )}
+            <div>
+              <p className="font-bold leading-tight">{selectedMovie.title}</p>
+              <p className="text-zinc-500 text-sm">{dateLabel} · {selectedParticipants.length} participant{selectedParticipants.length > 1 ? 's' : ''}</p>
+            </div>
+          </div>
+
+          {/* Saisie horaire */}
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Horaire de la séance</p>
+            <input
+              type="time"
+              value={selectedTime}
+              onChange={e => setSelectedTime(e.target.value)}
+              className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3.5 text-white text-lg font-semibold focus:outline-none focus:border-[#FFC426] focus:ring-1 focus:ring-[#FFC426] transition-colors"
+            />
+          </div>
+
+          {quickError && (
+            <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center rounded-xl p-3">
+              {quickError}
+            </div>
+          )}
+
+          <button
+            onClick={handleQuickCardSubmit}
+            disabled={submittingQuick || !selectedTime}
+            className="w-full bg-[#FFC426] text-[#0A0A0A] py-4 rounded-xl font-bold text-base shadow-lg shadow-[#FFC426]/20 active:scale-[0.99] transition-transform disabled:opacity-40"
+          >
+            {submittingQuick ? 'Création...' : 'Créer la carte'}
           </button>
         </div>
       </main>
