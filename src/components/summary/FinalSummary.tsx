@@ -80,10 +80,25 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
     try {
       const { toPng } = await import('html-to-image')
 
-      const dataUrl = await toPng(cardRef.current, {
-        pixelRatio: 2,
-        fetchRequestInit: { mode: 'cors' },
+      // Proxy TMDB images to avoid CORS
+      const images = cardRef.current.querySelectorAll<HTMLImageElement>('img')
+      const originals = new Map<HTMLImageElement, string>()
+      images.forEach((img) => {
+        if (img.src.includes('image.tmdb.org')) {
+          originals.set(img, img.src)
+          img.src = `/api/image-proxy?url=${encodeURIComponent(img.src)}`
+        }
       })
+      await Promise.all(
+        Array.from(originals.keys()).map(
+          (img) => new Promise<void>((resolve) => { img.onload = () => resolve(); img.onerror = () => resolve() })
+        )
+      )
+
+      const dataUrl = await toPng(cardRef.current, { pixelRatio: 2 })
+
+      // Restore original sources
+      originals.forEach((src, img) => { img.src = src })
 
       const blob = await (await fetch(dataUrl)).blob()
       const filename = `disposeance-${movieTitle.replace(/\s+/g, '-').toLowerCase()}.png`
