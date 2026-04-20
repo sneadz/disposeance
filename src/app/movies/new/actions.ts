@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase-server'
+import { createAdminClient } from '@/lib/supabase-admin'
 import { searchMovies, TmdbMovie } from '@/lib/tmdb/api'
 
 export async function searchMoviesAction(query: string): Promise<{ movies: TmdbMovie[]; error: string | null }> {
@@ -127,7 +128,8 @@ export async function createQuickCardAction(
     if (updateError) return { movieId: null, error: updateError.message }
 
     // 5. Insérer les time_votes pour chaque participant (alimente FinalSummary)
-    const { error: votesError } = await supabase
+    const admin = createAdminClient()
+    const { error: votesError } = await admin
       .from('time_votes')
       .insert(participantIds.map(uid => ({ user_id: uid, showtime_id: showtime.id, available: true })))
     if (votesError) return { movieId: null, error: votesError.message }
