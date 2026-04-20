@@ -18,8 +18,7 @@
 - [x] Navigation standardisée avec window.location.href
 - [x] Création film via REST API (/api/movies)
 
-## À faire 🔲
-- [ ] **Carte rapide** : step 4 dans le wizard `/movies/new` — créer une séance directement `closed` sans votes. Plan : `docs/superpowers/plans/2026-04-20-quick-card.md`
+- [x] Carte rapide : step 4 dans `/movies/new` — séance directement `closed` sans vote (bouton au step 3 si 1 seule date, saisie horaire, insertion DB via `createQuickCardAction`, redirect FinalSummary)
 
 ## Décisions techniques finales
 - Multi-films via routes dynamiques `/movies/[id]`.
@@ -28,6 +27,6 @@
 - Interface Mobile-First, design sombre zinc/violet, glassmorphism.
 - Navigation via `window.location.href` (pas next/navigation) pour éviter les bugs de cache.
 - Export `.ics` généré côté client.
-- ShareCard : html2canvas capture le composant visuel → Web Share API (Snap, WhatsApp…), fallback download.
+- ShareCard : `html-to-image` (toPng, 100% inline styles) capture le composant visuel → Web Share API (Snap, WhatsApp…), fallback download. Proxy TMDB pour CORS.
 - Images TMDB : `getPosterUrl()` dans `lib/tmdb/api.ts` — détecte URL complète vs path relatif.
 - Participants de la carte finale : `time_votes` filtrés sur `final_showtime_id + available=true`, jointure `profiles`.

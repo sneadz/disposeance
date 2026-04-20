@@ -44,7 +44,7 @@ Ce document détaille l'architecture et les décisions techniques pour le projet
 - **UI/UX** : Design sombre zinc/violet, mobile-first, glassmorphism. Pas de polling — actions serveur + navigation complète.
 - **Navigation** : `window.location.href` partout (pas next/navigation) pour éviter les bugs de cache SSR.
 - **Images** : `getPosterUrl(path, size)` dans `lib/tmdb/api.ts` — gère URL complète ou path TMDB.
-- **ShareCard** : `html2canvas` + Web Share API (`navigator.share({ files })`) pour partage natif mobile. Fallback download sur desktop. Composant `ShareCard` pur visuel (pas de boutons), `FinalSummary` orchestre les actions.
+- **ShareCard** : `html-to-image` (toPng) + Web Share API (`navigator.share({ files })`) pour partage natif mobile. Fallback download sur desktop. Composant `ShareCard` pur visuel 100% inline styles (compatibilité html-to-image), `FinalSummary` orchestre les actions. Images TMDB proxiées via `/api/image-proxy` avant capture pour contourner CORS.
 - **Création film** : REST API `/api/movies` (POST) au lieu de server action pour éviter les problèmes de navigation.
 
 ## État des fonctionnalités
@@ -53,6 +53,4 @@ Ce document détaille l'architecture et les décisions techniques pour le projet
 L'application est fonctionnelle de bout en bout avec le pipeline de vote complet.
 
 ### En attente 🔲
-- **Carte rapide** : Création de séance sans vote, directement `closed`, depuis le wizard `/movies/new`. Bouton "Faire une carte rapide" au step 3 (visible si 1 seule date sélectionnée) → step 4 saisie horaire → insertion DB → redirect FinalSummary.
-  - Plan : `docs/superpowers/plans/2026-04-20-quick-card.md`
-  - Spec : `docs/superpowers/specs/2026-04-20-quick-card-design.md`
+Aucune fonctionnalité en attente.
