@@ -16,7 +16,7 @@ const MONTHS = ['jan', 'fév', 'mar', 'avr', 'mai', 'juin', 'jul', 'aoû', 'sep'
 function getWeekDays(weekOffset: number): { date: string; label: string }[] {
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date()
-    d.setDate(d.getDate() + weekOffset * 7 + i + 1)
+    d.setDate(d.getDate() + weekOffset * 7 + i)
     return {
       date: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`,
       label: `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`,
@@ -26,9 +26,9 @@ function getWeekDays(weekOffset: number): { date: string; label: string }[] {
 
 function getWeekLabel(weekOffset: number): string {
   const start = new Date()
-  start.setDate(start.getDate() + weekOffset * 7 + 1)
+  start.setDate(start.getDate() + weekOffset * 7)
   const end = new Date()
-  end.setDate(end.getDate() + weekOffset * 7 + 7)
+  end.setDate(end.getDate() + weekOffset * 7 + 6)
   const fmt = (d: Date) => `${d.getDate()} ${MONTHS[d.getMonth()]}`
   return `${fmt(start)} — ${fmt(end)}`
 }
