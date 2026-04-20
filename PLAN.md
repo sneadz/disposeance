@@ -47,5 +47,12 @@ Ce document détaille l'architecture et les décisions techniques pour le projet
 - **ShareCard** : `html2canvas` + Web Share API (`navigator.share({ files })`) pour partage natif mobile. Fallback download sur desktop. Composant `ShareCard` pur visuel (pas de boutons), `FinalSummary` orchestre les actions.
 - **Création film** : REST API `/api/movies` (POST) au lieu de server action pour éviter les problèmes de navigation.
 
-## État des fonctionnalités — Toutes complètes ✅
-L'application est fonctionnelle de bout en bout. Aucune phase en attente.
+## État des fonctionnalités
+
+### Complètes ✅
+L'application est fonctionnelle de bout en bout avec le pipeline de vote complet.
+
+### En attente 🔲
+- **Carte rapide** : Création de séance sans vote, directement `closed`, depuis le wizard `/movies/new`. Bouton "Faire une carte rapide" au step 3 (visible si 1 seule date sélectionnée) → step 4 saisie horaire → insertion DB → redirect FinalSummary.
+  - Plan : `docs/superpowers/plans/2026-04-20-quick-card.md`
+  - Spec : `docs/superpowers/specs/2026-04-20-quick-card-design.md`

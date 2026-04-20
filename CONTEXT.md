@@ -18,6 +18,9 @@
 - [x] Navigation standardisée avec window.location.href
 - [x] Création film via REST API (/api/movies)
 
+## À faire 🔲
+- [ ] **Carte rapide** : step 4 dans le wizard `/movies/new` — créer une séance directement `closed` sans votes. Plan : `docs/superpowers/plans/2026-04-20-quick-card.md`
+
 ## Décisions techniques finales
 - Multi-films via routes dynamiques `/movies/[id]`.
 - `@supabase/ssr` pour compatibilité Next.js 14.
