@@ -70,3 +70,71 @@ export async function createMovieSessionAction(movie: TmdbMovie, availableDates:
     return { error: String(e) }
   }
 }
+
+export async function createQuickCardAction(
+  movie: { id: number; title: string; poster_path: string | null; release_date: string },
+  date: string,        // format "YYYY-MM-DD"
+  time: string,        // format "HH:MM"
+  participantIds: string[]
+): Promise<{ movieId: string | null; error: string | null }> {
+  try {
+    const supabase = createClient()
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) return { movieId: null, error: 'Non authentifié' }
+
+    const { data: profile } = await supabase.from('profiles').select('is_admin').eq('id', user.id).single()
+    if (!profile?.is_admin) return { movieId: null, error: 'Accès refusé' }
+
+    if (!participantIds || participantIds.length === 0) return { movieId: null, error: 'Sélectionne au moins un participant' }
+
+    // 1. Créer le film directement fermé
+    const { data: rows, error: movieError } = await supabase
+      .from('movies')
+      .insert({
+        title: movie.title,
+        tmdb_id: String(movie.id),
+        poster_url: movie.poster_path ?? null,
+        release_date: movie.release_date || null,
+        status: 'closed',
+        participant_ids: participantIds,
+      })
+      .select('id')
+    if (movieError) return { movieId: null, error: movieError.message }
+    const created = rows?.[0]
+    if (!created) return { movieId: null, error: 'Film non créé' }
+
+    // 2. Insérer la date disponible
+    const { error: daysError } = await supabase
+      .from('available_days')
+      .insert({ movie_id: created.id, date })
+    if (daysError) return { movieId: null, error: daysError.message }
+
+    // 3. Insérer le showtime
+    const datetime = `${date}T${time}:00`
+    const { data: showtimeRows, error: showtimeError } = await supabase
+      .from('showtimes')
+      .insert({ movie_id: created.id, datetime })
+      .select('id')
+    if (showtimeError) return { movieId: null, error: showtimeError.message }
+    const showtime = showtimeRows?.[0]
+    if (!showtime) return { movieId: null, error: 'Showtime non créé' }
+
+    // 4. Mettre à jour final_showtime_id
+    const { error: updateError } = await supabase
+      .from('movies')
+      .update({ final_showtime_id: showtime.id })
+      .eq('id', created.id)
+    if (updateError) return { movieId: null, error: updateError.message }
+
+    // 5. Insérer les time_votes pour chaque participant (alimente FinalSummary)
+    const { error: votesError } = await supabase
+      .from('time_votes')
+      .insert(participantIds.map(uid => ({ user_id: uid, showtime_id: showtime.id, available: true })))
+    if (votesError) return { movieId: null, error: votesError.message }
+
+    return { movieId: created.id, error: null }
+  } catch (e: unknown) {
+    console.error('[createQuickCardAction]', e)
+    return { movieId: null, error: String(e) }
+  }
+}
