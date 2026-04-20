@@ -24,8 +24,8 @@ function formatDisplay(datetimeStr: string): { day: string; time: string } {
   const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
   const d = new Date(datetimeStr)
   return {
-    day: `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`,
-    time: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`,
+    day: `${days[d.getUTCDay()]} ${d.getUTCDate()} ${months[d.getUTCMonth()]}`,
+    time: `${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}`,
   }
 }
 
