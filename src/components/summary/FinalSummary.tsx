@@ -114,7 +114,7 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
         const filename = `disposeance-${movieTitle.replace(/\s+/g, '-').toLowerCase()}.png`
         const file = new File([blob], filename, { type: 'image/png' })
         if (navigator.canShare?.({ files: [file] })) {
-          await navigator.share({ files: [file], title: `${movieTitle} — DispoSéance` })
+          await navigator.share({ files: [file] })
           setShared(true)
           setTimeout(() => setShared(false), 2000)
         } else {
