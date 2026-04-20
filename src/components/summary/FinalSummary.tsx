@@ -78,55 +78,29 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
     if (!cardRef.current || sharing) return
     setSharing(true)
     try {
-      const html2canvas = (await import('html2canvas')).default
+      const { toPng } = await import('html-to-image')
 
-      // Swap TMDB image sources to proxied URLs before capture
-      const images = cardRef.current.querySelectorAll<HTMLImageElement>('img')
-      const originals = new Map<HTMLImageElement, string>()
-      images.forEach((img) => {
-        const src = img.src
-        if (src.includes('image.tmdb.org')) {
-          originals.set(img, src)
-          img.src = `/api/image-proxy?url=${encodeURIComponent(src)}`
-        }
+      const dataUrl = await toPng(cardRef.current, {
+        pixelRatio: 2,
+        fetchRequestInit: { mode: 'cors' },
       })
-      // Wait for images to reload
-      await Promise.all(
-        Array.from(originals.keys()).map(
-          (img) => new Promise<void>((resolve) => {
-            img.onload = () => resolve()
-            img.onerror = () => resolve()
-          })
-        )
-      )
 
-      const canvas = await html2canvas(cardRef.current, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: false,
-        logging: false,
-      } as any)
-
-      // Restore original sources
-      originals.forEach((src, img) => { img.src = src })
-      canvas.toBlob(async (blob) => {
-        if (!blob) { setSharing(false); return }
-        const filename = `disposeance-${movieTitle.replace(/\s+/g, '-').toLowerCase()}.png`
-        const file = new File([blob], filename, { type: 'image/png' })
-        if (navigator.canShare?.({ files: [file] })) {
-          await navigator.share({ files: [file] })
-          setShared(true)
-          setTimeout(() => setShared(false), 2000)
-        } else {
-          const url = URL.createObjectURL(blob)
-          const a = document.createElement('a')
-          a.href = url
-          a.download = filename
-          a.click()
-          URL.revokeObjectURL(url)
-        }
-        setSharing(false)
-      }, 'image/png')
+      const blob = await (await fetch(dataUrl)).blob()
+      const filename = `disposeance-${movieTitle.replace(/\s+/g, '-').toLowerCase()}.png`
+      const file = new File([blob], filename, { type: 'image/png' })
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file] })
+        setShared(true)
+        setTimeout(() => setShared(false), 2000)
+      } else {
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = filename
+        a.click()
+        URL.revokeObjectURL(url)
+      }
+      setSharing(false)
     } catch {
       setSharing(false)
     }
