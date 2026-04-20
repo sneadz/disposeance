@@ -58,10 +58,10 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, participan
         </div>
 
         {/* Date & time block */}
-        <div className="rounded-xl px-5 py-4 space-y-1" style={{ backgroundColor: '#141414', border: '1px solid #222' }}>
-          <div className="flex items-center gap-2 mb-1">
-            <Calendar className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#FFC426' }} />
-            <p className="text-sm font-medium" style={{ color: '#888' }}>{day}</p>
+        <div style={{ backgroundColor: '#141414', border: '1px solid #222', borderRadius: '12px', padding: '16px 20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <Calendar style={{ width: '14px', height: '14px', flexShrink: 0, color: '#FFC426' }} />
+            <p className="text-sm font-medium" style={{ color: '#888', margin: 0 }}>{day}</p>
           </div>
           <p className="text-4xl font-bold tracking-tight text-white">{time}</p>
         </div>
@@ -69,18 +69,26 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, participan
         {/* Participants */}
         {participants.length > 0 && (
           <div>
-            <div className="flex items-center gap-2 mb-2.5">
-              <Users className="w-3.5 h-3.5" style={{ color: '#FFC426' }} />
-              <p className="text-xs uppercase tracking-wider font-semibold" style={{ color: '#555' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+              <Users style={{ width: '14px', height: '14px', flexShrink: 0, color: '#FFC426' }} />
+              <p className="text-xs uppercase tracking-wider font-semibold" style={{ color: '#555', margin: 0 }}>
                 {participants.length === 1 ? '1 participant' : `${participants.length} participants`}
               </p>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               {participants.map((pseudo) => (
                 <span
                   key={pseudo}
-                  className="text-sm font-semibold px-3 py-1 rounded-full"
-                  style={{ backgroundColor: 'rgba(255,196,38,0.12)', border: '1px solid rgba(255,196,38,0.25)', color: '#FFC426' }}
+                  style={{
+                    backgroundColor: 'rgba(255,196,38,0.12)',
+                    border: '1px solid rgba(255,196,38,0.25)',
+                    color: '#FFC426',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    padding: '4px 12px',
+                    borderRadius: '9999px',
+                    display: 'inline-block',
+                  }}
                 >
                   {pseudo}
                 </span>
