@@ -3,7 +3,7 @@
 import { createClient } from '@/lib/supabase-server'
 
 export async function closeMovieAction(movieId: string, finalShowtimeId: string) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) return { error: 'Non authentifié' }
 

@@ -13,7 +13,7 @@ const STATUS = {
 } as const;
 
 export default async function Home() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: { user }, error: authError } = await supabase.auth.getUser();
   if (authError || !user) redirect("/login");

@@ -26,7 +26,7 @@ export async function loginWithPseudoAction(pseudo: string, password: string) {
   }
 
   // Étape 3 : connexion avec email + mot de passe
-  const supabase = createClient()
+  const supabase = await createClient()
   const { error: signInError } = await supabase.auth.signInWithPassword({
     email: authUser.email,
     password,

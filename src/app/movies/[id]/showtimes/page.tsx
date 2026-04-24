@@ -11,7 +11,7 @@ function formatDate(dateStr: string): string {
 }
 
 export default async function SelectShowtimesPage({ params }: { params: { id: string } }) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) redirect('/login')
 

@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 export async function resetMovieAction(movieId: string) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) return { error: 'Non authentifié' }
 
@@ -31,7 +31,7 @@ export async function resetMovieAction(movieId: string) {
 }
 
 export async function deleteMovieAction(movieId: string) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) return { error: 'Non authentifié' }
 

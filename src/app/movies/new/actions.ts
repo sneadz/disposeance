@@ -6,7 +6,7 @@ import { searchMovies, TmdbMovie } from '@/lib/tmdb/api'
 
 export async function searchMoviesAction(query: string): Promise<{ movies: TmdbMovie[]; error: string | null }> {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
     if (authError || !user) return { movies: [], error: 'Non authentifié' }
@@ -22,7 +22,7 @@ export async function searchMoviesAction(query: string): Promise<{ movies: TmdbM
 
 export async function getProfilesAction(): Promise<{ profiles: { id: string; pseudo: string }[]; error: string | null }> {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     if (authError || !user) return { profiles: [], error: 'Non authentifié' }
 
@@ -36,7 +36,7 @@ export async function getProfilesAction(): Promise<{ profiles: { id: string; pse
 
 export async function createMovieSessionAction(movie: TmdbMovie, availableDates: string[]) {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
     if (authError || !user) return { error: 'Non authentifié' }
@@ -79,7 +79,7 @@ export async function createQuickCardAction(
   participantIds: string[]
 ): Promise<{ movieId: string | null; error: string | null }> {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     if (authError || !user) return { movieId: null, error: 'Non authentifié' }
 

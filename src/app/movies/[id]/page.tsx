@@ -16,7 +16,7 @@ const STATUS = {
 } as const;
 
 export default async function MoviePage({ params }: { params: { id: string } }) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: { user }, error: authError } = await supabase.auth.getUser();
   if (authError || !user) redirect("/login");

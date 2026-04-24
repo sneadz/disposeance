@@ -13,7 +13,7 @@ function formatDatetime(datetimeStr: string): string {
 }
 
 export default async function CloseMoviePage({ params }: { params: { id: string } }) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) redirect('/login')
 

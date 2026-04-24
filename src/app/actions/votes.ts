@@ -3,7 +3,7 @@
 import { createClient } from '@/lib/supabase-server'
 
 export async function voteDayAction(movieId: string, date: string, hasVoted: boolean) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
 
   if (authError || !user) return { error: 'Non authentifié' }
@@ -27,7 +27,7 @@ export async function voteDayAction(movieId: string, date: string, hasVoted: boo
 }
 
 export async function confirmDayVotesAction(movieId: string, selectedDates: string[]) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) return { error: 'Non authentifié' }
 
@@ -54,7 +54,7 @@ export async function confirmDayVotesAction(movieId: string, selectedDates: stri
 }
 
 export async function confirmTimeVotesAction(movieId: string, showtimeIds: string[]) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) return { error: 'Non authentifié' }
 
@@ -87,7 +87,7 @@ export async function confirmTimeVotesAction(movieId: string, showtimeIds: strin
 }
 
 export async function voteTimeAction(movieId: string, showtimeId: string, hasVoted: boolean) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
 
   if (authError || !user) return { error: 'Non authentifié' }

@@ -35,7 +35,7 @@ export default function LoginForm() {
             placeholder="ton pseudo"
             value={pseudo}
             onChange={e => setPseudo(e.target.value)}
-            className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-colors"
+            className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-[#FFC426] focus:ring-1 focus:ring-[#FFC426] transition-colors"
           />
         </div>
         <div>
@@ -51,7 +51,7 @@ export default function LoginForm() {
               placeholder="••••••••"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 pr-11 text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-colors"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 pr-11 text-white placeholder-zinc-500 focus:outline-none focus:border-[#FFC426] focus:ring-1 focus:ring-[#FFC426] transition-colors"
             />
             <button
               type="button"
@@ -73,7 +73,7 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white py-3.5 rounded-xl font-bold shadow-lg shadow-violet-500/20 active:scale-[0.99] transition-transform disabled:opacity-50 mt-2"
+        className="w-full bg-[#FFC426] text-[#0A0A0A] py-3.5 rounded-xl font-bold shadow-lg shadow-[#FFC426]/20 active:scale-[0.99] transition-transform disabled:opacity-50 mt-2"
       >
         {loading ? 'Connexion...' : 'Se connecter'}
       </button>
