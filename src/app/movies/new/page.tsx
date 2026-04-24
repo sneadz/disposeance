@@ -296,20 +296,6 @@ export default function NewMoviePage() {
             />
           </div>
 
-          {/* Résumé accompagnants (lecture seule — modifiables à l'étape précédente) */}
-          {guests.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {guests.map(name => (
-                <span
-                  key={name}
-                  className="flex items-center gap-1.5 bg-zinc-800 border border-zinc-700 text-zinc-400 text-sm font-semibold px-3 py-1.5 rounded-full"
-                >
-                  {name}
-                </span>
-              ))}
-            </div>
-          )}
-
           {quickError && (
             <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center rounded-xl p-3">
               {quickError}
