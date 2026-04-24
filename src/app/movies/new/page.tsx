@@ -44,6 +44,8 @@ export default function NewMoviePage() {
   const [profiles, setProfiles] = useState<{ id: string; pseudo: string }[]>([])
   const [loadingProfiles, setLoadingProfiles] = useState(false)
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>([])
+  const [guests, setGuests] = useState<string[]>([])
+  const [guestInput, setGuestInput] = useState('')
 
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -79,6 +81,16 @@ export default function NewMoviePage() {
   const toggleParticipant = (id: string) =>
     setSelectedParticipants(prev => prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id])
 
+  const addGuest = () => {
+    const name = guestInput.trim()
+    if (!name || guests.includes(name)) return
+    setGuests(prev => [...prev, name])
+    setGuestInput('')
+  }
+
+  const removeGuest = (name: string) =>
+    setGuests(prev => prev.filter(g => g !== name))
+
   const handleSubmit = async () => {
     if (!selectedMovie) return
     setSubmitting(true)
@@ -91,6 +103,7 @@ export default function NewMoviePage() {
           movie: selectedMovie,
           availableDates: selectedDates,
           participantIds: selectedParticipants,
+          guests,
         }),
       })
       const result = await res.json()
@@ -105,7 +118,7 @@ export default function NewMoviePage() {
     if (!selectedMovie || selectedDates.length !== 1 || !selectedTime) return
     setSubmittingQuick(true)
     setQuickError(null)
-    const result = await createQuickCardAction(selectedMovie, selectedDates[0], selectedTime, selectedParticipants)
+    const result = await createQuickCardAction(selectedMovie, selectedDates[0], selectedTime, selectedParticipants, guests)
     if (result.error) {
       setQuickError(result.error)
       setSubmittingQuick(false)
@@ -172,6 +185,43 @@ export default function NewMoviePage() {
                 })}
               </div>
             )}
+          </div>
+
+          {/* Section accompagnants sans compte */}
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+              + Sans compte (copines, famille…)
+            </p>
+            {guests.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {guests.map(name => (
+                  <button
+                    key={name}
+                    onClick={() => removeGuest(name)}
+                    className="flex items-center gap-1.5 bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-semibold px-3 py-1.5 rounded-full active:opacity-70 transition-opacity"
+                  >
+                    {name}
+                    <span className="text-zinc-500 text-xs">✕</span>
+                  </button>
+                ))}
+              </div>
+            )}
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={guestInput}
+                onChange={e => setGuestInput(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addGuest() } }}
+                placeholder="Ajouter un prénom…"
+                className="flex-grow bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-[#FFC426] focus:ring-1 focus:ring-[#FFC426] transition-colors text-sm"
+              />
+              <button
+                onClick={addGuest}
+                className="bg-zinc-800 border border-zinc-700 text-white px-4 py-3 rounded-xl font-semibold text-sm active:bg-zinc-700 transition-colors"
+              >
+                OK
+              </button>
+            </div>
           </div>
 
           {error && (
@@ -244,6 +294,43 @@ export default function NewMoviePage() {
               onChange={e => setSelectedTime(e.target.value)}
               className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3.5 text-white text-lg font-semibold focus:outline-none focus:border-[#FFC426] focus:ring-1 focus:ring-[#FFC426] transition-colors"
             />
+          </div>
+
+          {/* Section accompagnants sans compte */}
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+              + Sans compte (copines, famille…)
+            </p>
+            {guests.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {guests.map(name => (
+                  <button
+                    key={name}
+                    onClick={() => removeGuest(name)}
+                    className="flex items-center gap-1.5 bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-semibold px-3 py-1.5 rounded-full active:opacity-70 transition-opacity"
+                  >
+                    {name}
+                    <span className="text-zinc-500 text-xs">✕</span>
+                  </button>
+                ))}
+              </div>
+            )}
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={guestInput}
+                onChange={e => setGuestInput(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addGuest() } }}
+                placeholder="Ajouter un prénom…"
+                className="flex-grow bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-[#FFC426] focus:ring-1 focus:ring-[#FFC426] transition-colors text-sm"
+              />
+              <button
+                onClick={addGuest}
+                className="bg-zinc-800 border border-zinc-700 text-white px-4 py-3 rounded-xl font-semibold text-sm active:bg-zinc-700 transition-colors"
+              >
+                OK
+              </button>
+            </div>
           </div>
 
           {quickError && (

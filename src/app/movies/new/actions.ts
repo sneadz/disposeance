@@ -76,7 +76,8 @@ export async function createQuickCardAction(
   movie: { id: number; title: string; poster_path: string | null; release_date: string },
   date: string,        // format "YYYY-MM-DD"
   time: string,        // format "HH:MM"
-  participantIds: string[]
+  participantIds: string[],
+  guests: string[]
 ): Promise<{ movieId: string | null; error: string | null }> {
   try {
     const supabase = await createClient()
@@ -98,6 +99,7 @@ export async function createQuickCardAction(
         release_date: movie.release_date || null,
         status: 'closed',
         participant_ids: participantIds,
+        guests: guests ?? [],
       })
       .select('id')
     if (movieError) return { movieId: null, error: movieError.message }

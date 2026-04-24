@@ -9,6 +9,7 @@ interface FinalSummaryProps {
   posterUrl: string | null
   finalDatetime: string
   participants: string[]
+  guests: string[]
   isAdmin: boolean
   movieId: string
   onReset: () => void
@@ -29,7 +30,7 @@ function formatDisplay(datetimeStr: string): { day: string; time: string } {
   }
 }
 
-export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, participants, isAdmin, movieId, onReset }: FinalSummaryProps) {
+export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, participants, guests, isAdmin, movieId, onReset }: FinalSummaryProps) {
   const cardRef = useRef<HTMLDivElement>(null)
   const [sharing, setSharing] = useState(false)
   const [shared, setShared] = useState(false)
@@ -131,6 +132,7 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
           day={day}
           time={time}
           participants={participants}
+          guests={guests}
         />
       </div>
 

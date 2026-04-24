@@ -10,10 +10,11 @@ export async function POST(request: Request) {
   if (!profile?.is_admin) return NextResponse.json({ error: 'Accès refusé' }, { status: 403 })
 
   const body = await request.json()
-  const { movie, availableDates, participantIds } = body as {
+  const { movie, availableDates, participantIds, guests } = body as {
     movie: { id: number; title: string; poster_path: string | null; release_date: string }
     availableDates: string[]
     participantIds: string[]
+    guests: string[]
   }
 
   if (!movie || !availableDates || availableDates.length === 0) {
@@ -33,6 +34,7 @@ export async function POST(request: Request) {
       release_date: movie.release_date || null,
       status: 'picking_days',
       participant_ids: participantIds,
+      guests: guests ?? [],
     })
     .select('id')
 

@@ -6,9 +6,13 @@ interface ShareCardProps {
   day: string
   time: string
   participants: string[]
+  guests: string[]
 }
 
-export default function ShareCard({ movieTitle, posterUrl, day, time, participants }: ShareCardProps) {
+export default function ShareCard({ movieTitle, posterUrl, day, time, participants, guests }: ShareCardProps) {
+  const hasGuests = guests.length > 0
+  const hasParticipants = participants.length > 0
+
   return (
     <div
       id="share-card"
@@ -65,13 +69,14 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, participan
           <p style={{ margin: 0, fontSize: '36px', fontWeight: 700, letterSpacing: '-0.025em', color: '#fff' }}>{time}</p>
         </div>
 
-        {/* Participants */}
-        {participants.length > 0 && (
+        {/* Participants + guests */}
+        {(hasParticipants || hasGuests) && (
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
               <Users style={{ width: '14px', height: '14px', flexShrink: 0, color: '#FFC426' }} />
               <p style={{ margin: 0, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600, color: '#555' }}>
                 {participants.length === 1 ? '1 participant' : `${participants.length} participants`}
+                {hasGuests && ` + ${guests.length} accompagnant${guests.length > 1 ? 's' : ''}`}
               </p>
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -90,6 +95,23 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, participan
                   }}
                 >
                   {pseudo}
+                </span>
+              ))}
+              {guests.map((name) => (
+                <span
+                  key={name}
+                  style={{
+                    display: 'inline-block',
+                    backgroundColor: 'transparent',
+                    border: '1px dashed #444',
+                    color: '#888',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    padding: '4px 12px',
+                    borderRadius: '9999px',
+                  }}
+                >
+                  {name}
                 </span>
               ))}
             </div>

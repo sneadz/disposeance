@@ -32,7 +32,7 @@ export default async function MoviePage({ params }: { params: { id: string } }) 
 
   const { data: movie } = await supabase
     .from("movies")
-    .select("id, title, poster_url, status, final_showtime_id, participant_ids")
+    .select("id, title, poster_url, status, final_showtime_id, participant_ids, guests")
     .eq("id", params.id)
     .single();
 
@@ -43,6 +43,7 @@ export default async function MoviePage({ params }: { params: { id: string } }) 
 
   let finalDatetime: string | null = null;
   let participants: string[] = [];
+  const guests: string[] = movie.guests ?? [];
   if (movie.status === "closed" && movie.final_showtime_id) {
     const { data: showtime } = await supabase
       .from("showtimes")
@@ -149,6 +150,7 @@ export default async function MoviePage({ params }: { params: { id: string } }) 
               posterUrl={getPosterUrl(movie.poster_url, 'w200')}
               finalDatetime={finalDatetime}
               participants={participants}
+              guests={guests}
               isAdmin={isAdmin}
               movieId={movie.id}
               onReset={resetMovie}
