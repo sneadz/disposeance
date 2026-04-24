@@ -12,20 +12,21 @@ function formatDatetime(datetimeStr: string): string {
   return `${days[d.getUTCDay()]} ${d.getUTCDate()} ${months[d.getUTCMonth()]} · ${h}:${m}`
 }
 
-export default async function CloseMoviePage({ params }: { params: { id: string } }) {
+export default async function CloseMoviePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const supabase = await createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) redirect('/login')
 
   const { data: profile } = await supabase.from('profiles').select('is_admin').eq('id', user.id).single()
-  if (!profile?.is_admin) redirect(`/movies/${params.id}`)
+  if (!profile?.is_admin) redirect(`/movies/${id}`)
 
-  const { data: movie } = await supabase.from('movies').select('id, title, status, participant_ids').eq('id', params.id).single()
+  const { data: movie } = await supabase.from('movies').select('id, title, status, participant_ids').eq('id', id).single()
   if (!movie) notFound()
 
   const participantCount = (movie.participant_ids ?? []).length
 
-  const { data: showtimes } = await supabase.from('showtimes').select('id, datetime').eq('movie_id', params.id).order('datetime')
+  const { data: showtimes } = await supabase.from('showtimes').select('id, datetime').eq('movie_id', id).order('datetime')
   const { data: timeVotes } = await supabase.from('time_votes').select('showtime_id').eq('available', true)
 
   const showtimesWithVotes = (showtimes ?? []).map(st => ({
@@ -38,7 +39,7 @@ export default async function CloseMoviePage({ params }: { params: { id: string 
     <main className="min-h-screen bg-zinc-950 text-white">
       <header className="sticky top-0 z-10 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800/60 px-4 py-3">
         <div className="max-w-2xl mx-auto flex items-center gap-3">
-          <a href={`/movies/${params.id}`} className="p-1.5 text-zinc-400 active:text-white transition-colors">
+          <a href={`/movies/${id}`} className="p-1.5 text-zinc-400 active:text-white transition-colors">
             <ChevronLeft className="w-5 h-5" />
           </a>
           <div>
@@ -49,7 +50,7 @@ export default async function CloseMoviePage({ params }: { params: { id: string 
       </header>
 
       <div className="max-w-2xl mx-auto px-4 py-6">
-        <CloseMovieForm movieId={params.id} showtimes={showtimesWithVotes} participantCount={participantCount} />
+        <CloseMovieForm movieId={id} showtimes={showtimesWithVotes} participantCount={participantCount} />
       </div>
     </main>
   )

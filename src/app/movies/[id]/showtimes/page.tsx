@@ -10,19 +10,20 @@ function formatDate(dateStr: string): string {
   return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`
 }
 
-export default async function SelectShowtimesPage({ params }: { params: { id: string } }) {
+export default async function SelectShowtimesPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id: movieId } = await params;
   const supabase = await createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) redirect('/login')
 
   const { data: profile } = await supabase.from('profiles').select('is_admin').eq('id', user.id).single()
-  if (!profile?.is_admin) redirect(`/movies/${params.id}`)
+  if (!profile?.is_admin) redirect(`/movies/${movieId}`)
 
-  const { data: movie } = await supabase.from('movies').select('id, title, status').eq('id', params.id).single()
+  const { data: movie } = await supabase.from('movies').select('id, title, status').eq('id', movieId).single()
   if (!movie) notFound()
 
   const { data: dayVotes } = await supabase
-    .from('day_votes').select('date').eq('movie_id', params.id).eq('available', true)
+    .from('day_votes').select('date').eq('movie_id', movieId).eq('available', true)
 
   const counts: Record<string, number> = {}
   for (const v of dayVotes ?? []) counts[v.date] = (counts[v.date] ?? 0) + 1
@@ -40,7 +41,7 @@ export default async function SelectShowtimesPage({ params }: { params: { id: st
     <main className="min-h-screen bg-zinc-950 text-white">
       <header className="sticky top-0 z-10 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800/60 px-4 py-3">
         <div className="max-w-2xl mx-auto flex items-center gap-3">
-          <a href={`/movies/${params.id}`} className="p-1.5 text-zinc-400 active:text-white transition-colors">
+          <a href={`/movies/${movieId}`} className="p-1.5 text-zinc-400 active:text-white transition-colors">
             <ChevronLeft className="w-5 h-5" />
           </a>
           <div>
@@ -71,7 +72,7 @@ export default async function SelectShowtimesPage({ params }: { params: { id: st
           </div>
         )}
 
-        <ShowtimesForm movieId={params.id} tiedDates={tiedDates} />
+        <ShowtimesForm movieId={movieId} tiedDates={tiedDates} />
       </div>
     </main>
   )

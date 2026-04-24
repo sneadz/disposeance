@@ -15,7 +15,8 @@ const STATUS = {
   closed:        { label: "Séance confirmée",  pill: "bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-500/30" },
 } as const;
 
-export default async function MoviePage({ params }: { params: { id: string } }) {
+export default async function MoviePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const supabase = await createClient();
 
   const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -33,7 +34,7 @@ export default async function MoviePage({ params }: { params: { id: string } }) 
   const { data: movie } = await supabase
     .from("movies")
     .select("id, title, poster_url, status, final_showtime_id, participant_ids, guests")
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
 
   if (!movie) notFound();
@@ -68,7 +69,7 @@ export default async function MoviePage({ params }: { params: { id: string } }) 
     }
   }
 
-  const resetMovie = deleteMovieAction.bind(null, params.id);
+  const resetMovie = deleteMovieAction.bind(null, id);
   const s = STATUS[movie.status as keyof typeof STATUS] ?? STATUS.picking_days;
 
   return (
