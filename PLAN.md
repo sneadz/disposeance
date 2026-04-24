@@ -54,3 +54,9 @@ L'application est fonctionnelle de bout en bout avec le pipeline de vote complet
 
 ### En attente 🔲
 Aucune fonctionnalité en attente.
+
+### Ex-æquo jours & horaires ✅
+- Jours ex-æquo affichés avec badge ⚖️ et score sur la page saisie horaires.
+- Sélecteur de jours (toggle) visible uniquement si ≥ 2 jours ex-æquo.
+- Saisie d'horaires indépendante par jour sélectionné.
+- Vote horaires groupé par jour avec header de date quand plusieurs jours.

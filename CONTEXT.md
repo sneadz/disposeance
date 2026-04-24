@@ -19,6 +19,9 @@
 - [x] Création film via REST API (/api/movies)
 
 - [x] Carte rapide : step 4 dans `/movies/new` — séance directement `closed` sans vote (bouton au step 3 si 1 seule date, saisie horaire, insertion DB via `createQuickCardAction`, redirect FinalSummary)
+- [x] Ex-æquo jours : page saisie horaires détecte les jours à égalité, affiche badge ⚖️ et sélecteur de jours
+- [x] Saisie horaires par jour : chaque jour sélectionné a sa propre liste d'horaires indépendante
+- [x] Vote horaires groupé par jour : headers de date quand plusieurs jours, dateLabel dans carte sinon
 
 ## Décisions techniques finales
 - Multi-films via routes dynamiques `/movies/[id]`.
