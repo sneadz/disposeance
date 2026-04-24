@@ -296,42 +296,19 @@ export default function NewMoviePage() {
             />
           </div>
 
-          {/* Section accompagnants sans compte */}
-          <div className="space-y-2">
-            <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
-              + Sans compte (copines, famille…)
-            </p>
-            {guests.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {guests.map(name => (
-                  <button
-                    key={name}
-                    onClick={() => removeGuest(name)}
-                    className="flex items-center gap-1.5 bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-semibold px-3 py-1.5 rounded-full active:opacity-70 transition-opacity"
-                  >
-                    {name}
-                    <span className="text-zinc-500 text-xs">✕</span>
-                  </button>
-                ))}
-              </div>
-            )}
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={guestInput}
-                onChange={e => setGuestInput(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addGuest() } }}
-                placeholder="Ajouter un prénom…"
-                className="flex-grow bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-[#FFC426] focus:ring-1 focus:ring-[#FFC426] transition-colors text-sm"
-              />
-              <button
-                onClick={addGuest}
-                className="bg-zinc-800 border border-zinc-700 text-white px-4 py-3 rounded-xl font-semibold text-sm active:bg-zinc-700 transition-colors"
-              >
-                OK
-              </button>
+          {/* Résumé accompagnants (lecture seule — modifiables à l'étape précédente) */}
+          {guests.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {guests.map(name => (
+                <span
+                  key={name}
+                  className="flex items-center gap-1.5 bg-zinc-800 border border-zinc-700 text-zinc-400 text-sm font-semibold px-3 py-1.5 rounded-full"
+                >
+                  {name}
+                </span>
+              ))}
             </div>
-          </div>
+          )}
 
           {quickError && (
             <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center rounded-xl p-3">
