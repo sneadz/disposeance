@@ -34,3 +34,13 @@ export async function getMovieDetails(tmdbId: number): Promise<TmdbMovie | null>
   if (!res.ok) return null
   return res.json()
 }
+
+export async function getMovieVideos(tmdbId: number): Promise<string | null> {
+  const res = await fetch(tmdbUrl(`/movie/${tmdbId}/videos`, { language: 'fr-FR' }))
+  if (!res.ok) return null
+  const data = await res.json()
+  const trailer = (data.results ?? []).find(
+    (v: { site: string; type: string; key: string }) => v.site === 'YouTube' && v.type === 'Trailer'
+  )
+  return trailer?.key ?? null
+}

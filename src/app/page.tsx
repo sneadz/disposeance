@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import { logout } from "@/app/auth/logout/actions";
 import DeleteMovieButton from "@/components/movies/DeleteMovieButton";
-import { Plus, LogOut, Film } from "lucide-react";
+import { Plus, LogOut, Film, Megaphone } from "lucide-react";
 import { getPosterUrl } from "@/lib/tmdb/api";
 
 const STATUS = {
@@ -70,15 +70,24 @@ export default async function Home() {
               {movieList.length === 0 ? "Aucune en cours" : `${movieList.length} en cours`}
             </p>
           </div>
-          {isAdmin && (
+          <div className="flex items-center gap-2">
             <a
-              href="/movies/new"
-              className="flex items-center gap-1.5 bg-[#FFC426] text-[#0A0A0A] px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-[#FFC426]/20 active:scale-95 transition-transform"
+              href="/propose"
+              className="flex items-center gap-1.5 bg-zinc-800 border border-zinc-700 text-zinc-200 px-4 py-2.5 rounded-xl font-semibold text-sm active:scale-95 transition-transform"
             >
-              <Plus className="w-4 h-4" />
-              Nouvelle
+              <Megaphone className="w-4 h-4" />
+              Proposer
             </a>
-          )}
+            {isAdmin && (
+              <a
+                href="/movies/new"
+                className="flex items-center gap-1.5 bg-[#FFC426] text-[#0A0A0A] px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-[#FFC426]/20 active:scale-95 transition-transform"
+              >
+                <Plus className="w-4 h-4" />
+                Nouvelle
+              </a>
+            )}
+          </div>
         </div>
 
         {/* Empty state */}
