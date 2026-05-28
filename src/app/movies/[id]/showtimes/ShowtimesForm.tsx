@@ -6,6 +6,8 @@ import { Plus, Trash2, Clock, Calendar } from 'lucide-react'
 
 interface TiedDate { date: string; label: string; votes: number }
 
+const TAGS = ['IMAX', '4DX', '+'] as const
+
 export default function ShowtimesForm({
   movieId,
   tiedDates,
@@ -15,23 +17,24 @@ export default function ShowtimesForm({
 }) {
   const allDates = tiedDates.map(d => d.date)
 
-  // Jours sélectionnés par l'admin (tous cochés par défaut)
   const [selectedDays, setSelectedDays] = useState<string[]>(allDates)
 
-  // Horaires par jour
   const [timesByDay, setTimesByDay] = useState<Record<string, string[]>>(
     () => Object.fromEntries(allDates.map(d => [d, ['20:00']]))
   )
 
-  // Input heure en cours par jour
   const [newTimeByDay, setNewTimeByDay] = useState<Record<string, string>>(
     () => Object.fromEntries(allDates.map(d => [d, '']))
   )
 
-  // Fallback date libre quand aucun vote (tiedDates vide)
+  const [tagsByDay, setTagsByDay] = useState<Record<string, Record<string, string | null>>>(
+    () => Object.fromEntries(allDates.map(d => [d, { '20:00': null }]))
+  )
+
   const [freeDate, setFreeDate] = useState('')
   const [freeTimes, setFreeTimes] = useState<string[]>(['20:00'])
   const [freeNewTime, setFreeNewTime] = useState('')
+  const [freeTagByTime, setFreeTagByTime] = useState<Record<string, string | null>>({ '20:00': null })
 
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -45,38 +48,56 @@ export default function ShowtimesForm({
     )
   }
 
+  const toggleTag = (date: string, time: string, tag: string) => {
+    setTagsByDay(prev => ({
+      ...prev,
+      [date]: { ...(prev[date] ?? {}), [time]: prev[date]?.[time] === tag ? null : tag },
+    }))
+  }
+
+  const toggleFreeTag = (time: string, tag: string) => {
+    setFreeTagByTime(prev => ({ ...prev, [time]: prev[time] === tag ? null : tag }))
+  }
+
   const addTime = (date: string) => {
     const t = newTimeByDay[date]
     if (!t || (timesByDay[date] ?? []).includes(t)) return
     setTimesByDay(prev => ({ ...prev, [date]: [...(prev[date] ?? []), t].sort() }))
+    setTagsByDay(prev => ({ ...prev, [date]: { ...(prev[date] ?? {}), [t]: null } }))
     setNewTimeByDay(prev => ({ ...prev, [date]: '' }))
   }
 
   const removeTime = (date: string, time: string) => {
     setTimesByDay(prev => ({ ...prev, [date]: (prev[date] ?? []).filter(t => t !== time) }))
+    setTagsByDay(prev => {
+      const updated = { ...(prev[date] ?? {}) }
+      delete updated[time]
+      return { ...prev, [date]: updated }
+    })
   }
 
   const handleSubmit = async () => {
-    let datetimes: string[] = []
+    let entries: { datetime: string; tag?: string | null }[] = []
 
     if (noVotes) {
       if (!freeDate) { setError('Sélectionne une date'); return }
       if (freeTimes.length === 0) { setError('Ajoute au moins un horaire'); return }
-      datetimes = freeTimes.map(t => `${freeDate}T${t}:00`)
+      entries = freeTimes.map(t => ({ datetime: `${freeDate}T${t}:00`, tag: freeTagByTime[t] ?? null }))
     } else {
       if (selectedDays.length === 0) { setError('Sélectionne au moins un jour'); return }
-      datetimes = selectedDays.flatMap(day => (timesByDay[day] ?? []).map(t => `${day}T${t}:00`))
-      if (datetimes.length === 0) { setError('Ajoute au moins un horaire'); return }
+      entries = selectedDays.flatMap(day =>
+        (timesByDay[day] ?? []).map(t => ({ datetime: `${day}T${t}:00`, tag: tagsByDay[day]?.[t] ?? null }))
+      )
+      if (entries.length === 0) { setError('Ajoute au moins un horaire'); return }
     }
 
     setLoading(true)
     setError(null)
-    const result = await setShowtimesAction(movieId, datetimes)
+    const result = await setShowtimesAction(movieId, entries)
     if (result?.error) { setError(result.error); setLoading(false) }
     else window.location.href = `/movies/${movieId}`
   }
 
-  // Cas sans votes : saisie libre avec date picker
   if (noVotes) {
     return (
       <div className="space-y-4">
@@ -96,8 +117,30 @@ export default function ShowtimesForm({
               <div className="flex items-center gap-2.5">
                 <Clock className="w-4 h-4 text-[#FFC426]" />
                 <span className="text-lg font-bold">{t}</span>
+                <div className="flex items-center gap-1">
+                  {TAGS.map(tag => (
+                    <button
+                      key={tag}
+                      type="button"
+                      onClick={() => toggleFreeTag(t, tag)}
+                      className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide transition-colors ${
+                        freeTagByTime[t] === tag
+                          ? 'bg-[#FFC426] text-[#0A0A0A]'
+                          : 'bg-zinc-800 text-zinc-500 border border-zinc-700'
+                      }`}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
               </div>
-              <button onClick={() => setFreeTimes(p => p.filter(x => x !== t))} className="p-1.5 text-zinc-600 active:text-red-400 transition-colors">
+              <button
+                onClick={() => {
+                  setFreeTimes(p => p.filter(x => x !== t))
+                  setFreeTagByTime(prev => { const u = { ...prev }; delete u[t]; return u })
+                }}
+                className="p-1.5 text-zinc-600 active:text-red-400 transition-colors"
+              >
                 <Trash2 className="w-4 h-4" />
               </button>
             </div>
@@ -113,6 +156,7 @@ export default function ShowtimesForm({
               onClick={() => {
                 if (!freeNewTime || freeTimes.includes(freeNewTime)) return
                 setFreeTimes(p => [...p, freeNewTime].sort())
+                setFreeTagByTime(p => ({ ...p, [freeNewTime]: null }))
                 setFreeNewTime('')
               }}
               className="flex items-center gap-2 bg-zinc-800 text-white px-4 py-3 rounded-xl font-semibold active:bg-zinc-700 transition-colors"
@@ -138,7 +182,6 @@ export default function ShowtimesForm({
 
   return (
     <div className="space-y-5">
-      {/* Sélecteur de jours — uniquement si ex-æquo */}
       {hasMultipleDays && (
         <div className="space-y-2">
           <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Jours à proposer</p>
@@ -164,7 +207,6 @@ export default function ShowtimesForm({
         </div>
       )}
 
-      {/* Saisie des horaires par jour sélectionné */}
       {allDates
         .filter(date => selectedDays.includes(date))
         .map(date => {
@@ -182,6 +224,22 @@ export default function ShowtimesForm({
                     <div className="flex items-center gap-2.5">
                       <Clock className="w-4 h-4 text-[#FFC426]" />
                       <span className="text-lg font-bold">{t}</span>
+                      <div className="flex items-center gap-1">
+                        {TAGS.map(tag => (
+                          <button
+                            key={tag}
+                            type="button"
+                            onClick={() => toggleTag(date, t, tag)}
+                            className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide transition-colors ${
+                              tagsByDay[date]?.[t] === tag
+                                ? 'bg-[#FFC426] text-[#0A0A0A]'
+                                : 'bg-zinc-800 text-zinc-500 border border-zinc-700'
+                            }`}
+                          >
+                            {tag}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                     <button
                       onClick={() => removeTime(date, t)}
