@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockup accompagnants</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #18181b; font-family: system-ui, -apple-system, sans-serif; color: #fff; padding: 24px 16px; }
+  h1 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .sub { font-size: 13px; color: #71717a; margin-bottom: 24px; }
+
+  .section-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+    color: #71717a; margin-bottom: 12px; margin-top: 32px;
+  }
+  .badge {
+    display: inline-block; background: #27272a; border: 1px solid #3f3f46;
+    color: #a1a1aa; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    margin-bottom: 16px;
+  }
+
+  /* Participant row */
+  .prow {
+    border-radius: 12px; border: 1px solid #3f3f46; background: #27272a;
+    padding: 14px 16px; margin-bottom: 8px; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .prow.sel { background: #FFC426; border-color: #FFC426; }
+  .prow .name { font-size: 15px; font-weight: 600; }
+  .prow.sel .name { color: #0A0A0A; }
+  .check { width: 18px; height: 18px; }
+
+  /* Option A — champ inline */
+  .guest-input {
+    width: 100%; margin-top: 8px; background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(0,0,0,0.3); border-radius: 8px;
+    padding: 8px 12px; font-size: 13px; font-weight: 600; color: #0A0A0A;
+    outline: none;
+  }
+  .guest-input::placeholder { color: rgba(0,0,0,0.4); }
+
+  /* Option B — badge +1 */
+  .plus1-badge {
+    background: rgba(0,0,0,0.2); color: #0A0A0A;
+    font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+    border: none; cursor: pointer;
+  }
+  .plus1-expanded {
+    margin-top: 8px; background: rgba(0,0,0,0.15); border-radius: 8px; padding: 10px 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .plus1-expanded input {
+    flex: 1; background: rgba(0,0,0,0.2); border: 1px solid rgba(0,0,0,0.25);
+    border-radius: 6px; padding: 6px 10px; font-size: 13px; font-weight: 600; color: #0A0A0A;
+    outline: none;
+  }
+  .plus1-expanded input::placeholder { color: rgba(0,0,0,0.35); }
+
+  /* Option C — chips */
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .chip {
+    background: rgba(0,0,0,0.18); color: #0A0A0A;
+    font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+  }
+  .chip-add {
+    background: transparent; color: #0A0A0A; border: 1.5px dashed rgba(0,0,0,0.3);
+    font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; cursor: pointer;
+  }
+
+  /* Card preview */
+  .card-preview {
+    background: #0A0A0A; border-radius: 14px; padding: 20px;
+    box-shadow: 0 0 0 1px #222, 0 8px 24px rgba(255,196,38,.12);
+    margin-top: 8px;
+  }
+  .card-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; }
+  .card-movie { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+  .card-time { font-size: 32px; font-weight: 700; letter-spacing: -.02em; }
+  .card-day { font-size: 13px; color: #888; margin-bottom: 2px; }
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .pill {
+    background: rgba(255,196,38,.12); border: 1px solid rgba(255,196,38,.25);
+    color: #FFC426; font-size: 13px; font-weight: 600;
+    padding: 4px 12px; border-radius: 999px;
+  }
+  .pill.guest { background: rgba(255,196,38,.06); border-style: dashed; color: #d4a010; }
+
+  hr { border: none; border-top: 1px solid #27272a; margin: 28px 0; }
+
+  .sel-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #71717a;
+    display: flex; align-items: center; gap: 6px; margin-bottom: 12px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Mockup — Accompagnants</h1>
+<p class="sub">Comment ça se présente dans l'étape "Qui participe ?"</p>
+
+<!-- ═══════════════ OPTION A ═══════════════ -->
+<div class="badge">Option A — champ inline</div>
+<div class="sel-label">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+  Sélectionne les participants
+</div>
+
+<!-- Nico sélectionné, pas de +1 -->
+<div class="prow sel">
+  <span class="name">Nico</span>
+  <svg class="check" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+</div>
+
+<!-- Robin sélectionné, avec +1 saisi -->
+<div class="prow sel" style="flex-direction:column; align-items:stretch; gap:0">
+  <div style="display:flex; align-items:center; justify-content:space-between">
+    <span class="name">Robin</span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+  <input class="guest-input" value="Sa copine" placeholder="Prénom de l'accompagnant (optionnel)" readonly />
+</div>
+
+<!-- Sam non sélectionné -->
+<div class="prow">
+  <span class="name">Sam</span>
+</div>
+
+<div class="section-title" style="margin-top:20px">Résultat sur la carte finale</div>
+<div class="card-preview">
+  <div class="card-label">Film</div>
+  <div class="card-movie">Minecraft</div>
+  <div class="card-day">Vendredi 2 mai</div>
+  <div class="card-time">20:15</div>
+  <div class="pills">
+    <span class="pill">Nico</span>
+    <span class="pill">Robin + Sa copine</span>
+  </div>
+</div>
+
+<hr>
+
+<!-- ═══════════════ OPTION B ═══════════════ -->
+<div class="badge">Option B — bouton +1 sur la ligne</div>
+<div class="sel-label">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+  Sélectionne les participants
+</div>
+
+<div class="prow sel">
+  <span class="name">Nico</span>
+  <div style="display:flex;align-items:center;gap:8px">
+    <button class="plus1-badge">+ 1 ?</button>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+</div>
+
+<div class="prow sel" style="flex-direction:column;align-items:stretch">
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <span class="name">Robin</span>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="plus1-badge">+1 ✓</button>
+      <svg class="check" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+  </div>
+  <div class="plus1-expanded">
+    <span style="font-size:12px;font-weight:700;color:#0A0A0A;white-space:nowrap">Accompagnant :</span>
+    <input value="Sa copine" placeholder="Prénom..." readonly />
+  </div>
+</div>
+
+<div class="prow">
+  <span class="name">Sam</span>
+</div>
+
+<div class="section-title" style="margin-top:20px">Résultat sur la carte finale</div>
+<div class="card-preview">
+  <div class="card-label">Film</div>
+  <div class="card-movie">Minecraft</div>
+  <div class="card-day">Vendredi 2 mai</div>
+  <div class="card-time">20:15</div>
+  <div class="pills">
+    <span class="pill">Nico</span>
+    <span class="pill">Robin + Sa copine</span>
+  </div>
+</div>
+
+<hr>
+
+<!-- ═══════════════ OPTION C ═══════════════ -->
+<div class="badge">Option C — chips multi +1</div>
+<div class="sel-label">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+  Sélectionne les participants
+</div>
+
+<div class="prow sel">
+  <span class="name">Nico</span>
+  <svg class="check" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+</div>
+
+<div class="prow sel" style="flex-direction:column;align-items:stretch">
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <span class="name">Robin</span>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+  <div class="chips">
+    <span class="chip">Sa copine ✕</span>
+    <button class="chip-add">+ Ajouter</button>
+  </div>
+</div>
+
+<div class="prow">
+  <span class="name">Sam</span>
+</div>
+
+<div class="section-title" style="margin-top:20px">Résultat sur la carte finale</div>
+<div class="card-preview">
+  <div class="card-label">Film</div>
+  <div class="card-movie">Minecraft</div>
+  <div class="card-day">Vendredi 2 mai</div>
+  <div class="card-time">20:15</div>
+  <div class="pills">
+    <span class="pill">Nico</span>
+    <span class="pill">Robin</span>
+    <span class="pill guest">Sa copine</span>
+  </div>
+</div>
+
+</body>
+</html>
