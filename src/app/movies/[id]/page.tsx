@@ -148,7 +148,7 @@ export default async function MoviePage({ params }: { params: Promise<{ id: stri
           {movie.status === "closed" && finalDatetime && (
             <FinalSummary
               movieTitle={movie.title}
-              posterUrl={getPosterUrl(movie.poster_url, 'w200')}
+              posterUrl={getPosterUrl(movie.poster_url, 'original')}
               finalDatetime={finalDatetime}
               participants={participants}
               guests={guests}
