@@ -43,15 +43,17 @@ export default async function MoviePage({ params }: { params: Promise<{ id: stri
   const isParticipant = (movie.participant_ids ?? []).includes(user.id);
 
   let finalDatetime: string | null = null;
+  let finalShowtimeTag: string | null = null;
   let participants: string[] = [];
   const guests: string[] = movie.guests ?? [];
   if (movie.status === "closed" && movie.final_showtime_id) {
     const { data: showtime } = await supabase
       .from("showtimes")
-      .select("datetime")
+      .select("datetime, tag")
       .eq("id", movie.final_showtime_id)
       .single();
     finalDatetime = showtime?.datetime ?? null;
+    finalShowtimeTag = (showtime as { datetime: string; tag: string | null } | null)?.tag ?? null;
 
     const { data: votes } = await supabase
       .from("time_votes")
@@ -150,6 +152,7 @@ export default async function MoviePage({ params }: { params: Promise<{ id: stri
               movieTitle={movie.title}
               posterUrl={getPosterUrl(movie.poster_url, 'w200')}
               finalDatetime={finalDatetime}
+              tag={finalShowtimeTag}
               participants={participants}
               guests={guests}
               isAdmin={isAdmin}

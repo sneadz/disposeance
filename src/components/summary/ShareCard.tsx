@@ -5,11 +5,12 @@ interface ShareCardProps {
   posterUrl: string | null
   day: string
   time: string
+  tag?: string | null
   participants: string[]
   guests: string[]
 }
 
-export default function ShareCard({ movieTitle, posterUrl, day, time, participants, guests }: ShareCardProps) {
+export default function ShareCard({ movieTitle, posterUrl, day, time, tag, participants, guests }: ShareCardProps) {
   const hasGuests = guests.length > 0
   const hasParticipants = participants.length > 0
 
@@ -67,6 +68,23 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, participan
             <p style={{ margin: 0, fontSize: '14px', fontWeight: 500, color: '#888' }}>{day}</p>
           </div>
           <p style={{ margin: 0, fontSize: '36px', fontWeight: 700, letterSpacing: '-0.025em', color: '#fff' }}>{time}</p>
+          {tag && (
+            <span style={{
+              display: 'inline-block',
+              marginTop: '6px',
+              fontSize: '11px',
+              fontWeight: 700,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              color: '#FFC426',
+              backgroundColor: 'rgba(255,196,38,0.12)',
+              border: '1px solid rgba(255,196,38,0.3)',
+              padding: '2px 8px',
+              borderRadius: '6px',
+            }}>
+              {tag}
+            </span>
+          )}
         </div>
 
         {/* Participants + guests */}

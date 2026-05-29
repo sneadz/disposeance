@@ -106,16 +106,19 @@ export interface Database {
           id: string
           movie_id: string
           datetime: string
+          tag: string | null
         }
         Insert: {
           id?: string
           movie_id: string
           datetime: string
+          tag?: string | null
         }
         Update: {
           id?: string
           movie_id?: string
           datetime?: string
+          tag?: string | null
         }
       }
       time_votes: {

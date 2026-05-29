@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockup accompagnants v2</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #18181b; font-family: system-ui, -apple-system, sans-serif; color: #fff; padding: 24px 16px; }
+  h1 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .sub { font-size: 13px; color: #71717a; margin-bottom: 24px; }
+  hr { border: none; border-top: 1px solid #27272a; margin: 32px 0; }
+  .badge { display: inline-block; background: #27272a; border: 1px solid #3f3f46; color: #a1a1aa; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-bottom: 14px; }
+  .sel-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #71717a; margin-bottom: 10px; }
+  .prow { border-radius: 12px; border: 1px solid #3f3f46; background: #27272a; padding: 14px 16px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+  .prow.sel { background: #FFC426; border-color: #FFC426; }
+  .prow .name { font-size: 15px; font-weight: 600; }
+  .prow.sel .name { color: #0A0A0A; }
+  .check { width: 17px; height: 17px; }
+  .card-preview { background: #0A0A0A; border-radius: 14px; padding: 20px; box-shadow: 0 0 0 1px #222, 0 8px 24px rgba(255,196,38,.12); margin-top: 8px; }
+  .card-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; }
+  .card-movie { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+  .card-day { font-size: 13px; color: #888; margin-bottom: 2px; }
+  .card-time { font-size: 32px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 12px; }
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill { background: rgba(255,196,38,.12); border: 1px solid rgba(255,196,38,.25); color: #FFC426; font-size: 13px; font-weight: 600; padding: 4px 12px; border-radius: 999px; }
+  .pill.ghost { background: transparent; border-style: dashed; color: #888; border-color: #444; }
+  .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #71717a; margin: 16px 0 8px; }
+</style>
+</head>
+<body>
+
+<h1>3 nouvelles idées</h1>
+<p class="sub">Approches différentes pour gérer les accompagnants</p>
+
+<!-- ═══ D — Étape dédiée ═══ -->
+<div class="badge">Option D — étape dédiée après la sélection</div>
+
+<p style="font-size:13px;color:#a1a1aa;margin-bottom:14px">Après avoir sélectionné Nico et Robin comme participants, une nouvelle étape simple apparaît :</p>
+
+<div style="background:#0A0A0A;border-radius:16px;overflow:hidden;border:1px solid #222;">
+  <div style="background:#111;border-bottom:1px solid #222;padding:14px 16px;font-size:15px;font-weight:600">Quelqu'un vient accompagné ?</div>
+  <div style="padding:16px;display:flex;flex-direction:column;gap:10px">
+    <!-- Nico, pas de +1 -->
+    <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-weight:600;font-size:15px">Nico</span>
+      <span style="font-size:13px;color:#555">Seul</span>
+    </div>
+    <!-- Robin, avec +1 -->
+    <div style="background:#1a1a1a;border:1px solid #333;border-radius:12px;padding:14px 16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <span style="font-weight:600;font-size:15px">Robin</span>
+        <span style="color:#FFC426;font-size:13px;font-weight:600">+ 1 accompagnant</span>
+      </div>
+      <input readonly value="Sa copine" style="width:100%;background:#111;border:1px solid #333;border-radius:8px;padding:8px 12px;font-size:14px;color:#fff;outline:none" placeholder="Prénom de l'accompagnant..." />
+    </div>
+    <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-weight:600;font-size:15px">Sam</span>
+      <span style="font-size:13px;color:#555">Seul</span>
+    </div>
+    <button style="width:100%;background:#FFC426;color:#0A0A0A;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:700;margin-top:4px;cursor:pointer">Créer la séance →</button>
+  </div>
+</div>
+
+<div class="section-title">Carte finale</div>
+<div class="card-preview">
+  <div class="card-label">Film</div>
+  <div class="card-movie">Minecraft</div>
+  <div class="card-day">Vendredi 2 mai</div>
+  <div class="card-time">20:15</div>
+  <div class="pills">
+    <span class="pill">Nico</span>
+    <span class="pill">Robin + Sa copine</span>
+  </div>
+</div>
+
+<hr>
+
+<!-- ═══ E — +1 numérique, pas de nom ═══ -->
+<div class="badge">Option E — juste un compteur +1, sans saisir de prénom</div>
+
+<p style="font-size:13px;color:#a1a1aa;margin-bottom:14px">Dans la sélection des participants, chaque ligne sélectionnée a un petit <strong style="color:#fff">+1</strong> à taper. Pas de nom à saisir — juste "il vient avec quelqu'un". Rapide.</p>
+
+<div class="sel-label">Sélectionne les participants</div>
+
+<div class="prow sel">
+  <span class="name">Nico</span>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="display:flex;align-items:center;border:1.5px solid rgba(0,0,0,0.2);border-radius:999px;overflow:hidden">
+      <button style="background:transparent;border:none;padding:4px 10px;font-size:16px;color:#0A0A0A;cursor:pointer;font-weight:700">−</button>
+      <span style="font-size:13px;font-weight:700;color:#0A0A0A;padding:0 4px">0</span>
+      <button style="background:transparent;border:none;padding:4px 10px;font-size:16px;color:#0A0A0A;cursor:pointer;font-weight:700">+</button>
+    </div>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+</div>
+
+<div class="prow sel">
+  <span class="name">Robin</span>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="display:flex;align-items:center;border:1.5px solid rgba(0,0,0,0.2);border-radius:999px;overflow:hidden">
+      <button style="background:transparent;border:none;padding:4px 10px;font-size:16px;color:#0A0A0A;cursor:pointer;font-weight:700">−</button>
+      <span style="font-size:13px;font-weight:700;color:#0A0A0A;padding:0 4px">1</span>
+      <button style="background:transparent;border:none;padding:4px 10px;font-size:16px;color:#0A0A0A;cursor:pointer;font-weight:700">+</button>
+    </div>
+    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+</div>
+
+<div class="prow">
+  <span class="name">Sam</span>
+</div>
+
+<div class="section-title">Carte finale</div>
+<div class="card-preview">
+  <div class="card-label">Film</div>
+  <div class="card-movie">Minecraft</div>
+  <div class="card-day">Vendredi 2 mai</div>
+  <div class="card-time">20:15</div>
+  <div class="pills">
+    <span class="pill">Nico</span>
+    <span class="pill">Robin +1</span>
+  </div>
+</div>
+
+<hr>
+
+<!-- ═══ F — input libre en bas ═══ -->
+<div class="badge">Option F — zone libre "autres participants" en bas</div>
+
+<p style="font-size:13px;color:#a1a1aa;margin-bottom:14px">Après la liste normale, une section séparée avec un simple champ de saisie pour ajouter des noms librement. On tape, ça crée un pill sur la carte.</p>
+
+<div class="sel-label">Sélectionne les participants</div>
+
+<div class="prow sel">
+  <span class="name">Nico</span>
+  <svg class="check" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+</div>
+<div class="prow sel">
+  <span class="name">Robin</span>
+  <svg class="check" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+</div>
+<div class="prow">
+  <span class="name">Sam</span>
+</div>
+
+<div style="margin-top:20px;background:#111;border:1px dashed #333;border-radius:12px;padding:14px 16px">
+  <div class="sel-label" style="margin-bottom:8px">+ Sans compte (copines, famille…)</div>
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+    <span style="background:rgba(255,196,38,.1);border:1px dashed rgba(255,196,38,.3);color:#FFC426;font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px">Sa copine ✕</span>
+  </div>
+  <div style="display:flex;gap:8px">
+    <input readonly placeholder="Ajouter un prénom…" style="flex:1;background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:9px 12px;font-size:14px;color:#fff;outline:none" />
+    <button style="background:#27272a;border:1px solid #3f3f46;color:#fff;border-radius:8px;padding:9px 14px;font-size:14px;font-weight:600;cursor:pointer">OK</button>
+  </div>
+</div>
+
+<div class="section-title">Carte finale</div>
+<div class="card-preview">
+  <div class="card-label">Film</div>
+  <div class="card-movie">Minecraft</div>
+  <div class="card-day">Vendredi 2 mai</div>
+  <div class="card-time">20:15</div>
+  <div class="pills">
+    <span class="pill">Nico</span>
+    <span class="pill">Robin</span>
+    <span class="pill ghost">Sa copine</span>
+  </div>
+</div>
+
+</body>
+</html>
