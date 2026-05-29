@@ -96,7 +96,8 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
         )
       )
 
-      const dataUrl = await toPng(cardRef.current, { pixelRatio: 2 })
+      await document.fonts.ready
+      const dataUrl = await toPng(cardRef.current, { width: 360, height: 640, pixelRatio: 3 })
 
       // Restore original sources
       originals.forEach((src, img) => { img.src = src })
@@ -125,6 +126,7 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
   return (
     <div className="space-y-3">
       {/* Visual card */}
+      <div className="flex justify-center">
       <div ref={cardRef}>
         <ShareCard
           movieTitle={movieTitle}
@@ -134,6 +136,7 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
           participants={participants}
           guests={guests}
         />
+      </div>
       </div>
 
       {/* Actions */}
