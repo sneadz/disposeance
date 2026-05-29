@@ -23,9 +23,9 @@ export default function SeancesToggle({ showAll }: SeancesToggleProps) {
   return (
     <button
       onClick={toggle}
-      className="text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition-colors underline underline-offset-2"
+      className="mt-1 text-sm font-semibold bg-zinc-800 border border-zinc-700 text-zinc-300 px-3 py-1.5 rounded-xl active:scale-95 transition-transform"
     >
-      {showAll ? 'Mes séances' : 'Toutes'}
+      {showAll ? 'Voir mes séances' : 'Voir toutes les séances'}
     </button>
   )
 }

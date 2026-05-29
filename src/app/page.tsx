@@ -75,19 +75,12 @@ export default async function Home({
 
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
         {/* Title row */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Séances</h1>
-            <div className="flex items-center gap-2 mt-0.5">
-              <p className="text-zinc-500 text-sm">
-                {movieList.length === 0
-                  ? showAll ? "Aucune en cours" : "Aucune pour toi"
-                  : showAll
-                    ? `${movieList.length} en cours`
-                    : `${movieList.length} de tes séances`}
-              </p>
-              <SeancesToggle showAll={showAll} />
-            </div>
+            <h1 className="text-2xl font-bold">
+              {showAll ? "Toutes les séances" : "Mes séances"}
+            </h1>
+            <SeancesToggle showAll={showAll} />
           </div>
           {isAdmin && (
             <a
