@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { Calendar, Share2, Check, RotateCcw, Link } from 'lucide-react'
 import ShareCard from './ShareCard'
 
@@ -35,7 +35,16 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
   const [sharing, setSharing] = useState(false)
   const [shared, setShared] = useState(false)
   const [linkCopied, setLinkCopied] = useState(false)
+  const [imageReady, setImageReady] = useState(!posterUrl)
   const { day, time } = formatDisplay(finalDatetime)
+
+  useEffect(() => {
+    if (!posterUrl) return
+    const img = new Image()
+    img.onload = () => setImageReady(true)
+    img.onerror = () => setImageReady(true)
+    img.src = posterUrl
+  }, [posterUrl])
 
   const handleCopyLink = async () => {
     const url = `${window.location.origin}/movies/${movieId}`
@@ -153,7 +162,7 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
       {/* Actions */}
       <button
         onClick={handleShare}
-        disabled={sharing}
+        disabled={sharing || !imageReady}
         className="w-full flex items-center justify-center gap-2.5 bg-[#FFC426] disabled:opacity-60 text-[#0A0A0A] py-4 rounded-xl font-bold active:scale-[0.99] transition-all shadow-lg shadow-[#FFC426]/20"
       >
         {shared ? <Check className="w-5 h-5" /> : <Share2 className="w-5 h-5" />}
