@@ -28,13 +28,13 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, participan
       }}
     >
       {/* Poster */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '380px', zIndex: 0 }}>
-        {posterUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={posterUrl} alt={movieTitle} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-        ) : (
-          <div style={{ width: '100%', height: '100%', background: '#1a1a1e' }} />
-        )}
+      <div style={{
+        position: 'absolute', top: 0, left: 0, right: 0, height: '380px', zIndex: 0,
+        backgroundImage: posterUrl ? `url(${posterUrl})` : undefined,
+        backgroundColor: '#1a1a1e',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}>
         <div style={{
           position: 'absolute',
           inset: 0,
