@@ -1,3 +1,7 @@
+'use client'
+
+import { useEffect, useRef } from 'react'
+
 interface ShareCardProps {
   movieTitle: string
   posterUrl: string | null
@@ -8,7 +12,31 @@ interface ShareCardProps {
 }
 
 export default function ShareCard({ movieTitle, posterUrl, day, time, participants, guests }: ShareCardProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
   const allCount = participants.length + guests.length
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas || !posterUrl) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    const img = new Image()
+    img.onload = () => {
+      const targetW = 360, targetH = 380
+      const imgAspect = img.naturalWidth / img.naturalHeight
+      const targetAspect = targetW / targetH
+      let srcX = 0, srcY = 0, srcW = img.naturalWidth, srcH = img.naturalHeight
+      if (imgAspect > targetAspect) {
+        srcW = img.naturalHeight * targetAspect
+        srcX = (img.naturalWidth - srcW) / 2
+      } else {
+        srcH = img.naturalWidth / targetAspect
+        srcY = (img.naturalHeight - srcH) / 2
+      }
+      ctx.drawImage(img, srcX, srcY, srcW, srcH, 0, 0, targetW, targetH)
+    }
+    img.src = posterUrl
+  }, [posterUrl])
 
   return (
     <div
@@ -27,28 +55,23 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, participan
         flexShrink: 0,
       }}
     >
-      {/* Poster */}
+      {/* Poster canvas */}
+      <canvas
+        ref={canvasRef}
+        width={360}
+        height={380}
+        style={{ position: 'absolute', top: 0, left: 0, width: '360px', height: '380px', zIndex: 0 }}
+      />
+
+      {/* Gradient overlay */}
       <div style={{
-        position: 'absolute', top: 0, left: 0, right: 0, height: '380px', zIndex: 0,
-        backgroundImage: posterUrl ? `url(${posterUrl})` : undefined,
-        backgroundColor: '#1a1a1e',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}>
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'linear-gradient(180deg, rgba(10,10,11,.42) 0%, transparent 28%, transparent 58%, #191a1e 99%)',
-        }} />
-      </div>
+        position: 'absolute', top: 0, left: 0, right: 0, height: '380px', zIndex: 1,
+        background: 'linear-gradient(180deg, rgba(10,10,11,.42) 0%, transparent 28%, transparent 58%, #191a1e 99%)',
+      }} />
 
       {/* Grain */}
       <div style={{
-        position: 'absolute',
-        inset: 0,
-        zIndex: 40,
-        pointerEvents: 'none',
-        opacity: 0.07,
+        position: 'absolute', inset: 0, zIndex: 40, pointerEvents: 'none', opacity: 0.07,
         mixBlendMode: 'overlay' as const,
         backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
       }} />
@@ -83,23 +106,15 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, participan
         padding: '0 24px 26px', display: 'flex', flexDirection: 'column',
       }}>
         <div style={{ width: '46px', height: '3px', background: '#FFC426', borderRadius: '2px', marginBottom: '12px' }} />
-
         <span style={{ fontSize: '10.5px', letterSpacing: '.22em', textTransform: 'uppercase' as const, color: '#8a8a90', fontWeight: 700 }}>
           La séance
         </span>
-
         <h1 style={{
-          fontFamily: "'Anton', sans-serif",
-          lineHeight: 0.93,
-          textTransform: 'uppercase' as const,
-          letterSpacing: '.005em',
-          fontSize: '33px',
-          margin: '8px 0 20px',
-          color: '#fff',
+          fontFamily: "'Anton', sans-serif", lineHeight: 0.93, textTransform: 'uppercase' as const,
+          letterSpacing: '.005em', fontSize: '33px', margin: '8px 0 20px', color: '#fff',
         }}>
           {movieTitle}
         </h1>
-
         <div style={{
           display: 'grid', gridTemplateColumns: '1fr auto', gap: '16px', alignItems: 'end',
           borderTop: '1px solid rgba(255,255,255,.12)', paddingTop: '18px',
@@ -110,18 +125,10 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, participan
             </span>
             {day}
           </div>
-          <div style={{
-            whiteSpace: 'nowrap' as const,
-            fontFamily: "'Anton', sans-serif",
-            fontSize: '50px',
-            lineHeight: 0.78,
-            color: '#FFC426',
-            textAlign: 'right' as const,
-          }}>
+          <div style={{ whiteSpace: 'nowrap' as const, fontFamily: "'Anton', sans-serif", fontSize: '50px', lineHeight: 0.78, color: '#FFC426', textAlign: 'right' as const }}>
             {time}
           </div>
         </div>
-
         {allCount > 0 && (
           <div style={{ marginTop: 'auto', paddingTop: '22px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
@@ -137,20 +144,16 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, participan
             <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '8px' }}>
               {participants.map((pseudo) => (
                 <span key={pseudo} style={{
-                  display: 'inline-flex', alignItems: 'center',
-                  padding: '7px 13px', borderRadius: '999px',
-                  fontWeight: 700, fontSize: '13px',
-                  background: 'rgba(255,196,38,.13)', border: '1px solid rgba(255,196,38,.4)', color: '#FFC426',
+                  display: 'inline-flex', alignItems: 'center', padding: '7px 13px', borderRadius: '999px',
+                  fontWeight: 700, fontSize: '13px', background: 'rgba(255,196,38,.13)', border: '1px solid rgba(255,196,38,.4)', color: '#FFC426',
                 }}>
                   {pseudo}
                 </span>
               ))}
               {guests.map((name) => (
                 <span key={name} style={{
-                  display: 'inline-flex', alignItems: 'center',
-                  padding: '7px 13px', borderRadius: '999px',
-                  fontWeight: 700, fontSize: '13px',
-                  background: 'rgba(255,196,38,.13)', border: '1px dashed rgba(255,196,38,.4)', color: '#FFC426',
+                  display: 'inline-flex', alignItems: 'center', padding: '7px 13px', borderRadius: '999px',
+                  fontWeight: 700, fontSize: '13px', background: 'rgba(255,196,38,.13)', border: '1px dashed rgba(255,196,38,.4)', color: '#FFC426',
                 }}>
                   {name}
                 </span>
