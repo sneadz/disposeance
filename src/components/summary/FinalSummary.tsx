@@ -102,6 +102,15 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
     setSharing(true)
     try {
       const { toPng } = await import('html-to-image')
+
+      // Wait for all imgs to be fully decoded and painted
+      const imgs = Array.from(cardRef.current.querySelectorAll<HTMLImageElement>('img'))
+      await Promise.all(imgs.map((img) => {
+        if (img.complete) return img.decode?.() ?? Promise.resolve()
+        return new Promise<void>((resolve) => { img.onload = () => resolve(); img.onerror = () => resolve() })
+      }))
+      await new Promise<void>(resolve => requestAnimationFrame(() => resolve()))
+
       await document.fonts.ready
       const dataUrl = await toPng(cardRef.current, { width: 360, height: 640, pixelRatio: 3 })
       const blob = await (await fetch(dataUrl)).blob()
