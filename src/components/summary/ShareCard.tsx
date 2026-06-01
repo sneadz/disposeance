@@ -50,7 +50,7 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, participan
         background: '#191a1e',
         color: '#fff',
         borderRadius: '6px',
-        fontFamily: "'Archivo', sans-serif",
+        fontFamily: "var(--font-archivo), sans-serif",
         WebkitFontSmoothing: 'antialiased',
         flexShrink: 0,
       }}
@@ -69,19 +69,12 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, participan
         background: 'linear-gradient(180deg, rgba(10,10,11,.42) 0%, transparent 28%, transparent 58%, #191a1e 99%)',
       }} />
 
-      {/* Grain */}
-      <div style={{
-        position: 'absolute', inset: 0, zIndex: 40, pointerEvents: 'none', opacity: 0.07,
-        mixBlendMode: 'overlay' as const,
-        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-      }} />
-
       {/* Header */}
       <div style={{
         position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, padding: '20px',
         display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '9px', fontFamily: "'Archivo Expanded', sans-serif", fontWeight: 800, fontSize: '15px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '9px', fontFamily: "var(--font-archivo-expanded), sans-serif", fontWeight: 800, fontSize: '15px' }}>
           <div style={{ width: '4px', height: '17px', background: '#FFC426', borderRadius: '2px' }} />
           <span style={{ color: '#fff', fontWeight: 800 }}>Dispo<span style={{ color: '#FFC426' }}>Séance</span></span>
         </div>
@@ -110,7 +103,7 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, participan
           La séance
         </span>
         <h1 style={{
-          fontFamily: "'Anton', sans-serif", lineHeight: 0.93, textTransform: 'uppercase' as const,
+          fontFamily: "var(--font-anton), sans-serif", lineHeight: 0.93, textTransform: 'uppercase' as const,
           letterSpacing: '.005em', fontSize: '33px', margin: '8px 0 20px', color: '#fff',
         }}>
           {movieTitle}
@@ -125,7 +118,7 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, participan
             </span>
             {day}
           </div>
-          <div style={{ whiteSpace: 'nowrap' as const, fontFamily: "'Anton', sans-serif", fontSize: '50px', lineHeight: 0.78, color: '#FFC426', textAlign: 'right' as const }}>
+          <div style={{ whiteSpace: 'nowrap' as const, fontFamily: "var(--font-anton), sans-serif", fontSize: '50px', lineHeight: 0.78, color: '#FFC426', textAlign: 'right' as const }}>
             {time}
           </div>
         </div>
