@@ -74,7 +74,7 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, participan
         position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, padding: '20px',
         display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '9px', fontFamily: "var(--font-archivo-expanded), sans-serif", fontWeight: 800, fontSize: '15px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '9px', fontFamily: "var(--font-archivo), sans-serif", fontWeight: 800, fontSize: '15px' }}>
           <div style={{ width: '4px', height: '17px', background: '#FFC426', borderRadius: '2px' }} />
           <span style={{ color: '#fff', fontWeight: 800 }}>Dispo<span style={{ color: '#FFC426' }}>Séance</span></span>
         </div>
