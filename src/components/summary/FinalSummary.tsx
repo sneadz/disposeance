@@ -81,8 +81,15 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
     try {
       const { toPng } = await import('html-to-image')
 
-      // Convert TMDB images to base64 data URLs so html-to-image doesn't re-fetch them
       const images = cardRef.current.querySelectorAll<HTMLImageElement>('img')
+
+      // Wait for all images to finish loading in the DOM first
+      await Promise.all(Array.from(images).map((img) => {
+        if (img.complete) return Promise.resolve()
+        return new Promise<void>((resolve) => { img.onload = () => resolve(); img.onerror = () => resolve() })
+      }))
+
+      // Convert TMDB images to base64 data URLs so html-to-image doesn't re-fetch them
       const originals = new Map<HTMLImageElement, string>()
       await Promise.all(Array.from(images).map(async (img) => {
         if (!img.src.includes('image.tmdb.org')) return
