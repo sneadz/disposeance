@@ -81,20 +81,24 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
     try {
       const { toPng } = await import('html-to-image')
 
-      // Proxy TMDB images to avoid CORS
+      // Convert TMDB images to base64 data URLs so html-to-image doesn't re-fetch them
       const images = cardRef.current.querySelectorAll<HTMLImageElement>('img')
       const originals = new Map<HTMLImageElement, string>()
-      images.forEach((img) => {
-        if (img.src.includes('image.tmdb.org')) {
-          originals.set(img, img.src)
-          img.src = `/api/image-proxy?url=${encodeURIComponent(img.src)}`
-        }
-      })
-      await Promise.all(
-        Array.from(originals.keys()).map(
-          (img) => new Promise<void>((resolve) => { img.onload = () => resolve(); img.onerror = () => resolve() })
-        )
-      )
+      await Promise.all(Array.from(images).map(async (img) => {
+        if (!img.src.includes('image.tmdb.org')) return
+        originals.set(img, img.src)
+        try {
+          const res = await fetch(`/api/image-proxy?url=${encodeURIComponent(img.src)}`)
+          const blob = await res.blob()
+          const b64 = await new Promise<string>((resolve) => {
+            const reader = new FileReader()
+            reader.onload = () => resolve(reader.result as string)
+            reader.readAsDataURL(blob)
+          })
+          img.src = b64
+          await new Promise<void>((resolve) => { img.onload = () => resolve(); img.onerror = () => resolve() })
+        } catch { /* keep original src */ }
+      }))
 
       await document.fonts.ready
       const dataUrl = await toPng(cardRef.current, { width: 360, height: 640, pixelRatio: 3 })
