@@ -54,10 +54,10 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
     if (!posterUrl) return
     toDataUrl(posterUrl)
       .then(setPosterDataUrl)
-      .catch(() => setPosterDataUrl(posterUrl)) // fallback to original URL
+      .catch(() => setPosterDataUrl('')) // empty = no poster, never pass TMDB URL to canvas
   }, [posterUrl])
 
-  const posterReady = !posterUrl || posterDataUrl !== null
+  const posterReady = posterDataUrl !== null
 
   const handleCopyLink = async () => {
     const url = `${window.location.origin}/movies/${movieId}`
@@ -122,7 +122,8 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
         URL.revokeObjectURL(url)
       }
       setSharing(false)
-    } catch {
+    } catch (e) {
+      console.error('Share card capture failed:', e)
       setSharing(false)
     }
   }

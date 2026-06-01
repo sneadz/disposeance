@@ -17,7 +17,7 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, participan
 
   useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas || !posterUrl) return
+    if (!canvas || !posterUrl || !posterUrl.startsWith('data:')) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
     const img = new Image()
