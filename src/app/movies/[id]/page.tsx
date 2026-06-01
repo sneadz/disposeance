@@ -105,62 +105,66 @@ export default async function MoviePage({ params }: { params: Promise<{ id: stri
       </header>
 
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
-        {/* Hero */}
-        <div className="relative h-52 rounded-2xl overflow-hidden bg-zinc-900">
-          {movie.poster_url ? (
-            <>
-              <Image
-                src={getPosterUrl(movie.poster_url, 'original')!}
-                alt={movie.title}
-                fill
-                sizes="100vw"
-                priority
-                className="object-cover opacity-30 blur-sm scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/50 to-transparent" />
-            </>
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <Film className="w-16 h-16 text-zinc-700" />
-            </div>
-          )}
-          <div className="absolute bottom-0 left-0 p-5 flex items-end gap-4 w-full">
-            {movie.poster_url && (
-              <div className="relative w-16 h-24 rounded-xl overflow-hidden shadow-2xl flex-shrink-0 hidden sm:block">
-                <Image src={getPosterUrl(movie.poster_url, 'w200')!} alt={movie.title} fill sizes="64px" className="object-cover" />
+        {/* Hero — masqué sur la page de confirmation (doublon avec la ShareCard) */}
+        {movie.status !== "closed" && (
+          <div className="relative h-52 rounded-2xl overflow-hidden bg-zinc-900">
+            {movie.poster_url ? (
+              <>
+                <Image
+                  src={getPosterUrl(movie.poster_url, 'original')!}
+                  alt={movie.title}
+                  fill
+                  sizes="100vw"
+                  priority
+                  className="object-cover opacity-30 blur-sm scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/50 to-transparent" />
+              </>
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Film className="w-16 h-16 text-zinc-700" />
               </div>
             )}
-            <div className="space-y-1.5 min-w-0">
-              <span className={`inline-block text-[10px] font-semibold uppercase tracking-widest px-2.5 py-0.5 rounded-full ${s.pill}`}>
-                {s.label}
-              </span>
-              <h2 className="text-2xl font-bold leading-tight line-clamp-2">{movie.title}</h2>
+            <div className="absolute bottom-0 left-0 p-5 flex items-end gap-4 w-full">
+              {movie.poster_url && (
+                <div className="relative w-16 h-24 rounded-xl overflow-hidden shadow-2xl flex-shrink-0 hidden sm:block">
+                  <Image src={getPosterUrl(movie.poster_url, 'w200')!} alt={movie.title} fill sizes="64px" className="object-cover" />
+                </div>
+              )}
+              <div className="space-y-1.5 min-w-0">
+                <span className={`inline-block text-[10px] font-semibold uppercase tracking-widest px-2.5 py-0.5 rounded-full ${s.pill}`}>
+                  {s.label}
+                </span>
+                <h2 className="text-2xl font-bold leading-tight line-clamp-2">{movie.title}</h2>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Voting / Summary */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
-          {movie.status === "picking_days" && (
-            <DayVoting movieId={movie.id} userId={user.id} isAdmin={isAdmin} participantCount={participantCount} isParticipant={isParticipant} />
-          )}
-          {movie.status === "picking_times" && (
-            <TimeVoting movieId={movie.id} userId={user.id} isAdmin={isAdmin} participantCount={participantCount} isParticipant={isParticipant} />
-          )}
-          {movie.status === "closed" && finalDatetime && (
-            <FinalSummary
-              movieTitle={movie.title}
-              posterUrl={getPosterUrl(movie.poster_url, 'original')}
-              finalDatetime={finalDatetime}
-              tag={finalShowtimeTag}
-              participants={participants}
-              guests={guests}
-              isAdmin={isAdmin}
-              movieId={movie.id}
-              onReset={resetMovie}
-            />
-          )}
-        </div>
+        {(movie.status === "picking_days" || movie.status === "picking_times") && (
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+            {movie.status === "picking_days" && (
+              <DayVoting movieId={movie.id} userId={user.id} isAdmin={isAdmin} participantCount={participantCount} isParticipant={isParticipant} />
+            )}
+            {movie.status === "picking_times" && (
+              <TimeVoting movieId={movie.id} userId={user.id} isAdmin={isAdmin} participantCount={participantCount} isParticipant={isParticipant} />
+            )}
+          </div>
+        )}
+        {movie.status === "closed" && finalDatetime && (
+          <FinalSummary
+            movieTitle={movie.title}
+            posterUrl={getPosterUrl(movie.poster_url, 'original')}
+            finalDatetime={finalDatetime}
+            tag={finalShowtimeTag}
+            participants={participants}
+            guests={guests}
+            isAdmin={isAdmin}
+            movieId={movie.id}
+            onReset={resetMovie}
+          />
+        )}
       </div>
     </main>
   );
