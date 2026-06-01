@@ -7,11 +7,12 @@ interface ShareCardProps {
   posterUrl: string | null
   day: string
   time: string
+  tag?: string | null
   participants: string[]
   guests: string[]
 }
 
-export default function ShareCard({ movieTitle, posterUrl, day, time, participants, guests }: ShareCardProps) {
+export default function ShareCard({ movieTitle, posterUrl, day, time, tag, participants, guests }: ShareCardProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const allCount = participants.length + guests.length
 
@@ -117,6 +118,16 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, participan
               On se retrouve
             </span>
             {day}
+            {tag && (
+              <span style={{
+                display: 'inline-block', marginLeft: '8px',
+                fontSize: '10px', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase' as const,
+                color: '#FFC426', background: 'rgba(255,196,38,.15)', border: '1px solid rgba(255,196,38,.3)',
+                padding: '2px 7px', borderRadius: '6px', verticalAlign: 'middle',
+              }}>
+                {tag}
+              </span>
+            )}
           </div>
           <div style={{ whiteSpace: 'nowrap' as const, fontFamily: "var(--font-anton), sans-serif", fontSize: '50px', lineHeight: 0.78, color: '#FFC426', textAlign: 'right' as const }}>
             {time}

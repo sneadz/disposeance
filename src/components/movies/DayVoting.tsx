@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import { Check, Users, Pencil, RotateCcw, Link } from 'lucide-react'
+import VoteStatusModal from './VoteStatusModal'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { confirmDayVotesAction } from '@/app/actions/votes'
@@ -51,6 +52,7 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
     setTimeout(() => setCopied(false), 2000)
   }
   const [resetting, setResetting] = useState(false)
+  const [distinctVoterCount, setDistinctVoterCount] = useState(0)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -85,6 +87,7 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
       userVoted: myVotedDates.has(ad.date),
     }))
 
+    setDistinctVoterCount(new Set((dayVotes ?? []).map(v => v.user_id)).size)
     setDays(formatted)
     // On first load, init pending from existing votes and mark as confirmed if they exist
     setPending(prev => {
@@ -219,6 +222,14 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
 
       {isAdmin && (
         <div className="pt-2 border-t border-zinc-800 space-y-2">
+          <div className="flex justify-end">
+            <VoteStatusModal
+              movieId={movieId}
+              phase="days"
+              votedCount={distinctVoterCount}
+              totalCount={participantCount}
+            />
+          </div>
           <button
             onClick={handleCopyLink}
             className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-[#E5E5E5] bg-[#222] border border-[#333] text-sm transition-colors"

@@ -3,7 +3,8 @@ import { createClient } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import { logout } from "@/app/auth/logout/actions";
 import DeleteMovieButton from "@/components/movies/DeleteMovieButton";
-import { Plus, LogOut, Film } from "lucide-react";
+import SeancesToggle from "@/components/movies/SeancesToggle";
+import { Plus, LogOut, Film, Megaphone } from "lucide-react";
 import { getPosterUrl } from "@/lib/tmdb/api";
 
 const STATUS = {
@@ -12,7 +13,11 @@ const STATUS = {
   closed:        { label: "Séance confirmée",    pill: "bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-500/30" },
 } as const;
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ all?: string }>
+}) {
   const supabase = await createClient();
 
   const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -27,10 +32,17 @@ export default async function Home() {
   const isAdmin = profile?.is_admin ?? false;
   const pseudo = profile?.pseudo ?? "?";
 
-  const { data: movies } = await supabase
+  const { all } = await searchParams;
+  const showAll = all === "true";
+
+  const query = supabase
     .from("movies")
     .select("id, title, poster_url, status")
     .order("created_at", { ascending: false });
+
+  const { data: movies } = showAll
+    ? await query
+    : await query.contains("participant_ids", [user.id]);
 
   const movieList = movies ?? [];
 
@@ -63,22 +75,31 @@ export default async function Home() {
 
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
         {/* Title row */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Séances</h1>
-            <p className="text-zinc-500 text-sm mt-0.5">
-              {movieList.length === 0 ? "Aucune en cours" : `${movieList.length} en cours`}
-            </p>
+            <h1 className="text-2xl font-bold">
+              {showAll ? "Toutes les séances" : "Mes séances"}
+            </h1>
+            <SeancesToggle showAll={showAll} />
           </div>
-          {isAdmin && (
+          <div className="flex items-center gap-2">
             <a
-              href="/movies/new"
-              className="flex items-center gap-1.5 bg-[#FFC426] text-[#0A0A0A] px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-[#FFC426]/20 active:scale-95 transition-transform"
+              href="/propose"
+              className="flex items-center gap-1.5 bg-zinc-800 border border-zinc-700 text-zinc-200 px-4 py-2.5 rounded-xl font-semibold text-sm active:scale-95 transition-transform"
             >
-              <Plus className="w-4 h-4" />
-              Nouvelle
+              <Megaphone className="w-4 h-4" />
+              Proposer
             </a>
-          )}
+            {isAdmin && (
+              <a
+                href="/movies/new"
+                className="flex items-center gap-1.5 bg-[#FFC426] text-[#0A0A0A] px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-[#FFC426]/20 active:scale-95 transition-transform"
+              >
+                <Plus className="w-4 h-4" />
+                Nouvelle
+              </a>
+            )}
+          </div>
         </div>
 
         {/* Empty state */}
@@ -88,10 +109,16 @@ export default async function Home() {
               <Film className="w-9 h-9 text-zinc-600" />
             </div>
             <div className="space-y-1.5">
-              <p className="text-lg font-semibold">Rien à l&apos;affiche</p>
-              <p className="text-zinc-500 text-sm max-w-xs mx-auto">Lance une organisation pour votre prochaine sortie ciné !</p>
+              <p className="text-lg font-semibold">
+                {showAll ? "Rien à l'affiche" : "Pas de séances pour toi"}
+              </p>
+              <p className="text-zinc-500 text-sm max-w-xs mx-auto">
+                {showAll
+                  ? "Lance une organisation pour votre prochaine sortie ciné !"
+                  : "Tu n'as pas encore été invité à une séance."}
+              </p>
             </div>
-            {isAdmin && (
+            {isAdmin && showAll && (
               <a
                 href="/movies/new"
                 className="bg-[#FFC426] text-[#0A0A0A] px-6 py-3.5 rounded-xl font-bold shadow-lg shadow-[#FFC426]/20 active:scale-95 transition-transform"

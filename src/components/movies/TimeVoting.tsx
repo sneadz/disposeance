@@ -7,6 +7,7 @@ import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { confirmTimeVotesAction } from '@/app/actions/votes'
 import { resetMovieAction } from '@/app/actions/movie'
+import VoteStatusModal from './VoteStatusModal'
 
 function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)) }
 
@@ -25,6 +26,7 @@ interface Showtime {
   dateLabel: string
   voterCount: number
   userVoted: boolean
+  tag: string | null
 }
 
 function formatShowtime(datetimeStr: string): { timeLabel: string; dateLabel: string } {
@@ -54,6 +56,7 @@ export default function TimeVoting({ movieId, userId, isAdmin, participantCount,
     setTimeout(() => setCopied(false), 2000)
   }
   const [resetting, setResetting] = useState(false)
+  const [distinctVoterCount, setDistinctVoterCount] = useState(0)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -73,7 +76,7 @@ export default function TimeVoting({ movieId, userId, isAdmin, participantCount,
 
   const fetchData = async () => {
     const [{ data: stData }, { data: vData }] = await Promise.all([
-      supabase.from('showtimes').select('id, datetime').eq('movie_id', movieId).order('datetime'),
+      supabase.from('showtimes').select('id, datetime, tag').eq('movie_id', movieId).order('datetime'),
       supabase.from('time_votes').select('showtime_id, user_id').eq('available', true),
     ])
 
@@ -88,12 +91,14 @@ export default function TimeVoting({ movieId, userId, isAdmin, participantCount,
       return {
         id: st.id,
         datetime: st.datetime,
+        tag: (st as { id: string; datetime: string; tag: string | null }).tag ?? null,
         ...formatShowtime(st.datetime),
         voterCount: votes.length,
         userVoted: votes.some(v => v.user_id === userId),
       }
     })
 
+    setDistinctVoterCount(new Set((vData ?? []).map(v => v.user_id)).size)
     setShowtimes(formatted)
     setPending(prev => {
       if (prev.size === 0 && hasExistingVotes) {
@@ -206,6 +211,13 @@ export default function TimeVoting({ movieId, userId, isAdmin, participantCount,
                   >
                     <div className="text-left">
                       <p className="text-xl font-bold leading-none">{st.timeLabel}</p>
+                      {st.tag && (
+                        <span className={`text-[10px] font-bold uppercase tracking-wider mt-0.5 inline-block px-1.5 py-0.5 rounded ${
+                          st.userVoted ? 'bg-black/20 text-[#0A0A0A]' : 'bg-zinc-700 text-zinc-300'
+                        }`}>
+                          {st.tag}
+                        </span>
+                      )}
                       {!multiDay && <p className="text-xs mt-0.5 opacity-60">{st.dateLabel}</p>}
                     </div>
                     <div className="flex items-center gap-2">
@@ -243,6 +255,14 @@ export default function TimeVoting({ movieId, userId, isAdmin, participantCount,
 
       {isAdmin && (
         <div className="pt-4 border-t border-zinc-800 space-y-2">
+          <div className="flex justify-end">
+            <VoteStatusModal
+              movieId={movieId}
+              phase="times"
+              votedCount={distinctVoterCount}
+              totalCount={participantCount}
+            />
+          </div>
           <button
             onClick={handleCopyLink}
             className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-[#E5E5E5] bg-[#222] border border-[#333] text-sm transition-colors"

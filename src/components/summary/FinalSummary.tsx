@@ -8,6 +8,7 @@ interface FinalSummaryProps {
   movieTitle: string
   posterUrl: string | null
   finalDatetime: string
+  tag?: string | null
   participants: string[]
   guests: string[]
   isAdmin: boolean
@@ -41,7 +42,7 @@ async function toDataUrl(tmdbUrl: string): Promise<string> {
   })
 }
 
-export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, participants, guests, isAdmin, movieId, onReset }: FinalSummaryProps) {
+export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, tag, participants, guests, isAdmin, movieId, onReset }: FinalSummaryProps) {
   const cardRef = useRef<HTMLDivElement>(null)
   const [sharing, setSharing] = useState(false)
   const [shared, setShared] = useState(false)
@@ -161,6 +162,7 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
             posterUrl={posterDataUrl ?? posterUrl}
             day={day}
             time={time}
+            tag={tag}
             participants={participants}
             guests={guests}
           />

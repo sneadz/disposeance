@@ -1,0 +1,69 @@
+<h2>Boutons secondaires — comparaison</h2>
+<p class="subtitle">Trois façons de rendre les boutons secondaires plus présents</p>
+
+<div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:20px;">
+
+  <!-- Option A : Bordure jaune + texte jaune -->
+  <div class="mockup" data-choice="a" onclick="toggleSelect(this)" style="width:220px;cursor:pointer;">
+    <div class="mockup-header" style="display:flex;align-items:center;justify-content:space-between;">
+      <span>A — Bordure jaune</span>
+      <div class="letter" style="width:24px;height:24px;font-size:12px;">A</div>
+    </div>
+    <div class="mockup-body" style="background:#0A0A0A;padding:16px;border-radius:8px;display:flex;flex-direction:column;gap:8px;">
+      <div style="background:#FFC426;border-radius:12px;padding:14px;text-align:center;font-weight:800;font-size:14px;color:#0A0A0A;">
+        Clôturer →
+      </div>
+      <div style="border:1.5px solid #FFC426;border-radius:12px;padding:13px;text-align:center;font-size:13px;font-weight:700;color:#FFC426;display:flex;align-items:center;justify-content:center;gap:7px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        Copier le lien
+      </div>
+      <div style="border:1.5px solid #7f1d1d;border-radius:12px;padding:13px;text-align:center;font-size:13px;font-weight:700;color:#f87171;display:flex;align-items:center;justify-content:center;gap:7px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+        Recommencer
+      </div>
+    </div>
+  </div>
+
+  <!-- Option B : Fond zinc visible + texte blanc -->
+  <div class="mockup" data-choice="b" onclick="toggleSelect(this)" style="width:220px;cursor:pointer;">
+    <div class="mockup-header" style="display:flex;align-items:center;justify-content:space-between;">
+      <span>B — Fond gris visible</span>
+      <div class="letter" style="width:24px;height:24px;font-size:12px;">B</div>
+    </div>
+    <div class="mockup-body" style="background:#0A0A0A;padding:16px;border-radius:8px;display:flex;flex-direction:column;gap:8px;">
+      <div style="background:#FFC426;border-radius:12px;padding:14px;text-align:center;font-weight:800;font-size:14px;color:#0A0A0A;">
+        Clôturer →
+      </div>
+      <div style="background:#222;border:1px solid #333;border-radius:12px;padding:13px;text-align:center;font-size:13px;font-weight:700;color:#E5E5E5;display:flex;align-items:center;justify-content:center;gap:7px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        Copier le lien
+      </div>
+      <div style="background:#2a0a0a;border:1px solid #5f1f1f;border-radius:12px;padding:13px;text-align:center;font-size:13px;font-weight:700;color:#f87171;display:flex;align-items:center;justify-content:center;gap:7px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+        Recommencer
+      </div>
+    </div>
+  </div>
+
+  <!-- Option C : Mix — lien en jaune outline, reset en rouge plein -->
+  <div class="mockup" data-choice="c" onclick="toggleSelect(this)" style="width:220px;cursor:pointer;">
+    <div class="mockup-header" style="display:flex;align-items:center;justify-content:space-between;">
+      <span>C — Mix</span>
+      <div class="letter" style="width:24px;height:24px;font-size:12px;">C</div>
+    </div>
+    <div class="mockup-body" style="background:#0A0A0A;padding:16px;border-radius:8px;display:flex;flex-direction:column;gap:8px;">
+      <div style="background:#FFC426;border-radius:12px;padding:14px;text-align:center;font-weight:800;font-size:14px;color:#0A0A0A;">
+        Clôturer →
+      </div>
+      <div style="border:1.5px solid #FFC426;border-radius:12px;padding:13px;text-align:center;font-size:13px;font-weight:700;color:#FFC426;display:flex;align-items:center;justify-content:center;gap:7px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        Copier le lien
+      </div>
+      <div style="background:#7f1d1d;border:1px solid #991b1b;border-radius:12px;padding:13px;text-align:center;font-size:13px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;gap:7px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+        Recommencer
+      </div>
+    </div>
+  </div>
+
+</div>
