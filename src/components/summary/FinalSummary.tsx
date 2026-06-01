@@ -30,21 +30,34 @@ function formatDisplay(datetimeStr: string): { day: string; time: string } {
   }
 }
 
+async function toDataUrl(tmdbUrl: string): Promise<string> {
+  const res = await fetch(`/api/image-proxy?url=${encodeURIComponent(tmdbUrl)}`)
+  const blob = await res.blob()
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = reject
+    reader.readAsDataURL(blob)
+  })
+}
+
 export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, participants, guests, isAdmin, movieId, onReset }: FinalSummaryProps) {
   const cardRef = useRef<HTMLDivElement>(null)
   const [sharing, setSharing] = useState(false)
   const [shared, setShared] = useState(false)
   const [linkCopied, setLinkCopied] = useState(false)
-  const [imageReady, setImageReady] = useState(!posterUrl)
+  const [posterDataUrl, setPosterDataUrl] = useState<string | null>(null)
   const { day, time } = formatDisplay(finalDatetime)
 
+  // Pre-load poster as data URL at mount so html-to-image never needs to fetch it
   useEffect(() => {
     if (!posterUrl) return
-    const img = new Image()
-    img.onload = () => setImageReady(true)
-    img.onerror = () => setImageReady(true)
-    img.src = posterUrl
+    toDataUrl(posterUrl)
+      .then(setPosterDataUrl)
+      .catch(() => setPosterDataUrl(posterUrl)) // fallback to original URL
   }, [posterUrl])
+
+  const posterReady = !posterUrl || posterDataUrl !== null
 
   const handleCopyLink = async () => {
     const url = `${window.location.origin}/movies/${movieId}`
@@ -89,39 +102,8 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
     setSharing(true)
     try {
       const { toPng } = await import('html-to-image')
-
-      const images = cardRef.current.querySelectorAll<HTMLImageElement>('img')
-
-      // Wait for all images to finish loading in the DOM first
-      await Promise.all(Array.from(images).map((img) => {
-        if (img.complete) return Promise.resolve()
-        return new Promise<void>((resolve) => { img.onload = () => resolve(); img.onerror = () => resolve() })
-      }))
-
-      // Convert TMDB images to base64 data URLs so html-to-image doesn't re-fetch them
-      const originals = new Map<HTMLImageElement, string>()
-      await Promise.all(Array.from(images).map(async (img) => {
-        if (!img.src.includes('image.tmdb.org')) return
-        originals.set(img, img.src)
-        try {
-          const res = await fetch(`/api/image-proxy?url=${encodeURIComponent(img.src)}`)
-          const blob = await res.blob()
-          const b64 = await new Promise<string>((resolve) => {
-            const reader = new FileReader()
-            reader.onload = () => resolve(reader.result as string)
-            reader.readAsDataURL(blob)
-          })
-          img.src = b64
-          await new Promise<void>((resolve) => { img.onload = () => resolve(); img.onerror = () => resolve() })
-        } catch { /* keep original src */ }
-      }))
-
       await document.fonts.ready
       const dataUrl = await toPng(cardRef.current, { width: 360, height: 640, pixelRatio: 3 })
-
-      // Restore original sources
-      originals.forEach((src, img) => { img.src = src })
-
       const blob = await (await fetch(dataUrl)).blob()
       const filename = `disposeance-${movieTitle.replace(/\s+/g, '-').toLowerCase()}.png`
       const file = new File([blob], filename, { type: 'image/png' })
@@ -147,26 +129,26 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, par
     <div className="space-y-3">
       {/* Visual card */}
       <div className="flex justify-center">
-      <div ref={cardRef}>
-        <ShareCard
-          movieTitle={movieTitle}
-          posterUrl={posterUrl}
-          day={day}
-          time={time}
-          participants={participants}
-          guests={guests}
-        />
-      </div>
+        <div ref={cardRef}>
+          <ShareCard
+            movieTitle={movieTitle}
+            posterUrl={posterDataUrl ?? posterUrl}
+            day={day}
+            time={time}
+            participants={participants}
+            guests={guests}
+          />
+        </div>
       </div>
 
       {/* Actions */}
       <button
         onClick={handleShare}
-        disabled={sharing || !imageReady}
+        disabled={sharing || !posterReady}
         className="w-full flex items-center justify-center gap-2.5 bg-[#FFC426] disabled:opacity-60 text-[#0A0A0A] py-4 rounded-xl font-bold active:scale-[0.99] transition-all shadow-lg shadow-[#FFC426]/20"
       >
         {shared ? <Check className="w-5 h-5" /> : <Share2 className="w-5 h-5" />}
-        {sharing ? 'Préparation...' : shared ? 'Partagé !' : 'Partager la carte'}
+        {sharing ? 'Préparation...' : shared ? 'Partagé !' : !posterReady ? 'Chargement...' : 'Partager la carte'}
       </button>
 
       <button
