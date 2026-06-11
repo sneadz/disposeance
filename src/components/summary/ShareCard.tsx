@@ -1,7 +1,5 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-
 interface ShareCardProps {
   movieTitle: string
   posterUrl: string | null
@@ -13,31 +11,7 @@ interface ShareCardProps {
 }
 
 export default function ShareCard({ movieTitle, posterUrl, day, time, tag, participants, guests }: ShareCardProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
   const allCount = participants.length + guests.length
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas || !posterUrl || !posterUrl.startsWith('data:')) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-    const img = new Image()
-    img.onload = () => {
-      const targetW = 360, targetH = 380
-      const imgAspect = img.naturalWidth / img.naturalHeight
-      const targetAspect = targetW / targetH
-      let srcX = 0, srcY = 0, srcW = img.naturalWidth, srcH = img.naturalHeight
-      if (imgAspect > targetAspect) {
-        srcW = img.naturalHeight * targetAspect
-        srcX = (img.naturalWidth - srcW) / 2
-      } else {
-        srcH = img.naturalWidth / targetAspect
-        srcY = (img.naturalHeight - srcH) / 2
-      }
-      ctx.drawImage(img, srcX, srcY, srcW, srcH, 0, 0, targetW, targetH)
-    }
-    img.src = posterUrl
-  }, [posterUrl])
 
   return (
     <div
@@ -56,13 +30,14 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, tag, parti
         flexShrink: 0,
       }}
     >
-      {/* Poster canvas */}
-      <canvas
-        ref={canvasRef}
-        width={360}
-        height={380}
-        style={{ position: 'absolute', top: 0, left: 0, width: '360px', height: '380px', zIndex: 0 }}
-      />
+      {/* Poster */}
+      {posterUrl && (
+        <img
+          src={posterUrl}
+          alt=""
+          style={{ position: 'absolute', top: 0, left: 0, width: '360px', height: '380px', objectFit: 'cover', objectPosition: 'center', zIndex: 0 }}
+        />
+      )}
 
       {/* Gradient overlay */}
       <div style={{

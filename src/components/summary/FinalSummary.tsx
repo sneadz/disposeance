@@ -104,30 +104,6 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, tag
     try {
       const { toPng } = await import('html-to-image')
 
-      // Draw poster to canvas synchronously right before capture
-      const canvas = cardRef.current.querySelector('canvas')
-      if (canvas && posterDataUrl?.startsWith('data:')) {
-        const ctx = canvas.getContext('2d')
-        if (ctx) {
-          await new Promise<void>((resolve) => {
-            const img = new Image()
-            img.onload = () => {
-              const tW = 360, tH = 380
-              const iA = img.naturalWidth / img.naturalHeight
-              const tA = tW / tH
-              let sX = 0, sY = 0, sW = img.naturalWidth, sH = img.naturalHeight
-              if (iA > tA) { sW = img.naturalHeight * tA; sX = (img.naturalWidth - sW) / 2 }
-              else { sH = img.naturalWidth / tA; sY = (img.naturalHeight - sH) / 2 }
-              ctx.clearRect(0, 0, tW, tH)
-              ctx.drawImage(img, sX, sY, sW, sH, 0, 0, tW, tH)
-              resolve()
-            }
-            img.onerror = () => resolve()
-            img.src = posterDataUrl
-          })
-        }
-      }
-
       await document.fonts.ready
       const dataUrl = await toPng(cardRef.current, { width: 360, height: 640, pixelRatio: 2 })
       const blob = await (await fetch(dataUrl)).blob()
