@@ -129,7 +129,7 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, tag
       }
 
       await document.fonts.ready
-      const dataUrl = await toPng(cardRef.current, { width: 360, height: 640, pixelRatio: 3 })
+      const dataUrl = await toPng(cardRef.current, { width: 360, height: 640, pixelRatio: 2 })
       const blob = await (await fetch(dataUrl)).blob()
       const filename = `disposeance-${movieTitle.replace(/\s+/g, '-').toLowerCase()}.png`
       const file = new File([blob], filename, { type: 'image/png' })
