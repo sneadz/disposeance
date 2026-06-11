@@ -105,6 +105,15 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, tag
       const { toPng } = await import('html-to-image')
 
       await document.fonts.ready
+
+      // Wait for all images in the card to be fully decoded before capture
+      const imgs = Array.from(cardRef.current.querySelectorAll('img'))
+      await Promise.all(imgs.map(img =>
+        img.complete ? img.decode?.().catch(() => {}) : new Promise<void>(r => { img.onload = () => r(); img.onerror = () => r() })
+      ))
+
+      // html-to-image sometimes misses images on first pass — second call is always correct
+      await toPng(cardRef.current, { width: 360, height: 640, pixelRatio: 2 })
       const dataUrl = await toPng(cardRef.current, { width: 360, height: 640, pixelRatio: 2 })
       const blob = await (await fetch(dataUrl)).blob()
       const filename = `disposeance-${movieTitle.replace(/\s+/g, '-').toLowerCase()}.png`
