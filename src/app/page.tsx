@@ -110,13 +110,10 @@ export default async function Home({
             {movieList.map((movie) => {
               const s = STATUS[movie.status as keyof typeof STATUS] ?? STATUS.picking_days;
               return (
-                <div key={movie.id} className="relative group h-[104px] rounded-2xl2 overflow-hidden shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)] active:scale-[0.99] transition-transform">
-                  <a href={`/movies/${movie.id}`} className="absolute inset-0 flex items-stretch">
-                    {/* Ambient poster background */}
-                    <div className="absolute inset-0 bg-[repeating-linear-gradient(135deg,#2c2b32_0px,#2c2b32_9px,#242329_9px,#242329_18px)]" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-base/15 via-base/55 to-base/95" />
+                <div key={movie.id} className="relative group h-[104px] rounded-2xl2 bg-surface overflow-hidden shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)] active:scale-[0.99] transition-transform">
+                  <a href={`/movies/${movie.id}`} className="absolute inset-0 flex items-stretch text-ink">
                     {/* Poster */}
-                    <div className="relative w-[76px] flex-shrink-0 m-2.5 rounded-xl overflow-hidden bg-surface shadow-lg">
+                    <div className="relative w-[76px] flex-shrink-0 m-2.5 rounded-xl overflow-hidden bg-surface-raised shadow-lg">
                       {movie.poster_url ? (
                         <Image
                           src={getPosterUrl(movie.poster_url, 'w200')!}
