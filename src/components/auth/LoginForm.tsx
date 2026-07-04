@@ -23,7 +23,7 @@ export default function LoginForm() {
     <form className="space-y-4" onSubmit={handleLogin}>
       <div className="space-y-3">
         <div>
-          <label htmlFor="pseudo" className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">
+          <label htmlFor="pseudo" className="block text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1.5">
             Pseudo
           </label>
           <input
@@ -35,11 +35,11 @@ export default function LoginForm() {
             placeholder="ton pseudo"
             value={pseudo}
             onChange={e => setPseudo(e.target.value)}
-            className="w-full bg-raised border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
+            className="w-full bg-raised border border-border-subtle rounded-2xl px-4 py-3 text-ink placeholder-ink-faint focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
           />
         </div>
         <div>
-          <label htmlFor="password" className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">
+          <label htmlFor="password" className="block text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1.5">
             Mot de passe
           </label>
           <div className="relative">
@@ -51,12 +51,12 @@ export default function LoginForm() {
               placeholder="••••••••"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="w-full bg-raised border border-zinc-700 rounded-xl px-4 py-3 pr-11 text-white placeholder-zinc-500 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
+              className="w-full bg-raised border border-border-subtle rounded-2xl px-4 py-3 pr-11 text-ink placeholder-ink-faint focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
             />
             <button
               type="button"
               onClick={() => setShowPwd(v => !v)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 p-1"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-faint p-1"
             >
               {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
@@ -65,7 +65,7 @@ export default function LoginForm() {
       </div>
 
       {error && (
-        <div className="bg-danger/10 border border-danger/20 text-danger-fg text-sm text-center rounded-xl p-3">
+        <div className="bg-danger/10 border border-danger/20 text-danger text-sm text-center rounded-2xl p-3">
           {error}
         </div>
       )}
@@ -73,7 +73,7 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-accent text-accent-fg py-3.5 rounded-xl font-bold shadow-lg shadow-accent/20 active:scale-[0.99] transition-transform disabled:opacity-50 mt-2"
+        className="w-full bg-accent-fill text-accent-fg py-3.5 rounded-2xl font-bold shadow-accent-glow active:scale-[0.99] transition-transform disabled:opacity-50 mt-2"
       >
         {loading ? 'Connexion...' : 'Se connecter'}
       </button>

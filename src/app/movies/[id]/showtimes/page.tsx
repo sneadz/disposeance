@@ -38,15 +38,15 @@ export default async function SelectShowtimesPage({ params }: { params: Promise<
       : []
 
   return (
-    <main className="min-h-screen bg-base text-white">
-      <header className="sticky top-0 z-10 bg-base/80 backdrop-blur-md border-b border-zinc-800/60 px-4 py-3">
+    <main className="min-h-screen bg-base text-ink">
+      <header className="sticky top-0 z-10 bg-base/85 backdrop-blur-md shadow-[inset_0_-1px_0_rgba(255,255,255,0.07)] px-4 py-3">
         <div className="max-w-2xl mx-auto flex items-center gap-3">
-          <a href={`/movies/${movieId}`} className="p-1.5 text-zinc-400 active:text-white transition-colors">
+          <a href={`/movies/${movieId}`} className="p-1.5 text-ink-muted active:text-ink transition-colors">
             <ChevronLeft className="w-5 h-5" />
           </a>
           <div>
             <p className="text-base font-semibold leading-none">Saisie des horaires</p>
-            <p className="text-xs text-zinc-500 mt-0.5">{movie.title}</p>
+            <p className="text-xs text-ink-muted mt-0.5">{movie.title}</p>
           </div>
         </div>
       </header>

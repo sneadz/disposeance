@@ -61,17 +61,17 @@ export default function MovieProposalActions({ title, overview, posterPath, rele
 
       <div className="text-center">
         <h1 className="text-xl font-bold">{title}</h1>
-        <p className="text-zinc-500 text-sm mt-0.5">{releaseYear}</p>
+        <p className="text-ink-muted text-sm mt-0.5">{releaseYear}</p>
       </div>
 
       {overview && (
-        <div className="bg-surface border border-zinc-800 rounded-2xl p-4">
-          <p className={`text-sm text-zinc-300 leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
+        <div className="bg-surface-fill shadow-card rounded-2xl p-4">
+          <p className={`text-sm text-ink leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
             {overview}
           </p>
           <button
             onClick={() => setExpanded(e => !e)}
-            className="mt-2 flex items-center gap-1 text-xs text-zinc-500 active:text-zinc-300 transition-colors"
+            className="mt-2 flex items-center gap-1 text-xs text-ink-muted active:text-ink transition-colors"
           >
             {expanded
               ? <><ChevronUp className="w-3.5 h-3.5" /> Voir moins</>
@@ -82,13 +82,13 @@ export default function MovieProposalActions({ title, overview, posterPath, rele
       )}
 
       {trailerKey && (
-        <p className="text-center text-xs text-zinc-500">Bande-annonce disponible 🎬</p>
+        <p className="text-center text-xs text-ink-muted">Bande-annonce disponible 🎬</p>
       )}
 
       <div className="grid grid-cols-2 gap-3">
         <button
           onClick={handleCopy}
-          className="flex items-center justify-center gap-2 bg-surface border border-zinc-800 text-white py-4 rounded-xl font-semibold text-sm active:scale-[0.99] transition-all"
+          className="flex items-center justify-center gap-2 bg-white/[0.06] border border-border-subtle text-ink py-4 rounded-2xl font-semibold text-sm active:scale-[0.99] transition-all"
         >
           {copied
             ? <><Check className="w-4 h-4 text-success-fg" /> Copié ✓</>
@@ -98,7 +98,7 @@ export default function MovieProposalActions({ title, overview, posterPath, rele
         {posterPath && (
           <button
             onClick={handleShare}
-            className="flex items-center justify-center gap-2 bg-accent text-accent-fg py-4 rounded-xl font-bold text-sm shadow-lg shadow-accent/20 active:scale-[0.99] transition-transform"
+            className="flex items-center justify-center gap-2 bg-accent-fill text-accent-fg py-4 rounded-2xl font-bold text-sm shadow-accent-glow active:scale-[0.99] transition-transform"
           >
             <Share2 className="w-4 h-4" />
             Partager l&apos;affiche

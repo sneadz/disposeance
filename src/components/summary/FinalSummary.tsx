@@ -158,7 +158,7 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, tag
       <button
         onClick={handleShare}
         disabled={sharing || !posterReady}
-        className="w-full flex items-center justify-center gap-2.5 bg-accent disabled:opacity-60 text-accent-fg py-4 rounded-xl font-bold active:scale-[0.99] transition-all shadow-lg shadow-accent/20"
+        className="w-full flex items-center justify-center gap-2.5 bg-accent-fill disabled:opacity-60 text-accent-fg py-4 rounded-2xl font-bold active:scale-[0.99] transition-all shadow-accent-glow"
       >
         {shared ? <Check className="w-5 h-5" /> : <Share2 className="w-5 h-5" />}
         {sharing ? 'Préparation...' : shared ? 'Partagé !' : !posterReady ? 'Chargement...' : 'Partager la carte'}
@@ -166,7 +166,7 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, tag
 
       <button
         onClick={handleDownloadIcs}
-        className="w-full flex items-center justify-center gap-2.5 bg-white text-zinc-900 py-4 rounded-xl font-bold active:scale-[0.99] transition-transform shadow-lg"
+        className="w-full flex items-center justify-center gap-2.5 bg-white text-zinc-900 py-4 rounded-2xl font-bold active:scale-[0.99] transition-transform shadow-lg"
       >
         <Calendar className="w-5 h-5" />
         Ajouter au calendrier
@@ -176,7 +176,7 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, tag
         <>
           <button
             onClick={handleCopyLink}
-            className="w-full flex items-center justify-center gap-2.5 bg-raised border border-zinc-800 text-zinc-200 py-4 rounded-xl font-bold active:scale-[0.99] transition-all"
+            className="w-full flex items-center justify-center gap-2.5 bg-white/[0.06] border border-border-subtle text-ink py-4 rounded-2xl font-bold active:scale-[0.99] transition-all"
           >
             {linkCopied ? <Check className="w-5 h-5 text-accent" /> : <Link className="w-5 h-5" />}
             <span className={linkCopied ? 'text-accent' : ''}>
@@ -186,7 +186,7 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, tag
 
           <button
             onClick={() => onReset()}
-            className="w-full flex items-center justify-center gap-2 py-4 rounded-xl font-semibold text-danger-fg bg-danger-deep border border-danger-dim transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl font-semibold text-danger bg-danger/10 border border-danger/30 transition-colors"
           >
             <RotateCcw className="w-4 h-4" />
             Supprimer cette séance

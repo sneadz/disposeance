@@ -28,7 +28,7 @@ export default function VoteStatusModal({ movieId, phase, votedCount, totalCount
     <>
       <button
         onClick={handleOpen}
-        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-raised border border-zinc-700 text-zinc-400 text-xs font-semibold transition-colors active:bg-zinc-700"
+        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.06] border border-border-subtle text-ink-muted text-xs font-semibold transition-colors active:bg-white/[0.1]"
       >
         <Users className="w-3 h-3" />
         {votedCount}/{totalCount} ont voté
@@ -40,12 +40,12 @@ export default function VoteStatusModal({ movieId, phase, votedCount, totalCount
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full max-w-sm bg-surface border border-zinc-800 rounded-2xl p-5 space-y-4"
+            className="w-full max-w-sm bg-surface-fill shadow-card rounded-2xl p-5 space-y-4"
             onClick={e => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">
               <h3 className="font-bold text-base">Qui a voté ?</h3>
-              <button onClick={() => setOpen(false)} className="text-zinc-500 active:text-white transition-colors">
+              <button onClick={() => setOpen(false)} className="text-ink-faint active:text-ink transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -53,7 +53,7 @@ export default function VoteStatusModal({ movieId, phase, votedCount, totalCount
             {loading ? (
               <div className="space-y-2">
                 {[...Array(3)].map((_, i) => (
-                  <div key={i} className="h-11 rounded-xl bg-raised animate-pulse" />
+                  <div key={i} className="h-11 rounded-2xl bg-surface animate-pulse" />
                 ))}
               </div>
             ) : (
@@ -61,7 +61,7 @@ export default function VoteStatusModal({ movieId, phase, votedCount, totalCount
                 {participants.map(p => (
                   <div
                     key={p.pseudo}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl border ${
+                    className={`flex items-center gap-3 px-4 py-3 rounded-2xl border ${
                       p.voted
                         ? 'bg-success/10 border-success/20'
                         : 'bg-danger/10 border-danger/20'
