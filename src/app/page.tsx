@@ -132,7 +132,7 @@ export default async function Home({
                     {/* Info */}
                     <div className="relative flex flex-col justify-center gap-1.5 px-3.5 py-3 flex-grow min-w-0">
                       <Badge status={s.status}>{s.label}</Badge>
-                      <h3 className="font-bold text-base leading-snug line-clamp-2 pr-6">{movie.title}</h3>
+                      <h3 className="font-bold text-base text-ink leading-snug line-clamp-2 pr-6">{movie.title}</h3>
                       <p className="text-xs text-ink-faint">Voir les votes →</p>
                     </div>
                   </a>
