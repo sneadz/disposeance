@@ -21,7 +21,7 @@ export default function MovieProposalActions({ title, overview, posterPath, rele
   const handleCopy = async () => {
     const lines = [`📆 ${title} sort le ${releaseDate}`]
     if (trailerKey) lines.push(`🎬 Bande-annonce : https://youtube.com/watch?v=${trailerKey}`)
-    lines.push(`🗳️ Votez sur l'affiche : ${window.location.href}`)
+    lines.push(`🗳️ Votez sur l'affiche`)
     await navigator.clipboard.writeText(lines.join('\n'))
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
