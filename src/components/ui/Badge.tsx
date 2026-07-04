@@ -12,6 +12,7 @@ export const badgeVariants = cva(
       status: {
         pending: 'bg-accent-soft text-accent border-accent/30',
         closed: 'bg-success/15 text-success border-success/30',
+        wishlist: 'bg-violet-500/15 text-violet-400 border-violet-500/30',
       },
     },
     defaultVariants: { status: 'pending' },

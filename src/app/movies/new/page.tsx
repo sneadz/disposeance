@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Search, Plus, Calendar, Star, Check, ChevronLeft, ChevronRight, Film, Users, Zap } from 'lucide-react'
 import { searchMoviesAction, getProfilesAction, createQuickCardAction } from './actions'
+import { getMovieDetailsAction, removeFromWishlistAction } from '@/app/wishlist/actions'
 import type { TmdbMovie } from '@/lib/tmdb/api'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -53,7 +54,20 @@ export default function NewMoviePage() {
   const [selectedTime, setSelectedTime] = useState('')
   const [submittingQuick, setSubmittingQuick] = useState(false)
   const [quickError, setQuickError] = useState<string | null>(null)
+  const [wishlistId, setWishlistId] = useState<string | null>(null)
   const dates = getWeekDays(weekOffset)
+
+  // Pre-fill from wishlist card (?tmdbId=xxx&wishlistId=yyy)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const tmdbId = params.get('tmdbId')
+    const wid = params.get('wishlistId')
+    if (!tmdbId) return
+    if (wid) setWishlistId(wid)
+    getMovieDetailsAction(parseInt(tmdbId)).then(movie => {
+      if (movie) { setSelectedMovie(movie); setStep(2) }
+    })
+  }, [])
 
   useEffect(() => {
     const run = async () => {
@@ -108,7 +122,10 @@ export default function NewMoviePage() {
       })
       const result = await res.json()
       if (result?.error) { setError(result.error); setSubmitting(false) }
-      else window.location.href = '/'
+      else {
+        if (wishlistId) await removeFromWishlistAction(wishlistId)
+        window.location.href = '/'
+      }
     } catch (e) {
       setError(String(e)); setSubmitting(false)
     }
@@ -123,6 +140,7 @@ export default function NewMoviePage() {
       setQuickError(result.error)
       setSubmittingQuick(false)
     } else {
+      if (wishlistId) await removeFromWishlistAction(wishlistId)
       window.location.href = `/movies/${result.movieId}`
     }
   }

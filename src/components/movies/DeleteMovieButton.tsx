@@ -2,11 +2,16 @@
 
 import { Trash2 } from 'lucide-react'
 import { deleteMovieAction } from '@/app/actions/movie'
+import { removeFromWishlistAction } from '@/app/wishlist/actions'
 
-export default function DeleteMovieButton({ movieId, movieTitle }: { movieId: string; movieTitle: string }) {
+export default function DeleteMovieButton({ movieId, movieTitle, isWishlist = false }: { movieId: string; movieTitle: string; isWishlist?: boolean }) {
   const handleDelete = async () => {
     if (!confirm(`Supprimer "${movieTitle}" ?`)) return
-    await deleteMovieAction(movieId)
+    if (isWishlist) {
+      await removeFromWishlistAction(movieId)
+    } else {
+      await deleteMovieAction(movieId)
+    }
     window.location.reload()
   }
 
