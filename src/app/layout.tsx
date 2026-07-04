@@ -20,6 +20,10 @@ const archivo = Archivo({
 export const metadata: Metadata = {
   title: "DispoSéance",
   description: "Organisez votre prochaine sortie ciné avec vos amis",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
