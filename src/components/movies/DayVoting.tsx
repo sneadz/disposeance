@@ -138,7 +138,7 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
 
   if (loading) return (
     <div className="space-y-3">
-      {[...Array(4)].map((_, i) => <div key={i} className="h-14 rounded-xl bg-raised animate-pulse" />)}
+      {[...Array(4)].map((_, i) => <div key={i} className="h-14 rounded-2xl bg-surface animate-pulse" />)}
     </div>
   )
 
@@ -156,7 +156,7 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
     <div className="space-y-5">
       <div className="space-y-0.5">
         <h2 className="text-lg font-bold">Quel jour tu es dispo ?</h2>
-        <p className="text-zinc-400 text-sm">
+        <p className="text-ink-muted text-sm">
           {!isParticipant
             ? 'Résultats en cours — tu ne participes pas à ce vote.'
             : confirmed
@@ -166,36 +166,40 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
       </div>
 
       {error && (
-        <div className="bg-danger/10 border border-danger/20 text-danger-fg text-sm text-center rounded-xl p-3">
+        <div className="bg-danger/10 border border-danger/20 text-danger text-sm text-center rounded-xl p-3">
           {error}
         </div>
       )}
 
       {days.length === 0 ? (
-        <p className="text-center text-zinc-500 py-8 text-sm">Aucun jour disponible défini.</p>
+        <p className="text-center text-ink-faint py-8 text-sm">Aucun jour disponible défini.</p>
       ) : (
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2.5">
           {displayDays.map(day => (
             <button
               key={day.date}
               onClick={() => isParticipant && !confirmed && togglePending(day.date)}
               disabled={!isParticipant || confirmed}
               className={cn(
-                'flex items-center justify-between px-3.5 py-3.5 rounded-xl border transition-all min-h-[52px]',
+                'flex items-center justify-between px-3.5 py-3.5 rounded-2xl transition-all min-h-[52px]',
                 day.userVoted
-                  ? 'bg-accent border-accent text-accent-fg shadow-lg shadow-accent/20'
-                  : 'bg-raised border-zinc-700 text-zinc-300',
+                  ? 'bg-accent-fill text-accent-fg shadow-accent-glow'
+                  : 'bg-surface-fill shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)] text-ink-muted',
                 isParticipant && !confirmed && 'active:scale-95 cursor-pointer',
                 (!isParticipant || confirmed) && 'cursor-default',
               )}
             >
-              <span className="font-semibold text-sm">{day.label}</span>
+              <span className="font-bold text-sm">{day.label}</span>
               <div className="flex items-center gap-2">
-                <span className={cn('text-xs font-semibold flex items-center gap-1', day.userVoted ? 'opacity-80' : 'text-zinc-500')}>
+                <span className={cn('text-xs font-bold flex items-center gap-1', day.userVoted ? 'opacity-70' : 'text-ink-faint')}>
                   <Users className="w-3 h-3" />
                   {day.voterCount}/{participantCount}
                 </span>
-                {day.userVoted && <Check className="w-4 h-4" />}
+                {day.userVoted && (
+                  <span className="w-[18px] h-[18px] rounded-full bg-black/15 flex items-center justify-center">
+                    <Check className="w-3 h-3" />
+                  </span>
+                )}
               </div>
             </button>
           ))}
@@ -205,7 +209,7 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
       {isParticipant && (confirmed ? (
         <button
           onClick={handleEdit}
-          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-zinc-200 bg-raised border border-zinc-800 transition-colors text-sm"
+          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold text-ink bg-white/[0.06] border border-border-subtle transition-colors text-sm"
         >
           <Pencil className="w-4 h-4" />
           Modifier mes votes
@@ -214,14 +218,14 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
         <button
           onClick={handleConfirm}
           disabled={submitting || pending.size === 0}
-          className="w-full bg-accent text-accent-fg py-4 rounded-xl font-bold text-base shadow-lg shadow-accent/20 active:scale-[0.99] transition-transform disabled:opacity-40"
+          className="w-full bg-accent-fill text-accent-fg py-4 rounded-2xl font-bold text-base shadow-accent-glow-lg active:scale-[0.99] transition-transform disabled:opacity-40"
         >
           {submitting ? 'Confirmation...' : `Confirmer mes disponibilités${pending.size > 0 ? ` (${pending.size})` : ''}`}
         </button>
       ))}
 
       {isAdmin && (
-        <div className="pt-2 border-t border-zinc-800 space-y-2">
+        <div className="pt-3 border-t border-border-subtle space-y-2.5">
           <div className="flex justify-end">
             <VoteStatusModal
               movieId={movieId}
@@ -232,7 +236,7 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
           </div>
           <button
             onClick={handleCopyLink}
-            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-zinc-200 bg-raised border border-zinc-800 text-sm transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold text-ink bg-white/[0.06] border border-border-subtle text-sm transition-colors"
           >
             <Link className="w-4 h-4" />
             {copied ? 'Copié !' : 'Copier le lien du vote'}
@@ -240,7 +244,7 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
           <button
             onClick={() => { window.location.href = `/movies/${movieId}/showtimes` }}
             disabled={days.every(d => d.voterCount === 0)}
-            className="w-full bg-accent text-accent-fg py-4 rounded-xl font-bold text-base shadow-lg shadow-accent/20 active:scale-[0.99] transition-transform disabled:opacity-40 disabled:pointer-events-none"
+            className="w-full bg-accent-fill text-accent-fg py-4 rounded-2xl font-bold text-base shadow-accent-glow-lg active:scale-[0.99] transition-transform disabled:opacity-40 disabled:pointer-events-none"
           >
             Passer au vote des horaires →
           </button>
@@ -248,14 +252,14 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
             <div className="flex gap-2">
               <button
                 onClick={() => setConfirmingReset(false)}
-                className="flex-1 py-3.5 rounded-xl font-semibold text-zinc-200 bg-raised border border-zinc-800 text-sm transition-colors"
+                className="flex-1 py-3.5 rounded-2xl font-semibold text-ink bg-white/[0.06] border border-border-subtle text-sm transition-colors"
               >
                 Annuler
               </button>
               <button
                 onClick={async () => { setResetting(true); await resetMovieAction(movieId) }}
                 disabled={resetting}
-                className="flex-1 py-3.5 rounded-xl font-semibold text-white bg-danger-solid border border-danger text-sm active:bg-red-700 transition-colors disabled:opacity-60"
+                className="flex-1 py-3.5 rounded-2xl font-semibold text-white bg-danger border border-danger/70 text-sm active:brightness-90 transition-colors disabled:opacity-60"
               >
                 {resetting ? 'Réinitialisation...' : 'Confirmer'}
               </button>
@@ -263,7 +267,7 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
           ) : (
             <button
               onClick={() => setConfirmingReset(true)}
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-danger-fg bg-danger-deep border border-danger-dim text-sm transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold text-danger bg-danger/10 border border-danger/30 text-sm transition-colors"
             >
               <RotateCcw className="w-4 h-4" />
               Recommencer le vote

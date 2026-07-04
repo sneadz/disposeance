@@ -4,16 +4,17 @@ import { notFound, redirect } from "next/navigation";
 import DayVoting from "@/components/movies/DayVoting";
 import TimeVoting from "@/components/movies/TimeVoting";
 import FinalSummary from "@/components/summary/FinalSummary";
-import { logout } from "@/app/auth/logout/actions";
 import { deleteMovieAction } from "@/app/actions/movie";
-import { LogOut, Film, ChevronLeft } from "lucide-react";
+import Header from "@/components/ui/Header";
+import Badge from "@/components/ui/Badge";
+import { Film } from "lucide-react";
 import { getPosterUrl } from "@/lib/tmdb/api";
 
 const STATUS = {
-  picking_days:  { label: "Vote des jours",   pill: "bg-accent/15 text-accent ring-1 ring-accent/30" },
-  picking_times: { label: "Vote des horaires", pill: "bg-accent/15 text-accent ring-1 ring-accent/30" },
-  closed:        { label: "Séance confirmée",  pill: "bg-success/15 text-success-fg ring-1 ring-success/30" },
-} as const;
+  picking_days:  { label: "Vote des jours",    status: "pending" as const },
+  picking_times: { label: "Vote des horaires", status: "pending" as const },
+  closed:        { label: "Séance confirmée",  status: "closed" as const },
+};
 
 export default async function MoviePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -75,39 +76,13 @@ export default async function MoviePage({ params }: { params: Promise<{ id: stri
   const s = STATUS[movie.status as keyof typeof STATUS] ?? STATUS.picking_days;
 
   return (
-    <main className="min-h-screen bg-base text-white">
-      {/* Nav */}
-      <header className="sticky top-0 z-10 bg-base/80 backdrop-blur-md border-b border-zinc-800/60 px-4 py-3">
-        <div className="max-w-2xl mx-auto flex items-center justify-between">
-          <a href="/" className="flex items-center gap-1.5 text-zinc-400 active:text-white transition-colors">
-            <ChevronLeft className="w-5 h-5" />
-            <div className="flex items-center gap-2">
-              <div className="bg-accent p-1.5 rounded-xl">
-                <Film className="w-4 h-4 text-accent-fg" />
-              </div>
-              <span className="text-sm font-semibold text-white">DispoSéance</span>
-            </div>
-          </a>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-xs font-bold text-accent-fg">
-                {pseudo[0]?.toUpperCase()}
-              </div>
-              <span className="text-sm text-zinc-400 hidden sm:inline">{pseudo}</span>
-            </div>
-            <form action={logout}>
-              <button className="p-1.5 text-zinc-500 active:text-white transition-colors">
-                <LogOut className="w-4 h-4" />
-              </button>
-            </form>
-          </div>
-        </div>
-      </header>
+    <main className="min-h-screen bg-base text-ink">
+      <Header pseudo={pseudo} backHref="/" />
 
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
         {/* Hero — masqué sur la page de confirmation (doublon avec la ShareCard) */}
         {movie.status !== "closed" && (
-          <div className="relative h-52 rounded-2xl overflow-hidden bg-surface">
+          <div className="relative h-52 rounded-2xl2 overflow-hidden bg-surface">
             {movie.poster_url ? (
               <>
                 <Image
@@ -118,11 +93,11 @@ export default async function MoviePage({ params }: { params: Promise<{ id: stri
                   priority
                   className="object-cover opacity-30 blur-sm scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-base via-base/50 to-transparent" />
               </>
             ) : (
               <div className="absolute inset-0 flex items-center justify-center">
-                <Film className="w-16 h-16 text-zinc-700" />
+                <Film className="w-16 h-16 text-ink-faint" />
               </div>
             )}
             <div className="absolute bottom-0 left-0 p-5 flex items-end gap-4 w-full">
@@ -132,10 +107,8 @@ export default async function MoviePage({ params }: { params: Promise<{ id: stri
                 </div>
               )}
               <div className="space-y-1.5 min-w-0">
-                <span className={`inline-block text-[10px] font-semibold uppercase tracking-widest px-2.5 py-0.5 rounded-full ${s.pill}`}>
-                  {s.label}
-                </span>
-                <h2 className="text-2xl font-bold leading-tight line-clamp-2">{movie.title}</h2>
+                <Badge status={s.status}>{s.label}</Badge>
+                <h2 className="font-display text-2xl uppercase leading-tight line-clamp-2">{movie.title}</h2>
               </div>
             </div>
           </div>
@@ -143,7 +116,7 @@ export default async function MoviePage({ params }: { params: Promise<{ id: stri
 
         {/* Voting / Summary */}
         {(movie.status === "picking_days" || movie.status === "picking_times") && (
-          <div className="bg-surface border border-zinc-800 rounded-2xl p-5">
+          <div className="bg-surface-fill shadow-card rounded-2xl2 p-5">
             {movie.status === "picking_days" && (
               <DayVoting movieId={movie.id} userId={user.id} isAdmin={isAdmin} participantCount={participantCount} isParticipant={isParticipant} />
             )}

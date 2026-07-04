@@ -147,7 +147,7 @@ export default function TimeVoting({ movieId, userId, isAdmin, participantCount,
 
   if (loading) return (
     <div className="space-y-3">
-      {[...Array(3)].map((_, i) => <div key={i} className="h-16 rounded-xl bg-raised animate-pulse" />)}
+      {[...Array(3)].map((_, i) => <div key={i} className="h-16 rounded-2xl bg-surface animate-pulse" />)}
     </div>
   )
 
@@ -163,7 +163,7 @@ export default function TimeVoting({ movieId, userId, isAdmin, participantCount,
     <div className="space-y-5">
       <div className="space-y-0.5">
         <h2 className="text-lg font-bold">À quelle heure tu es dispo ?</h2>
-        <p className="text-zinc-400 text-sm">
+        <p className="text-ink-muted text-sm">
           {!isParticipant
             ? 'Résultats en cours — tu ne participes pas à ce vote.'
             : confirmed
@@ -173,7 +173,7 @@ export default function TimeVoting({ movieId, userId, isAdmin, participantCount,
       </div>
 
       {error && (
-        <div className="bg-danger/10 border border-danger/20 text-danger-fg text-sm text-center rounded-xl p-3">
+        <div className="bg-danger/10 border border-danger/20 text-danger text-sm text-center rounded-xl p-3">
           {error}
         </div>
       )}
@@ -191,7 +191,7 @@ export default function TimeVoting({ movieId, userId, isAdmin, participantCount,
             {groups.map(group => (
               <div key={group.dateLabel} className="space-y-2">
                 {multiDay && (
-                  <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wider px-1">
+                  <p className="text-xs font-bold text-ink-faint uppercase tracking-wider px-1">
                     {group.dateLabel}
                   </p>
                 )}
@@ -201,31 +201,35 @@ export default function TimeVoting({ movieId, userId, isAdmin, participantCount,
                     onClick={() => isParticipant && !confirmed && togglePending(st.id)}
                     disabled={!isParticipant || confirmed}
                     className={cn(
-                      'w-full flex items-center justify-between px-4 py-3.5 rounded-xl border transition-all min-h-[60px]',
+                      'w-full flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all min-h-[60px]',
                       st.userVoted
-                        ? 'bg-accent border-accent text-accent-fg shadow-lg shadow-accent/20'
-                        : 'bg-raised border-zinc-700 text-zinc-300',
+                        ? 'bg-accent-fill text-accent-fg shadow-accent-glow'
+                        : 'bg-surface-fill shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)] text-ink-muted',
                       isParticipant && !confirmed && 'active:scale-[0.99] cursor-pointer',
                       (!isParticipant || confirmed) && 'cursor-default',
                     )}
                   >
                     <div className="text-left">
-                      <p className="text-xl font-bold leading-none">{st.timeLabel}</p>
+                      <p className="font-display text-[22px] leading-none">{st.timeLabel}</p>
                       {st.tag && (
                         <span className={`text-[10px] font-bold uppercase tracking-wider mt-0.5 inline-block px-1.5 py-0.5 rounded ${
-                          st.userVoted ? 'bg-black/20 text-accent-fg' : 'bg-zinc-700 text-zinc-300'
+                          st.userVoted ? 'bg-black/15 text-accent-fg' : 'bg-white/10 text-ink-muted'
                         }`}>
                           {st.tag}
                         </span>
                       )}
-                      {!multiDay && <p className="text-xs mt-0.5 opacity-60">{st.dateLabel}</p>}
+                      {!multiDay && <p className="text-xs mt-1 opacity-60">{st.dateLabel}</p>}
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className={cn('text-sm font-semibold flex items-center gap-1', st.userVoted ? 'opacity-80' : 'text-zinc-400')}>
+                      <span className={cn('text-sm font-bold flex items-center gap-1', st.userVoted ? 'opacity-70' : 'text-ink-faint')}>
                         <Users className="w-3.5 h-3.5" />
                         {st.voterCount}/{participantCount}
                       </span>
-                      {st.userVoted && <Check className="w-5 h-5" />}
+                      {st.userVoted && (
+                        <span className="w-5 h-5 rounded-full bg-black/15 flex items-center justify-center">
+                          <Check className="w-3.5 h-3.5" />
+                        </span>
+                      )}
                     </div>
                   </button>
                 ))}
@@ -238,7 +242,7 @@ export default function TimeVoting({ movieId, userId, isAdmin, participantCount,
       {isParticipant && (confirmed ? (
         <button
           onClick={handleEdit}
-          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-zinc-200 bg-raised border border-zinc-800 transition-colors text-sm"
+          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold text-ink bg-white/[0.06] border border-border-subtle transition-colors text-sm"
         >
           <Pencil className="w-4 h-4" />
           Modifier mes votes
@@ -247,14 +251,14 @@ export default function TimeVoting({ movieId, userId, isAdmin, participantCount,
         <button
           onClick={handleConfirm}
           disabled={submitting || pending.size === 0}
-          className="w-full bg-accent text-accent-fg py-4 rounded-xl font-bold text-base shadow-lg shadow-accent/20 active:scale-[0.99] transition-transform disabled:opacity-40"
+          className="w-full bg-accent-fill text-accent-fg py-4 rounded-2xl font-bold text-base shadow-accent-glow-lg active:scale-[0.99] transition-transform disabled:opacity-40"
         >
           {submitting ? 'Confirmation...' : `Confirmer mes disponibilités${pending.size > 0 ? ` (${pending.size})` : ''}`}
         </button>
       ))}
 
       {isAdmin && (
-        <div className="pt-4 border-t border-zinc-800 space-y-2">
+        <div className="pt-4 border-t border-border-subtle space-y-2.5">
           <div className="flex justify-end">
             <VoteStatusModal
               movieId={movieId}
@@ -265,7 +269,7 @@ export default function TimeVoting({ movieId, userId, isAdmin, participantCount,
           </div>
           <button
             onClick={handleCopyLink}
-            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-zinc-200 bg-raised border border-zinc-800 text-sm transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold text-ink bg-white/[0.06] border border-border-subtle text-sm transition-colors"
           >
             <Link className="w-4 h-4" />
             {copied ? 'Copié !' : 'Copier le lien du vote'}
@@ -273,7 +277,7 @@ export default function TimeVoting({ movieId, userId, isAdmin, participantCount,
           <button
             onClick={() => { window.location.href = `/movies/${movieId}/close` }}
             disabled={showtimes.every(st => st.voterCount === 0)}
-            className="w-full bg-accent text-accent-fg py-4 rounded-xl font-bold text-base shadow-lg shadow-accent/20 active:scale-[0.99] transition-transform disabled:opacity-40 disabled:pointer-events-none"
+            className="w-full bg-accent-fill text-accent-fg py-4 rounded-2xl font-bold text-base shadow-accent-glow-lg active:scale-[0.99] transition-transform disabled:opacity-40 disabled:pointer-events-none"
           >
             Clôturer et confirmer →
           </button>
@@ -281,14 +285,14 @@ export default function TimeVoting({ movieId, userId, isAdmin, participantCount,
             <div className="flex gap-2">
               <button
                 onClick={() => setConfirmingReset(false)}
-                className="flex-1 py-3.5 rounded-xl font-semibold text-zinc-200 bg-raised border border-zinc-800 text-sm transition-colors"
+                className="flex-1 py-3.5 rounded-2xl font-semibold text-ink bg-white/[0.06] border border-border-subtle text-sm transition-colors"
               >
                 Annuler
               </button>
               <button
                 onClick={async () => { setResetting(true); await resetMovieAction(movieId) }}
                 disabled={resetting}
-                className="flex-1 py-3.5 rounded-xl font-semibold text-white bg-danger-solid border border-danger text-sm active:bg-red-700 transition-colors disabled:opacity-60"
+                className="flex-1 py-3.5 rounded-2xl font-semibold text-white bg-danger border border-danger/70 text-sm active:brightness-90 transition-colors disabled:opacity-60"
               >
                 {resetting ? 'Réinitialisation...' : 'Confirmer'}
               </button>
@@ -296,7 +300,7 @@ export default function TimeVoting({ movieId, userId, isAdmin, participantCount,
           ) : (
             <button
               onClick={() => setConfirmingReset(true)}
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-danger-fg bg-danger-deep border border-danger-dim text-sm transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold text-danger bg-danger/10 border border-danger/30 text-sm transition-colors"
             >
               <RotateCcw className="w-4 h-4" />
               Recommencer le vote

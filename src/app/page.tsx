@@ -1,17 +1,19 @@
 import Image from "next/image";
 import { createClient } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
-import { logout } from "@/app/auth/logout/actions";
 import DeleteMovieButton from "@/components/movies/DeleteMovieButton";
 import SeancesToggle from "@/components/movies/SeancesToggle";
-import { Plus, LogOut, Film, Megaphone } from "lucide-react";
+import Header from "@/components/ui/Header";
+import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
+import { Plus, Film, Megaphone } from "lucide-react";
 import { getPosterUrl } from "@/lib/tmdb/api";
 
 const STATUS = {
-  picking_days:  { label: "Vote des jours",     pill: "bg-accent/15 text-accent ring-1 ring-accent/30" },
-  picking_times: { label: "Vote des horaires",   pill: "bg-accent/15 text-accent ring-1 ring-accent/30" },
-  closed:        { label: "Séance confirmée",    pill: "bg-success/15 text-success-fg ring-1 ring-success/30" },
-} as const;
+  picking_days:  { label: "Vote des jours",    status: "pending" as const },
+  picking_times: { label: "Vote des horaires", status: "pending" as const },
+  closed:        { label: "Séance confirmée",  status: "closed" as const },
+};
 
 export default async function Home({
   searchParams,
@@ -47,56 +49,33 @@ export default async function Home({
   const movieList = movies ?? [];
 
   return (
-    <main className="min-h-screen bg-base text-white">
-      {/* Nav */}
-      <header className="sticky top-0 z-10 bg-base/80 backdrop-blur-md border-b border-zinc-800/60 px-4 py-3">
-        <div className="max-w-2xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="bg-accent p-1.5 rounded-xl">
-              <Film className="w-5 h-5 text-accent-fg" />
-            </div>
-            <span className="text-base font-bold tracking-tight">DispoSéance</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-xs font-bold text-accent-fg">
-                {pseudo[0]?.toUpperCase()}
-              </div>
-              <span className="text-sm text-zinc-400 hidden sm:inline">{pseudo}</span>
-            </div>
-            <form action={logout}>
-              <button className="p-1.5 text-zinc-500 active:text-white transition-colors">
-                <LogOut className="w-4 h-4" />
-              </button>
-            </form>
-          </div>
-        </div>
-      </header>
+    <main className="min-h-screen bg-base text-ink">
+      <Header pseudo={pseudo} />
 
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
         {/* Title row */}
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold">
+            <h1 className="font-display text-[26px] uppercase leading-none tracking-wide">
               {showAll ? "Toutes les séances" : "Mes séances"}
             </h1>
-            <SeancesToggle showAll={showAll} />
+            <div className="mt-2.5">
+              <SeancesToggle showAll={showAll} />
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <a
-              href="/propose"
-              className="flex items-center gap-1.5 bg-raised border border-zinc-700 text-zinc-200 px-4 py-2.5 rounded-xl font-semibold text-sm active:scale-95 transition-transform"
-            >
-              <Megaphone className="w-4 h-4" />
-              Proposer
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <a href="/propose">
+              <Button variant="ghost">
+                <Megaphone className="w-4 h-4" />
+                Proposer
+              </Button>
             </a>
             {isAdmin && (
-              <a
-                href="/movies/new"
-                className="flex items-center gap-1.5 bg-accent text-accent-fg px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-accent/20 active:scale-95 transition-transform"
-              >
-                <Plus className="w-4 h-4" />
-                Nouvelle
+              <a href="/movies/new">
+                <Button variant="primary">
+                  <Plus className="w-4 h-4" />
+                  Nouvelle
+                </Button>
               </a>
             )}
           </div>
@@ -105,25 +84,24 @@ export default async function Home({
         {/* Empty state */}
         {movieList.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 space-y-5 text-center">
-            <div className="w-20 h-20 rounded-2xl bg-surface border border-zinc-800 flex items-center justify-center">
-              <Film className="w-9 h-9 text-zinc-600" />
+            <div className="w-20 h-20 rounded-2xl bg-surface border border-border-subtle flex items-center justify-center">
+              <Film className="w-9 h-9 text-ink-faint" />
             </div>
             <div className="space-y-1.5">
               <p className="text-lg font-semibold">
                 {showAll ? "Rien à l'affiche" : "Pas de séances pour toi"}
               </p>
-              <p className="text-zinc-500 text-sm max-w-xs mx-auto">
+              <p className="text-ink-muted text-sm max-w-xs mx-auto">
                 {showAll
                   ? "Lance une organisation pour votre prochaine sortie ciné !"
                   : "Tu n'as pas encore été invité à une séance."}
               </p>
             </div>
             {isAdmin && showAll && (
-              <a
-                href="/movies/new"
-                className="bg-accent text-accent-fg px-6 py-3.5 rounded-xl font-bold shadow-lg shadow-accent/20 active:scale-95 transition-transform"
-              >
-                Organiser une séance
+              <a href="/movies/new">
+                <Button variant="primary" size="lg" className="w-auto px-6">
+                  Organiser une séance
+                </Button>
               </a>
             )}
           </div>
@@ -132,37 +110,38 @@ export default async function Home({
             {movieList.map((movie) => {
               const s = STATUS[movie.status as keyof typeof STATUS] ?? STATUS.picking_days;
               return (
-                <div key={movie.id} className="relative group bg-surface border border-zinc-800 rounded-2xl overflow-hidden active:scale-[0.99] transition-transform">
-                  <a href={`/movies/${movie.id}`} className="flex items-stretch">
+                <div key={movie.id} className="relative group h-[104px] rounded-2xl2 overflow-hidden shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)] active:scale-[0.99] transition-transform">
+                  <a href={`/movies/${movie.id}`} className="absolute inset-0 flex items-stretch">
+                    {/* Ambient poster background */}
+                    <div className="absolute inset-0 bg-[repeating-linear-gradient(135deg,#2c2b32_0px,#2c2b32_9px,#242329_9px,#242329_18px)]" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-base/15 via-base/55 to-base/95" />
                     {/* Poster */}
-                    <div className="relative w-20 h-28 flex-shrink-0 bg-raised">
+                    <div className="relative w-[76px] flex-shrink-0 m-2.5 rounded-xl overflow-hidden bg-surface shadow-lg">
                       {movie.poster_url ? (
                         <Image
                           src={getPosterUrl(movie.poster_url, 'w200')!}
                           alt={movie.title}
                           fill
-                          sizes="80px"
+                          sizes="76px"
                           priority
                           className="object-cover"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
-                          <Film className="w-7 h-7 text-zinc-600" />
+                          <Film className="w-6 h-6 text-ink-faint" />
                         </div>
                       )}
                     </div>
                     {/* Info */}
-                    <div className="flex flex-col justify-center px-4 py-3 flex-grow min-w-0 gap-1.5">
-                      <span className={`self-start text-[10px] font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full ${s.pill}`}>
-                        {s.label}
-                      </span>
+                    <div className="relative flex flex-col justify-center gap-1.5 px-3.5 py-3 flex-grow min-w-0">
+                      <Badge status={s.status}>{s.label}</Badge>
                       <h3 className="font-bold text-base leading-snug line-clamp-2 pr-6">{movie.title}</h3>
-                      <p className="text-xs text-zinc-500">Voir les votes →</p>
+                      <p className="text-xs text-ink-faint">Voir les votes →</p>
                     </div>
                   </a>
                   {/* Delete (always visible on mobile) */}
                   {isAdmin && (
-                    <div className="absolute top-2.5 right-2.5">
+                    <div className="absolute top-2.5 right-2.5 z-10">
                       <DeleteMovieButton movieId={movie.id} movieTitle={movie.title} />
                     </div>
                   )}
