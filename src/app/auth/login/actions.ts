@@ -2,7 +2,6 @@
 
 import { createAdminClient } from '@/lib/supabase-admin'
 import { createClient } from '@/lib/supabase-server'
-import { redirect } from 'next/navigation'
 
 export async function loginWithPseudoAction(pseudo: string, password: string) {
   const admin = createAdminClient()
@@ -36,5 +35,5 @@ export async function loginWithPseudoAction(pseudo: string, password: string) {
     return { error: 'Pseudo ou mot de passe incorrect' }
   }
 
-  redirect('/')
+  return { success: true }
 }

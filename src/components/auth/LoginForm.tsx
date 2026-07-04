@@ -17,6 +17,7 @@ export default function LoginForm() {
     setError(null)
     const result = await loginWithPseudoAction(pseudo, password)
     if (result?.error) { setError(result.error); setLoading(false) }
+    else window.location.href = '/'
   }
 
   return (
