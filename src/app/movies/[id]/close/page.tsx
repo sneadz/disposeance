@@ -36,8 +36,8 @@ export default async function CloseMoviePage({ params }: { params: Promise<{ id:
   }))
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
-      <header className="sticky top-0 z-10 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800/60 px-4 py-3">
+    <main className="min-h-screen bg-base text-white">
+      <header className="sticky top-0 z-10 bg-base/80 backdrop-blur-md border-b border-zinc-800/60 px-4 py-3">
         <div className="max-w-2xl mx-auto flex items-center gap-3">
           <a href={`/movies/${id}`} className="p-1.5 text-zinc-400 active:text-white transition-colors">
             <ChevronLeft className="w-5 h-5" />

@@ -107,15 +107,15 @@ export default function ShowtimesForm({
             type="date"
             value={freeDate}
             onChange={e => setFreeDate(e.target.value)}
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#FFC426] focus:ring-1 focus:ring-[#FFC426] transition-colors"
+            className="w-full bg-surface border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
           />
         </div>
         <div className="space-y-2">
           <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Horaires proposés</p>
           {freeTimes.map(t => (
-            <div key={t} className="flex items-center justify-between bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3.5">
+            <div key={t} className="flex items-center justify-between bg-surface border border-zinc-800 rounded-xl px-4 py-3.5">
               <div className="flex items-center gap-2.5">
-                <Clock className="w-4 h-4 text-[#FFC426]" />
+                <Clock className="w-4 h-4 text-accent" />
                 <span className="text-lg font-bold">{t}</span>
                 <div className="flex items-center gap-1">
                   {TAGS.map(tag => (
@@ -125,8 +125,8 @@ export default function ShowtimesForm({
                       onClick={() => toggleFreeTag(t, tag)}
                       className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide transition-colors ${
                         freeTagByTime[t] === tag
-                          ? 'bg-[#FFC426] text-[#0A0A0A]'
-                          : 'bg-zinc-800 text-zinc-500 border border-zinc-700'
+                          ? 'bg-accent text-accent-fg'
+                          : 'bg-raised text-zinc-500 border border-zinc-700'
                       }`}
                     >
                       {tag}
@@ -139,7 +139,7 @@ export default function ShowtimesForm({
                   setFreeTimes(p => p.filter(x => x !== t))
                   setFreeTagByTime(prev => { const u = { ...prev }; delete u[t]; return u })
                 }}
-                className="p-1.5 text-zinc-600 active:text-red-400 transition-colors"
+                className="p-1.5 text-zinc-600 active:text-danger-fg transition-colors"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -150,7 +150,7 @@ export default function ShowtimesForm({
               type="time"
               value={freeNewTime}
               onChange={e => setFreeNewTime(e.target.value)}
-              className="flex-grow bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#FFC426] focus:ring-1 focus:ring-[#FFC426] transition-colors"
+              className="flex-grow bg-surface border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
             />
             <button
               onClick={() => {
@@ -159,7 +159,7 @@ export default function ShowtimesForm({
                 setFreeTagByTime(p => ({ ...p, [freeNewTime]: null }))
                 setFreeNewTime('')
               }}
-              className="flex items-center gap-2 bg-zinc-800 text-white px-4 py-3 rounded-xl font-semibold active:bg-zinc-700 transition-colors"
+              className="flex items-center gap-2 bg-raised text-white px-4 py-3 rounded-xl font-semibold active:bg-zinc-700 transition-colors"
             >
               <Plus className="w-4 h-4" />
               Ajouter
@@ -167,12 +167,12 @@ export default function ShowtimesForm({
           </div>
         </div>
         {error && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center rounded-xl p-3">{error}</div>
+          <div className="bg-danger/10 border border-danger/20 text-danger-fg text-sm text-center rounded-xl p-3">{error}</div>
         )}
         <button
           onClick={handleSubmit}
           disabled={loading || !freeDate || freeTimes.length === 0}
-          className="w-full bg-[#FFC426] text-[#0A0A0A] py-4 rounded-xl font-bold text-base shadow-lg shadow-[#FFC426]/20 active:scale-[0.99] transition-transform disabled:opacity-40"
+          className="w-full bg-accent text-accent-fg py-4 rounded-xl font-bold text-base shadow-lg shadow-accent/20 active:scale-[0.99] transition-transform disabled:opacity-40"
         >
           {loading ? 'Enregistrement...' : 'Lancer le vote des horaires →'}
         </button>
@@ -194,8 +194,8 @@ export default function ShowtimesForm({
                   onClick={() => toggleDay(d.date)}
                   className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl border text-sm font-semibold transition-all ${
                     isSelected
-                      ? 'bg-[#FFC426] border-[#FFC426] text-[#0A0A0A]'
-                      : 'bg-zinc-800 border-zinc-700 text-zinc-400'
+                      ? 'bg-accent border-accent text-accent-fg'
+                      : 'bg-raised border-zinc-700 text-zinc-400'
                   }`}
                 >
                   <Calendar className="w-3.5 h-3.5" />
@@ -220,9 +220,9 @@ export default function ShowtimesForm({
               </p>
               <div className="space-y-2">
                 {times.map(t => (
-                  <div key={t} className="flex items-center justify-between bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3.5">
+                  <div key={t} className="flex items-center justify-between bg-surface border border-zinc-800 rounded-xl px-4 py-3.5">
                     <div className="flex items-center gap-2.5">
-                      <Clock className="w-4 h-4 text-[#FFC426]" />
+                      <Clock className="w-4 h-4 text-accent" />
                       <span className="text-lg font-bold">{t}</span>
                       <div className="flex items-center gap-1">
                         {TAGS.map(tag => (
@@ -232,8 +232,8 @@ export default function ShowtimesForm({
                             onClick={() => toggleTag(date, t, tag)}
                             className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide transition-colors ${
                               tagsByDay[date]?.[t] === tag
-                                ? 'bg-[#FFC426] text-[#0A0A0A]'
-                                : 'bg-zinc-800 text-zinc-500 border border-zinc-700'
+                                ? 'bg-accent text-accent-fg'
+                                : 'bg-raised text-zinc-500 border border-zinc-700'
                             }`}
                           >
                             {tag}
@@ -243,7 +243,7 @@ export default function ShowtimesForm({
                     </div>
                     <button
                       onClick={() => removeTime(date, t)}
-                      className="p-1.5 text-zinc-600 active:text-red-400 transition-colors"
+                      className="p-1.5 text-zinc-600 active:text-danger-fg transition-colors"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -255,11 +255,11 @@ export default function ShowtimesForm({
                   type="time"
                   value={newTimeByDay[date] ?? ''}
                   onChange={e => setNewTimeByDay(prev => ({ ...prev, [date]: e.target.value }))}
-                  className="flex-grow bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#FFC426] focus:ring-1 focus:ring-[#FFC426] transition-colors"
+                  className="flex-grow bg-surface border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
                 />
                 <button
                   onClick={() => addTime(date)}
-                  className="flex items-center gap-2 bg-zinc-800 text-white px-4 py-3 rounded-xl font-semibold active:bg-zinc-700 transition-colors"
+                  className="flex items-center gap-2 bg-raised text-white px-4 py-3 rounded-xl font-semibold active:bg-zinc-700 transition-colors"
                 >
                   <Plus className="w-4 h-4" />
                   Ajouter
@@ -270,13 +270,13 @@ export default function ShowtimesForm({
         })}
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center rounded-xl p-3">{error}</div>
+        <div className="bg-danger/10 border border-danger/20 text-danger-fg text-sm text-center rounded-xl p-3">{error}</div>
       )}
 
       <button
         onClick={handleSubmit}
         disabled={loading || selectedDays.length === 0}
-        className="w-full bg-[#FFC426] text-[#0A0A0A] py-4 rounded-xl font-bold text-base shadow-lg shadow-[#FFC426]/20 active:scale-[0.99] transition-transform disabled:opacity-40"
+        className="w-full bg-accent text-accent-fg py-4 rounded-xl font-bold text-base shadow-lg shadow-accent/20 active:scale-[0.99] transition-transform disabled:opacity-40"
       >
         {loading ? 'Enregistrement...' : 'Lancer le vote des horaires →'}
       </button>

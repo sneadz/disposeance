@@ -65,7 +65,7 @@ export default function MovieProposalActions({ title, overview, posterPath, rele
       </div>
 
       {overview && (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
+        <div className="bg-surface border border-zinc-800 rounded-2xl p-4">
           <p className={`text-sm text-zinc-300 leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
             {overview}
           </p>
@@ -88,17 +88,17 @@ export default function MovieProposalActions({ title, overview, posterPath, rele
       <div className="grid grid-cols-2 gap-3">
         <button
           onClick={handleCopy}
-          className="flex items-center justify-center gap-2 bg-zinc-900 border border-zinc-800 text-white py-4 rounded-xl font-semibold text-sm active:scale-[0.99] transition-all"
+          className="flex items-center justify-center gap-2 bg-surface border border-zinc-800 text-white py-4 rounded-xl font-semibold text-sm active:scale-[0.99] transition-all"
         >
           {copied
-            ? <><Check className="w-4 h-4 text-emerald-400" /> Copié ✓</>
+            ? <><Check className="w-4 h-4 text-success-fg" /> Copié ✓</>
             : <><Copy className="w-4 h-4" /> Copier le message</>
           }
         </button>
         {posterPath && (
           <button
             onClick={handleShare}
-            className="flex items-center justify-center gap-2 bg-[#FFC426] text-[#0A0A0A] py-4 rounded-xl font-bold text-sm shadow-lg shadow-[#FFC426]/20 active:scale-[0.99] transition-transform"
+            className="flex items-center justify-center gap-2 bg-accent text-accent-fg py-4 rounded-xl font-bold text-sm shadow-lg shadow-accent/20 active:scale-[0.99] transition-transform"
           >
             <Share2 className="w-4 h-4" />
             Partager l&apos;affiche

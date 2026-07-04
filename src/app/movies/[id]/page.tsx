@@ -10,9 +10,9 @@ import { LogOut, Film, ChevronLeft } from "lucide-react";
 import { getPosterUrl } from "@/lib/tmdb/api";
 
 const STATUS = {
-  picking_days:  { label: "Vote des jours",   pill: "bg-[#FFC426]/15 text-[#FFC426] ring-1 ring-[#FFC426]/30" },
-  picking_times: { label: "Vote des horaires", pill: "bg-[#FFC426]/15 text-[#FFC426] ring-1 ring-[#FFC426]/30" },
-  closed:        { label: "Séance confirmée",  pill: "bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-500/30" },
+  picking_days:  { label: "Vote des jours",   pill: "bg-accent/15 text-accent ring-1 ring-accent/30" },
+  picking_times: { label: "Vote des horaires", pill: "bg-accent/15 text-accent ring-1 ring-accent/30" },
+  closed:        { label: "Séance confirmée",  pill: "bg-success/15 text-success-fg ring-1 ring-success/30" },
 } as const;
 
 export default async function MoviePage({ params }: { params: Promise<{ id: string }> }) {
@@ -75,22 +75,22 @@ export default async function MoviePage({ params }: { params: Promise<{ id: stri
   const s = STATUS[movie.status as keyof typeof STATUS] ?? STATUS.picking_days;
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <main className="min-h-screen bg-base text-white">
       {/* Nav */}
-      <header className="sticky top-0 z-10 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800/60 px-4 py-3">
+      <header className="sticky top-0 z-10 bg-base/80 backdrop-blur-md border-b border-zinc-800/60 px-4 py-3">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <a href="/" className="flex items-center gap-1.5 text-zinc-400 active:text-white transition-colors">
             <ChevronLeft className="w-5 h-5" />
             <div className="flex items-center gap-2">
-              <div className="bg-[#FFC426] p-1.5 rounded-xl">
-                <Film className="w-4 h-4 text-[#0A0A0A]" />
+              <div className="bg-accent p-1.5 rounded-xl">
+                <Film className="w-4 h-4 text-accent-fg" />
               </div>
               <span className="text-sm font-semibold text-white">DispoSéance</span>
             </div>
           </a>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full bg-[#FFC426] flex items-center justify-center text-xs font-bold text-[#0A0A0A]">
+              <div className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-xs font-bold text-accent-fg">
                 {pseudo[0]?.toUpperCase()}
               </div>
               <span className="text-sm text-zinc-400 hidden sm:inline">{pseudo}</span>
@@ -107,7 +107,7 @@ export default async function MoviePage({ params }: { params: Promise<{ id: stri
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
         {/* Hero — masqué sur la page de confirmation (doublon avec la ShareCard) */}
         {movie.status !== "closed" && (
-          <div className="relative h-52 rounded-2xl overflow-hidden bg-zinc-900">
+          <div className="relative h-52 rounded-2xl overflow-hidden bg-surface">
             {movie.poster_url ? (
               <>
                 <Image
@@ -143,7 +143,7 @@ export default async function MoviePage({ params }: { params: Promise<{ id: stri
 
         {/* Voting / Summary */}
         {(movie.status === "picking_days" || movie.status === "picking_times") && (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+          <div className="bg-surface border border-zinc-800 rounded-2xl p-5">
             {movie.status === "picking_days" && (
               <DayVoting movieId={movie.id} userId={user.id} isAdmin={isAdmin} participantCount={participantCount} isParticipant={isParticipant} />
             )}

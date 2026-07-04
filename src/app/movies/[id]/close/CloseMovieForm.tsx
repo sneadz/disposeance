@@ -44,12 +44,12 @@ export default function CloseMovieForm({ movieId, showtimes, participantCount }:
               className={cn(
                 'w-full flex items-center justify-between p-4 rounded-xl border transition-all active:scale-[0.99] min-h-[60px]',
                 isSelected
-                  ? 'bg-[#FFC426] border-[#FFC426] text-[#0A0A0A] shadow-lg shadow-[#FFC426]/20'
-                  : 'bg-zinc-900 border-zinc-800 text-zinc-300'
+                  ? 'bg-accent border-accent text-accent-fg shadow-lg shadow-accent/20'
+                  : 'bg-surface border-zinc-800 text-zinc-300'
               )}
             >
               <div className="flex items-center gap-3">
-                {isWinner && <Trophy className={cn('w-4 h-4 flex-shrink-0', isSelected ? 'text-[#0A0A0A] opacity-70' : 'text-amber-400')} />}
+                {isWinner && <Trophy className={cn('w-4 h-4 flex-shrink-0', isSelected ? 'text-accent-fg opacity-70' : 'text-amber-400')} />}
                 <Clock className={cn('w-4 h-4 flex-shrink-0', isSelected ? 'opacity-70' : 'opacity-40')} />
                 <span className="font-bold text-left">{st.label}</span>
               </div>
@@ -66,7 +66,7 @@ export default function CloseMovieForm({ movieId, showtimes, participantCount }:
       </div>
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center rounded-xl p-3">
+        <div className="bg-danger/10 border border-danger/20 text-danger-fg text-sm text-center rounded-xl p-3">
           {error}
         </div>
       )}
@@ -74,7 +74,7 @@ export default function CloseMovieForm({ movieId, showtimes, participantCount }:
       <button
         onClick={handleClose}
         disabled={loading || !selectedId}
-        className="w-full bg-[#FFC426] text-[#0A0A0A] py-4 rounded-xl font-bold text-base shadow-lg shadow-[#FFC426]/20 active:scale-[0.99] transition-transform disabled:opacity-40 mt-2"
+        className="w-full bg-accent text-accent-fg py-4 rounded-xl font-bold text-base shadow-lg shadow-accent/20 active:scale-[0.99] transition-transform disabled:opacity-40 mt-2"
       >
         {loading ? 'Confirmation...' : '🎬 Confirmer cette séance'}
       </button>

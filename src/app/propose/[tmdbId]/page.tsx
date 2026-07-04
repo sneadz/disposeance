@@ -22,8 +22,8 @@ export default async function ProposeMoviePage({ params }: Props) {
   const releaseYear = movie.release_date?.split('-')[0] ?? ''
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
-      <header className="sticky top-0 z-10 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800/60 px-4 py-3">
+    <main className="min-h-screen bg-base text-white">
+      <header className="sticky top-0 z-10 bg-base/80 backdrop-blur-md border-b border-zinc-800/60 px-4 py-3">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <a href="/propose" className="p-1.5 text-zinc-400 active:text-white transition-colors">

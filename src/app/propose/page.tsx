@@ -24,8 +24,8 @@ export default function ProposePage() {
   }, [query])
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
-      <header className="sticky top-0 z-10 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800/60 px-4 py-3">
+    <main className="min-h-screen bg-base text-white">
+      <header className="sticky top-0 z-10 bg-base/80 backdrop-blur-md border-b border-zinc-800/60 px-4 py-3">
         <div className="max-w-2xl mx-auto flex items-center gap-3">
           <a href="/" className="p-1.5 text-zinc-400 active:text-white transition-colors">
             <ChevronLeft className="w-5 h-5" />
@@ -40,7 +40,7 @@ export default function ProposePage() {
           <input
             type="text"
             placeholder="Rechercher un film..."
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl py-3.5 pl-11 pr-4 text-base focus:outline-none focus:border-[#FFC426] focus:ring-1 focus:ring-[#FFC426] placeholder-zinc-500 transition-colors"
+            className="w-full bg-surface border border-zinc-800 rounded-xl py-3.5 pl-11 pr-4 text-base focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent placeholder-zinc-500 transition-colors"
             value={query}
             onChange={e => setQuery(e.target.value)}
             autoFocus
@@ -49,7 +49,7 @@ export default function ProposePage() {
 
         {loading && (
           <div className="space-y-3">
-            {[...Array(3)].map((_, i) => <div key={i} className="h-24 rounded-2xl bg-zinc-900 animate-pulse" />)}
+            {[...Array(3)].map((_, i) => <div key={i} className="h-24 rounded-2xl bg-surface animate-pulse" />)}
           </div>
         )}
 
@@ -65,9 +65,9 @@ export default function ProposePage() {
             <a
               key={movie.id}
               href={`/propose/${movie.id}`}
-              className="flex items-stretch bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden active:scale-[0.99] transition-transform"
+              className="flex items-stretch bg-surface border border-zinc-800 rounded-2xl overflow-hidden active:scale-[0.99] transition-transform"
             >
-              <div className="relative w-16 h-24 flex-shrink-0 bg-zinc-800">
+              <div className="relative w-16 h-24 flex-shrink-0 bg-raised">
                 {movie.poster_path ? (
                   <Image
                     src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}

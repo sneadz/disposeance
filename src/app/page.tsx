@@ -8,9 +8,9 @@ import { Plus, LogOut, Film, Megaphone } from "lucide-react";
 import { getPosterUrl } from "@/lib/tmdb/api";
 
 const STATUS = {
-  picking_days:  { label: "Vote des jours",     pill: "bg-[#FFC426]/15 text-[#FFC426] ring-1 ring-[#FFC426]/30" },
-  picking_times: { label: "Vote des horaires",   pill: "bg-[#FFC426]/15 text-[#FFC426] ring-1 ring-[#FFC426]/30" },
-  closed:        { label: "Séance confirmée",    pill: "bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-500/30" },
+  picking_days:  { label: "Vote des jours",     pill: "bg-accent/15 text-accent ring-1 ring-accent/30" },
+  picking_times: { label: "Vote des horaires",   pill: "bg-accent/15 text-accent ring-1 ring-accent/30" },
+  closed:        { label: "Séance confirmée",    pill: "bg-success/15 text-success-fg ring-1 ring-success/30" },
 } as const;
 
 export default async function Home({
@@ -47,19 +47,19 @@ export default async function Home({
   const movieList = movies ?? [];
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <main className="min-h-screen bg-base text-white">
       {/* Nav */}
-      <header className="sticky top-0 z-10 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800/60 px-4 py-3">
+      <header className="sticky top-0 z-10 bg-base/80 backdrop-blur-md border-b border-zinc-800/60 px-4 py-3">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="bg-[#FFC426] p-1.5 rounded-xl">
-              <Film className="w-5 h-5 text-[#0A0A0A]" />
+            <div className="bg-accent p-1.5 rounded-xl">
+              <Film className="w-5 h-5 text-accent-fg" />
             </div>
             <span className="text-base font-bold tracking-tight">DispoSéance</span>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full bg-[#FFC426] flex items-center justify-center text-xs font-bold text-[#0A0A0A]">
+              <div className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-xs font-bold text-accent-fg">
                 {pseudo[0]?.toUpperCase()}
               </div>
               <span className="text-sm text-zinc-400 hidden sm:inline">{pseudo}</span>
@@ -85,7 +85,7 @@ export default async function Home({
           <div className="flex items-center gap-2">
             <a
               href="/propose"
-              className="flex items-center gap-1.5 bg-zinc-800 border border-zinc-700 text-zinc-200 px-4 py-2.5 rounded-xl font-semibold text-sm active:scale-95 transition-transform"
+              className="flex items-center gap-1.5 bg-raised border border-zinc-700 text-zinc-200 px-4 py-2.5 rounded-xl font-semibold text-sm active:scale-95 transition-transform"
             >
               <Megaphone className="w-4 h-4" />
               Proposer
@@ -93,7 +93,7 @@ export default async function Home({
             {isAdmin && (
               <a
                 href="/movies/new"
-                className="flex items-center gap-1.5 bg-[#FFC426] text-[#0A0A0A] px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-[#FFC426]/20 active:scale-95 transition-transform"
+                className="flex items-center gap-1.5 bg-accent text-accent-fg px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-accent/20 active:scale-95 transition-transform"
               >
                 <Plus className="w-4 h-4" />
                 Nouvelle
@@ -105,7 +105,7 @@ export default async function Home({
         {/* Empty state */}
         {movieList.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 space-y-5 text-center">
-            <div className="w-20 h-20 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center">
+            <div className="w-20 h-20 rounded-2xl bg-surface border border-zinc-800 flex items-center justify-center">
               <Film className="w-9 h-9 text-zinc-600" />
             </div>
             <div className="space-y-1.5">
@@ -121,7 +121,7 @@ export default async function Home({
             {isAdmin && showAll && (
               <a
                 href="/movies/new"
-                className="bg-[#FFC426] text-[#0A0A0A] px-6 py-3.5 rounded-xl font-bold shadow-lg shadow-[#FFC426]/20 active:scale-95 transition-transform"
+                className="bg-accent text-accent-fg px-6 py-3.5 rounded-xl font-bold shadow-lg shadow-accent/20 active:scale-95 transition-transform"
               >
                 Organiser une séance
               </a>
@@ -132,10 +132,10 @@ export default async function Home({
             {movieList.map((movie) => {
               const s = STATUS[movie.status as keyof typeof STATUS] ?? STATUS.picking_days;
               return (
-                <div key={movie.id} className="relative group bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden active:scale-[0.99] transition-transform">
+                <div key={movie.id} className="relative group bg-surface border border-zinc-800 rounded-2xl overflow-hidden active:scale-[0.99] transition-transform">
                   <a href={`/movies/${movie.id}`} className="flex items-stretch">
                     {/* Poster */}
-                    <div className="relative w-20 h-28 flex-shrink-0 bg-zinc-800">
+                    <div className="relative w-20 h-28 flex-shrink-0 bg-raised">
                       {movie.poster_url ? (
                         <Image
                           src={getPosterUrl(movie.poster_url, 'w200')!}

@@ -38,8 +38,8 @@ export default async function SelectShowtimesPage({ params }: { params: Promise<
       : []
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
-      <header className="sticky top-0 z-10 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800/60 px-4 py-3">
+    <main className="min-h-screen bg-base text-white">
+      <header className="sticky top-0 z-10 bg-base/80 backdrop-blur-md border-b border-zinc-800/60 px-4 py-3">
         <div className="max-w-2xl mx-auto flex items-center gap-3">
           <a href={`/movies/${movieId}`} className="p-1.5 text-zinc-400 active:text-white transition-colors">
             <ChevronLeft className="w-5 h-5" />
@@ -53,10 +53,10 @@ export default async function SelectShowtimesPage({ params }: { params: Promise<
 
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
         {tiedDates.length > 0 ? (
-          <div className="rounded-2xl p-4 flex items-center gap-3 bg-[#FFC426]/10 border border-[#FFC426]/20">
+          <div className="rounded-2xl p-4 flex items-center gap-3 bg-accent/10 border border-accent/20">
             <span className="text-2xl">{tiedDates.length > 1 ? '⚖️' : '📅'}</span>
             <div>
-              <p className="text-xs uppercase font-semibold tracking-wider text-[#FFC426]">
+              <p className="text-xs uppercase font-semibold tracking-wider text-accent">
                 {tiedDates.length > 1
                   ? `${tiedDates.length} jours ex-æquo — ${tiedDates[0].votes} vote${tiedDates[0].votes > 1 ? 's' : ''} chacun`
                   : 'Jour le plus voté'}
@@ -67,7 +67,7 @@ export default async function SelectShowtimesPage({ params }: { params: Promise<
             </div>
           </div>
         ) : (
-          <div className="bg-[#FFC426]/10 border border-[#FFC426]/20 rounded-2xl p-4 text-[#FFC426] text-sm">
+          <div className="bg-accent/10 border border-accent/20 rounded-2xl p-4 text-accent text-sm">
             Aucun vote pour le moment — tu peux quand même saisir des horaires.
           </div>
         )}

@@ -28,7 +28,7 @@ export default function VoteStatusModal({ movieId, phase, votedCount, totalCount
     <>
       <button
         onClick={handleOpen}
-        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-400 text-xs font-semibold transition-colors active:bg-zinc-700"
+        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-raised border border-zinc-700 text-zinc-400 text-xs font-semibold transition-colors active:bg-zinc-700"
       >
         <Users className="w-3 h-3" />
         {votedCount}/{totalCount} ont voté
@@ -40,7 +40,7 @@ export default function VoteStatusModal({ movieId, phase, votedCount, totalCount
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full max-w-sm bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4"
+            className="w-full max-w-sm bg-surface border border-zinc-800 rounded-2xl p-5 space-y-4"
             onClick={e => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">
@@ -53,7 +53,7 @@ export default function VoteStatusModal({ movieId, phase, votedCount, totalCount
             {loading ? (
               <div className="space-y-2">
                 {[...Array(3)].map((_, i) => (
-                  <div key={i} className="h-11 rounded-xl bg-zinc-800 animate-pulse" />
+                  <div key={i} className="h-11 rounded-xl bg-raised animate-pulse" />
                 ))}
               </div>
             ) : (
@@ -63,15 +63,15 @@ export default function VoteStatusModal({ movieId, phase, votedCount, totalCount
                     key={p.pseudo}
                     className={`flex items-center gap-3 px-4 py-3 rounded-xl border ${
                       p.voted
-                        ? 'bg-emerald-500/10 border-emerald-500/20'
-                        : 'bg-red-500/10 border-red-500/20'
+                        ? 'bg-success/10 border-success/20'
+                        : 'bg-danger/10 border-danger/20'
                     }`}
                   >
-                    <div className={`w-2 h-2 rounded-full flex-shrink-0 ${p.voted ? 'bg-emerald-400' : 'bg-red-400'}`} />
-                    <span className={`font-semibold text-sm ${p.voted ? 'text-emerald-300' : 'text-red-300'}`}>
+                    <div className={`w-2 h-2 rounded-full flex-shrink-0 ${p.voted ? 'bg-success-indicator' : 'bg-danger-fg'}`} />
+                    <span className={`font-semibold text-sm ${p.voted ? 'text-success-fg' : 'text-danger-fg'}`}>
                       {p.pseudo}
                     </span>
-                    <span className={`ml-auto text-xs ${p.voted ? 'text-emerald-500' : 'text-red-500'}`}>
+                    <span className={`ml-auto text-xs ${p.voted ? 'text-success' : 'text-danger'}`}>
                       {p.voted ? 'A voté' : 'En attente'}
                     </span>
                   </div>

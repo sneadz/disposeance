@@ -158,7 +158,7 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, tag
       <button
         onClick={handleShare}
         disabled={sharing || !posterReady}
-        className="w-full flex items-center justify-center gap-2.5 bg-[#FFC426] disabled:opacity-60 text-[#0A0A0A] py-4 rounded-xl font-bold active:scale-[0.99] transition-all shadow-lg shadow-[#FFC426]/20"
+        className="w-full flex items-center justify-center gap-2.5 bg-accent disabled:opacity-60 text-accent-fg py-4 rounded-xl font-bold active:scale-[0.99] transition-all shadow-lg shadow-accent/20"
       >
         {shared ? <Check className="w-5 h-5" /> : <Share2 className="w-5 h-5" />}
         {sharing ? 'Préparation...' : shared ? 'Partagé !' : !posterReady ? 'Chargement...' : 'Partager la carte'}
@@ -176,17 +176,17 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, tag
         <>
           <button
             onClick={handleCopyLink}
-            className="w-full flex items-center justify-center gap-2.5 bg-[#222] border border-[#333] text-[#E5E5E5] py-4 rounded-xl font-bold active:scale-[0.99] transition-all"
+            className="w-full flex items-center justify-center gap-2.5 bg-raised border border-zinc-800 text-zinc-200 py-4 rounded-xl font-bold active:scale-[0.99] transition-all"
           >
-            {linkCopied ? <Check className="w-5 h-5 text-[#FFC426]" /> : <Link className="w-5 h-5" />}
-            <span className={linkCopied ? 'text-[#FFC426]' : ''}>
+            {linkCopied ? <Check className="w-5 h-5 text-accent" /> : <Link className="w-5 h-5" />}
+            <span className={linkCopied ? 'text-accent' : ''}>
               {linkCopied ? 'Lien copié !' : 'Copier le lien de la séance'}
             </span>
           </button>
 
           <button
             onClick={() => onReset()}
-            className="w-full flex items-center justify-center gap-2 py-4 rounded-xl font-semibold text-[#f87171] bg-[#2a0a0a] border border-[#5f1f1f] transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-4 rounded-xl font-semibold text-danger-fg bg-danger-deep border border-danger-dim transition-colors"
           >
             <RotateCcw className="w-4 h-4" />
             Supprimer cette séance

@@ -13,7 +13,7 @@ export default function DeleteMovieButton({ movieId, movieTitle }: { movieId: st
   return (
     <button
       onClick={handleDelete}
-      className="w-7 h-7 flex items-center justify-center bg-zinc-950/70 text-zinc-400 active:bg-red-600 active:text-white rounded-lg transition-colors backdrop-blur-sm"
+      className="w-7 h-7 flex items-center justify-center bg-base/70 text-zinc-400 active:bg-danger-solid active:text-white rounded-lg transition-colors backdrop-blur-sm"
       title="Supprimer"
     >
       <Trash2 className="w-3.5 h-3.5" />

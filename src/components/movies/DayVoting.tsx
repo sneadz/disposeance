@@ -138,7 +138,7 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
 
   if (loading) return (
     <div className="space-y-3">
-      {[...Array(4)].map((_, i) => <div key={i} className="h-14 rounded-xl bg-zinc-800 animate-pulse" />)}
+      {[...Array(4)].map((_, i) => <div key={i} className="h-14 rounded-xl bg-raised animate-pulse" />)}
     </div>
   )
 
@@ -166,7 +166,7 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
       </div>
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center rounded-xl p-3">
+        <div className="bg-danger/10 border border-danger/20 text-danger-fg text-sm text-center rounded-xl p-3">
           {error}
         </div>
       )}
@@ -183,8 +183,8 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
               className={cn(
                 'flex items-center justify-between px-3.5 py-3.5 rounded-xl border transition-all min-h-[52px]',
                 day.userVoted
-                  ? 'bg-[#FFC426] border-[#FFC426] text-[#0A0A0A] shadow-lg shadow-[#FFC426]/20'
-                  : 'bg-zinc-800 border-zinc-700 text-zinc-300',
+                  ? 'bg-accent border-accent text-accent-fg shadow-lg shadow-accent/20'
+                  : 'bg-raised border-zinc-700 text-zinc-300',
                 isParticipant && !confirmed && 'active:scale-95 cursor-pointer',
                 (!isParticipant || confirmed) && 'cursor-default',
               )}
@@ -205,7 +205,7 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
       {isParticipant && (confirmed ? (
         <button
           onClick={handleEdit}
-          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-[#E5E5E5] bg-[#222] border border-[#333] transition-colors text-sm"
+          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-zinc-200 bg-raised border border-zinc-800 transition-colors text-sm"
         >
           <Pencil className="w-4 h-4" />
           Modifier mes votes
@@ -214,7 +214,7 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
         <button
           onClick={handleConfirm}
           disabled={submitting || pending.size === 0}
-          className="w-full bg-[#FFC426] text-[#0A0A0A] py-4 rounded-xl font-bold text-base shadow-lg shadow-[#FFC426]/20 active:scale-[0.99] transition-transform disabled:opacity-40"
+          className="w-full bg-accent text-accent-fg py-4 rounded-xl font-bold text-base shadow-lg shadow-accent/20 active:scale-[0.99] transition-transform disabled:opacity-40"
         >
           {submitting ? 'Confirmation...' : `Confirmer mes disponibilités${pending.size > 0 ? ` (${pending.size})` : ''}`}
         </button>
@@ -232,7 +232,7 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
           </div>
           <button
             onClick={handleCopyLink}
-            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-[#E5E5E5] bg-[#222] border border-[#333] text-sm transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-zinc-200 bg-raised border border-zinc-800 text-sm transition-colors"
           >
             <Link className="w-4 h-4" />
             {copied ? 'Copié !' : 'Copier le lien du vote'}
@@ -240,7 +240,7 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
           <button
             onClick={() => { window.location.href = `/movies/${movieId}/showtimes` }}
             disabled={days.every(d => d.voterCount === 0)}
-            className="w-full bg-[#FFC426] text-[#0A0A0A] py-4 rounded-xl font-bold text-base shadow-lg shadow-[#FFC426]/20 active:scale-[0.99] transition-transform disabled:opacity-40 disabled:pointer-events-none"
+            className="w-full bg-accent text-accent-fg py-4 rounded-xl font-bold text-base shadow-lg shadow-accent/20 active:scale-[0.99] transition-transform disabled:opacity-40 disabled:pointer-events-none"
           >
             Passer au vote des horaires →
           </button>
@@ -248,14 +248,14 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
             <div className="flex gap-2">
               <button
                 onClick={() => setConfirmingReset(false)}
-                className="flex-1 py-3.5 rounded-xl font-semibold text-[#E5E5E5] bg-[#222] border border-[#333] text-sm transition-colors"
+                className="flex-1 py-3.5 rounded-xl font-semibold text-zinc-200 bg-raised border border-zinc-800 text-sm transition-colors"
               >
                 Annuler
               </button>
               <button
                 onClick={async () => { setResetting(true); await resetMovieAction(movieId) }}
                 disabled={resetting}
-                className="flex-1 py-3.5 rounded-xl font-semibold text-white bg-red-600 border border-red-500 text-sm active:bg-red-700 transition-colors disabled:opacity-60"
+                className="flex-1 py-3.5 rounded-xl font-semibold text-white bg-danger-solid border border-danger text-sm active:bg-red-700 transition-colors disabled:opacity-60"
               >
                 {resetting ? 'Réinitialisation...' : 'Confirmer'}
               </button>
@@ -263,7 +263,7 @@ export default function DayVoting({ movieId, userId, isAdmin, participantCount, 
           ) : (
             <button
               onClick={() => setConfirmingReset(true)}
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-[#f87171] bg-[#2a0a0a] border border-[#5f1f1f] text-sm transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-danger-fg bg-danger-deep border border-danger-dim text-sm transition-colors"
             >
               <RotateCcw className="w-4 h-4" />
               Recommencer le vote
