@@ -20,6 +20,9 @@ export default async function ProposeMoviePage({ params }: Props) {
   if (!movie) redirect('/propose')
 
   const releaseYear = movie.release_date?.split('-')[0] ?? ''
+  const releaseDate = movie.release_date
+    ? new Date(movie.release_date + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+    : releaseYear
 
   return (
     <main className="min-h-screen bg-base text-ink">
@@ -43,6 +46,7 @@ export default async function ProposeMoviePage({ params }: Props) {
           overview={movie.overview}
           posterPath={movie.poster_path}
           releaseYear={releaseYear}
+          releaseDate={releaseDate}
           trailerKey={trailerKey}
         />
       </div>

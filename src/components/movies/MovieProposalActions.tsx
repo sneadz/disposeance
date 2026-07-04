@@ -10,16 +10,18 @@ interface Props {
   overview: string
   posterPath: string | null
   releaseYear: string
+  releaseDate: string
   trailerKey: string | null
 }
 
-export default function MovieProposalActions({ title, overview, posterPath, releaseYear, trailerKey }: Props) {
+export default function MovieProposalActions({ title, overview, posterPath, releaseYear, releaseDate, trailerKey }: Props) {
   const [copied, setCopied] = useState(false)
   const [expanded, setExpanded] = useState(false)
 
   const handleCopy = async () => {
-    const lines = [`Qui chaud pour aller voir ${title} ? 🎬`]
-    if (trailerKey) lines.push(`Bande-annonce : https://youtube.com/watch?v=${trailerKey}`)
+    const lines = [`📆 ${title} sort le ${releaseDate}`]
+    if (trailerKey) lines.push(`🎬 Bande-annonce : https://youtube.com/watch?v=${trailerKey}`)
+    lines.push(`🗳️ Votez sur l'affiche : ${window.location.href}`)
     await navigator.clipboard.writeText(lines.join('\n'))
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
