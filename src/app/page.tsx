@@ -54,7 +54,7 @@ export default async function Home({
 
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
         {/* Title row */}
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex flex-col items-start justify-between gap-3">
           <div>
             <h1 className="font-display text-[26px] uppercase leading-none tracking-wide">
               {showAll ? "Toutes les séances" : "Mes séances"}
