@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Anton, Archivo } from "next/font/google";
 import "./globals.css";
 
@@ -26,10 +26,15 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#1a1a1e",
+  viewportFit: "cover",
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className={`${anton.variable} ${archivo.variable}`}>
-      <body className={font.className}>{children}</body>
+    <html lang="fr" className={`${anton.variable} ${archivo.variable} bg-base`}>
+      <body className={`${font.className} bg-base`}>{children}</body>
     </html>
   );
 }
