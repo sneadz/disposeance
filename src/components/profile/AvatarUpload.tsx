@@ -9,6 +9,32 @@ interface AvatarUploadProps {
   pseudo: string
 }
 
+// ponytail: convert to a small JPEG via canvas before upload. iPhone photos are
+// HEIC (browsers/next-image can't render them) and multi-MB. Canvas decodes the
+// source (Safari handles HEIC), downscales, and re-encodes as guaranteed JPEG.
+async function fileToJpeg(file: File, maxSize = 512, quality = 0.9): Promise<Blob> {
+  const dataUrl: string = await new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = () => reject(new Error('read failed'))
+    reader.readAsDataURL(file)
+  })
+  const img: HTMLImageElement = await new Promise((resolve, reject) => {
+    const image = new window.Image()
+    image.onload = () => resolve(image)
+    image.onerror = () => reject(new Error('decode failed'))
+    image.src = dataUrl
+  })
+  const scale = Math.min(1, maxSize / Math.max(img.width, img.height))
+  const canvas = document.createElement('canvas')
+  canvas.width = Math.round(img.width * scale)
+  canvas.height = Math.round(img.height * scale)
+  canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height)
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(b => (b ? resolve(b) : reject(new Error('encode failed'))), 'image/jpeg', quality)
+  })
+}
+
 export default function AvatarUpload({ currentUrl, pseudo }: AvatarUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [preview, setPreview] = useState<string | null>(currentUrl)
@@ -19,9 +45,16 @@ export default function AvatarUpload({ currentUrl, pseudo }: AvatarUploadProps) 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    setPreview(URL.createObjectURL(file))
     setUploading(true)
     try {
+      let blob: Blob = file
+      try {
+        blob = await fileToJpeg(file)
+      } catch (convErr) {
+        console.error('Avatar convert (upload original):', convErr)
+      }
+      setPreview(URL.createObjectURL(blob))
+
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { console.error('Avatar: non authentifié'); return }
@@ -29,7 +62,7 @@ export default function AvatarUpload({ currentUrl, pseudo }: AvatarUploadProps) 
       const filename = `${user.id}.jpg`
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(filename, file, { upsert: true, contentType: file.type })
+        .upload(filename, blob, { upsert: true, contentType: 'image/jpeg' })
       if (uploadError) { console.error('Avatar upload:', uploadError.message); return }
 
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filename)
