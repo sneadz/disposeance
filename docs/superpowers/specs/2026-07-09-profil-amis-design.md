@@ -19,12 +19,15 @@ Deux blocs distincts, implémentés dans cet ordre :
 ### Routes
 - `/friends` — liste de tous les users de l'app (sauf soi-même)
 
+### Navigation
+- Avatar dans la navbar → `/profile` (son propre profil)
+- Bouton "Amis" sur la page profil → `/friends`
+
 ### UI
 - Design zinc/violet glassmorphism, cohérent avec le reste de l'app
 - Grid de cards : avatar + pseudo
 - Avatar = `avatar_url` si défini, sinon image par défaut (`/public/default-avatar.png`)
 - Clic sur une card → `/profile/[id]`
-- Bouton d'accès depuis la home (même style que les autres boutons de navigation)
 
 ### Data
 - Lecture de la table `profiles` existante (filtre `id != current_user_id`)
