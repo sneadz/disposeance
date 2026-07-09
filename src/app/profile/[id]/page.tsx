@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase-server'
 import { redirect, notFound } from 'next/navigation'
 import Header from '@/components/ui/Header'
 import Image from 'next/image'
+import Top4Grid, { type TopFilm } from '@/components/profile/Top4Grid'
 
 export default async function OtherProfilePage({ params }: { params: { id: string } }) {
   const supabase = await createClient()
@@ -10,12 +11,15 @@ export default async function OtherProfilePage({ params }: { params: { id: strin
 
   if (params.id === user.id) redirect('/profile')
 
-  const [{ data: selfProfile }, { data: profile }] = await Promise.all([
+  const [{ data: selfProfile }, { data: profile }, { data: topFilms }] = await Promise.all([
     supabase.from('profiles').select('pseudo, avatar_url').eq('id', user.id).single(),
     supabase.from('profiles').select('pseudo, avatar_url').eq('id', params.id).single(),
+    supabase.from('profile_top_films').select('*').eq('profile_id', params.id).order('position'),
   ])
 
   if (!profile) notFound()
+
+  const films = (topFilms ?? []) as TopFilm[]
 
   return (
     <main className="min-h-screen bg-base text-ink">
@@ -36,6 +40,11 @@ export default async function OtherProfilePage({ params }: { params: { id: strin
             />
           </div>
           <h1 className="font-display text-2xl uppercase tracking-wide">{profile.pseudo}</h1>
+        </div>
+
+        <div className="space-y-3">
+          <h2 className="text-xs font-semibold text-ink-muted uppercase tracking-wider">Top 4 films</h2>
+          <Top4Grid films={films} editable={false} />
         </div>
       </div>
     </main>

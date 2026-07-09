@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
 import Header from '@/components/ui/Header'
 import AvatarUpload from '@/components/profile/AvatarUpload'
+import Top4Grid, { type TopFilm } from '@/components/profile/Top4Grid'
 import Button from '@/components/ui/Button'
 import { Users } from 'lucide-react'
 
@@ -10,14 +11,14 @@ export default async function ProfilePage() {
   const { data: { user }, error } = await supabase.auth.getUser()
   if (error || !user) redirect('/login')
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('pseudo, avatar_url')
-    .eq('id', user.id)
-    .single()
+  const [{ data: profile }, { data: topFilms }] = await Promise.all([
+    supabase.from('profiles').select('pseudo, avatar_url').eq('id', user.id).single(),
+    supabase.from('profile_top_films').select('*').eq('profile_id', user.id).order('position'),
+  ])
 
   const pseudo = profile?.pseudo ?? '?'
   const avatarUrl = profile?.avatar_url ?? null
+  const films = (topFilms ?? []) as TopFilm[]
 
   return (
     <main className="min-h-screen bg-base text-ink">
@@ -32,6 +33,11 @@ export default async function ProfilePage() {
               Amis
             </Button>
           </a>
+        </div>
+
+        <div className="space-y-3">
+          <h2 className="text-xs font-semibold text-ink-muted uppercase tracking-wider">Top 4 films</h2>
+          <Top4Grid films={films} editable={true} />
         </div>
       </div>
     </main>
