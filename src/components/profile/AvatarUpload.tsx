@@ -9,15 +9,13 @@ interface AvatarUploadProps {
   pseudo: string
 }
 
-// ponytail: convert to a small JPEG via canvas before upload. iPhone photos are
-// HEIC (browsers/next-image can't render them) and multi-MB. Canvas decodes the
-// source (Safari handles HEIC), downscales, and re-encodes as guaranteed JPEG.
-async function fileToJpeg(file: File, maxSize = 512, quality = 0.9): Promise<Blob> {
+// Downscale a browser-decodable image blob to a small JPEG via canvas.
+async function encodeViaCanvas(blob: Blob, maxSize: number, quality: number): Promise<Blob> {
   const dataUrl: string = await new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = () => resolve(reader.result as string)
     reader.onerror = () => reject(new Error('read failed'))
-    reader.readAsDataURL(file)
+    reader.readAsDataURL(blob)
   })
   const img: HTMLImageElement = await new Promise((resolve, reject) => {
     const image = new window.Image()
@@ -33,6 +31,19 @@ async function fileToJpeg(file: File, maxSize = 512, quality = 0.9): Promise<Blo
   return new Promise((resolve, reject) => {
     canvas.toBlob(b => (b ? resolve(b) : reject(new Error('encode failed'))), 'image/jpeg', quality)
   })
+}
+
+// Convert any picked image to a small JPEG. iPhone photos are HEIC — the browser
+// <img>/canvas can't decode them, so on decode failure we fall back to heic-to
+// (libheif wasm, dynamically imported so it only loads when actually needed).
+async function fileToJpeg(file: File, maxSize = 512, quality = 0.9): Promise<Blob> {
+  try {
+    return await encodeViaCanvas(file, maxSize, quality)
+  } catch {
+    const { heicTo } = await import('heic-to')
+    const jpeg = await heicTo({ blob: file, type: 'image/jpeg', quality })
+    return await encodeViaCanvas(jpeg, maxSize, quality)
+  }
 }
 
 export default function AvatarUpload({ currentUrl, pseudo }: AvatarUploadProps) {
