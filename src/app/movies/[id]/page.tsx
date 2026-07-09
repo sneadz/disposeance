@@ -25,12 +25,13 @@ export default async function MoviePage({ params }: { params: Promise<{ id: stri
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("is_admin, pseudo")
+    .select("is_admin, pseudo, avatar_url")
     .eq("id", user.id)
     .single();
 
   const isAdmin = profile?.is_admin ?? false;
   const pseudo = profile?.pseudo ?? "?";
+  const avatarUrl = profile?.avatar_url ?? null;
 
   const { data: movie } = await supabase
     .from("movies")
@@ -77,7 +78,7 @@ export default async function MoviePage({ params }: { params: Promise<{ id: stri
 
   return (
     <main className="min-h-screen bg-base text-ink">
-      <Header pseudo={pseudo} backHref="/" />
+      <Header pseudo={pseudo} avatarUrl={avatarUrl} backHref="/" />
 
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
         {/* Hero — masqué sur la page de confirmation (doublon avec la ShareCard) */}

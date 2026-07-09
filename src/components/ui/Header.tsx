@@ -34,10 +34,10 @@ export default function Header({ pseudo, backHref, avatarUrl }: HeaderProps) {
         <div className="flex items-center gap-3">
           <a
             href="/profile"
-            className="w-7 h-7 rounded-full overflow-hidden bg-accent-fill flex items-center justify-center text-xs font-bold text-accent-fg flex-shrink-0"
+            className="w-9 h-9 rounded-full overflow-hidden bg-accent-fill flex items-center justify-center text-sm font-bold text-accent-fg flex-shrink-0"
           >
             {avatarUrl ? (
-              <Image src={avatarUrl} alt={pseudo} width={28} height={28} className="object-cover w-full h-full" />
+              <Image src={avatarUrl} alt={pseudo} width={36} height={36} className="object-cover w-full h-full" />
             ) : (
               pseudo[0]?.toUpperCase()
             )}
