@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase-server'
 
-export async function uploadAvatarAction(formData: FormData): Promise<{ error?: string }> {
+export async function uploadAvatarAction(formData: FormData): Promise<{ url?: string; error?: string }> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Non authentifié' }
@@ -10,20 +10,26 @@ export async function uploadAvatarAction(formData: FormData): Promise<{ error?: 
   const file = formData.get('avatar') as File | null
   if (!file || file.size === 0) return { error: 'Aucun fichier' }
 
+  const filename = `${user.id}.jpg`
+
   const { error: uploadError } = await supabase.storage
     .from('avatars')
-    .upload(`${user.id}.jpg`, file, { upsert: true, contentType: file.type })
+    .upload(filename, file, { upsert: true, contentType: file.type })
 
-  if (uploadError) return { error: uploadError.message }
+  if (uploadError) return { error: `Upload: ${uploadError.message}` }
 
-  const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(`${user.id}.jpg`)
+  // Cache-bust the URL so the browser fetches the new image
+  const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filename)
+  const urlWithBust = `${publicUrl}?t=${Date.now()}`
 
   const { error: updateError } = await supabase
     .from('profiles')
-    .update({ avatar_url: publicUrl })
+    .update({ avatar_url: urlWithBust })
     .eq('id', user.id)
 
-  return updateError ? { error: updateError.message } : {}
+  if (updateError) return { error: `DB: ${updateError.message}` }
+
+  return { url: urlWithBust }
 }
 
 export async function addTopFilmAction(

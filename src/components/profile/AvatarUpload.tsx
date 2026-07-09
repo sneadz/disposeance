@@ -23,9 +23,11 @@ export default function AvatarUpload({ currentUrl, pseudo }: AvatarUploadProps) 
     try {
       const fd = new FormData()
       fd.append('avatar', file)
-      await uploadAvatarAction(fd)
-    } catch {
-      // ignore — preview already shown, user can retry
+      const result = await uploadAvatarAction(fd)
+      if (result.url) setPreview(result.url)
+      else if (result.error) console.error('Avatar upload error:', result.error)
+    } catch (e) {
+      console.error('Avatar upload exception:', e)
     } finally {
       setUploading(false)
     }
