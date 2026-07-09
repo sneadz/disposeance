@@ -23,6 +23,11 @@
 - [x] Saisie horaires par jour : chaque jour sélectionné a sa propre liste d'horaires indépendante
 - [x] Vote horaires groupé par jour : headers de date quand plusieurs jours, dateLabel dans carte sinon
 
+- [x] Profils publics + page amis : avatar cliquable dans navbar → `/profile`, page `/friends` liste tous les users, `/profile/[id]` en lecture seule
+- [x] Upload photo de profil : direct navigateur → Supabase Storage bucket `avatars` (contourne la limite 1MB des server actions), conversion canvas + fallback `heic-to` pour les photos iPhone HEIC
+- [x] Top 4 films façon Letterboxd : 4 slots en ligne, recherche TMDB en modal, drag-and-drop (@dnd-kit, `touch-action: none` pour le mobile), table `profile_top_films`
+- [x] Logo de marque = `favicon.png` dans navbar + login ; fond dark sur html/body + theme-color pour les safe areas iOS
+
 ## Décisions techniques finales
 - Multi-films via routes dynamiques `/movies/[id]`.
 - `@supabase/ssr` pour compatibilité Next.js 14.
