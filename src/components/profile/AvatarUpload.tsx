@@ -1,7 +1,6 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import Image from 'next/image'
 import { Camera } from 'lucide-react'
 import { uploadAvatarAction } from '@/app/actions/profile'
 
@@ -39,12 +38,11 @@ export default function AvatarUpload({ currentUrl, pseudo }: AvatarUploadProps) 
       disabled={uploading}
       className="relative w-24 h-24 rounded-full overflow-hidden bg-surface-fill shadow-card group"
     >
-      <Image
+      {/* ponytail: plain <img> intentional — blob: preview URLs are incompatible with next/image */}
+      <img
         src={preview ?? '/default-avatar.png'}
         alt={pseudo}
-        fill
-        sizes="96px"
-        className="object-cover"
+        className="object-cover w-full h-full"
       />
       <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity">
         <Camera className="w-6 h-6 text-white" />
