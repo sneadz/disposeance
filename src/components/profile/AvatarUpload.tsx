@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react'
 import { Camera } from 'lucide-react'
-import { uploadAvatarAction } from '@/app/actions/profile'
+import { createClient } from '@/lib/supabase-client'
 
 interface AvatarUploadProps {
   currentUrl: string | null
@@ -14,19 +14,36 @@ export default function AvatarUpload({ currentUrl, pseudo }: AvatarUploadProps) 
   const [preview, setPreview] = useState<string | null>(currentUrl)
   const [uploading, setUploading] = useState(false)
 
+  // ponytail: upload direct navigateur → Supabase Storage. Passer par un server
+  // action route le fichier via Next.js (limite 1MB) et casse sur les photos de tel.
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
     setPreview(URL.createObjectURL(file))
     setUploading(true)
     try {
-      const fd = new FormData()
-      fd.append('avatar', file)
-      const result = await uploadAvatarAction(fd)
-      if (result.url) setPreview(result.url)
-      else if (result.error) console.error('Avatar upload error:', result.error)
-    } catch (e) {
-      console.error('Avatar upload exception:', e)
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { console.error('Avatar: non authentifié'); return }
+
+      const filename = `${user.id}.jpg`
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filename, file, { upsert: true, contentType: file.type })
+      if (uploadError) { console.error('Avatar upload:', uploadError.message); return }
+
+      const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filename)
+      const urlWithBust = `${publicUrl}?t=${Date.now()}`
+
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: urlWithBust })
+        .eq('id', user.id)
+      if (updateError) { console.error('Avatar DB:', updateError.message); return }
+
+      setPreview(urlWithBust)
+    } catch (err) {
+      console.error('Avatar exception:', err)
     } finally {
       setUploading(false)
     }
