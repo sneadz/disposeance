@@ -4,17 +4,18 @@ import Header from '@/components/ui/Header'
 import Image from 'next/image'
 import Top4Grid, { type TopFilm } from '@/components/profile/Top4Grid'
 
-export default async function OtherProfilePage({ params }: { params: { id: string } }) {
+export default async function OtherProfilePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const supabase = await createClient()
   const { data: { user }, error } = await supabase.auth.getUser()
   if (error || !user) redirect('/login')
 
-  if (params.id === user.id) redirect('/profile')
+  if (id === user.id) redirect('/profile')
 
   const [{ data: selfProfile }, { data: profile }, { data: topFilms }] = await Promise.all([
     supabase.from('profiles').select('pseudo, avatar_url').eq('id', user.id).single(),
-    supabase.from('profiles').select('pseudo, avatar_url').eq('id', params.id).single(),
-    supabase.from('profile_top_films').select('*').eq('profile_id', params.id).order('position'),
+    supabase.from('profiles').select('pseudo, avatar_url').eq('id', id).single(),
+    supabase.from('profile_top_films').select('*').eq('profile_id', id).order('position'),
   ])
 
   if (!profile) notFound()
