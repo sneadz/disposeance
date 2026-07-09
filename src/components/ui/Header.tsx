@@ -1,12 +1,14 @@
 import { Film, ChevronLeft, LogOut } from 'lucide-react'
 import { logout } from '@/app/auth/logout/actions'
+import Image from 'next/image'
 
 interface HeaderProps {
   pseudo: string
   backHref?: string
+  avatarUrl?: string | null
 }
 
-export default function Header({ pseudo, backHref }: HeaderProps) {
+export default function Header({ pseudo, backHref, avatarUrl }: HeaderProps) {
   const brand = (
     <div className="flex items-center gap-2.5">
       <div className="bg-accent-fill p-1.5 rounded-xl shadow-accent-glow">
@@ -30,9 +32,16 @@ export default function Header({ pseudo, backHref }: HeaderProps) {
           brand
         )}
         <div className="flex items-center gap-3">
-          <div className="w-7 h-7 rounded-full bg-accent-fill flex items-center justify-center text-xs font-bold text-accent-fg">
-            {pseudo[0]?.toUpperCase()}
-          </div>
+          <a
+            href="/profile"
+            className="w-7 h-7 rounded-full overflow-hidden bg-accent-fill flex items-center justify-center text-xs font-bold text-accent-fg flex-shrink-0"
+          >
+            {avatarUrl ? (
+              <Image src={avatarUrl} alt={pseudo} width={28} height={28} className="object-cover w-full h-full" />
+            ) : (
+              pseudo[0]?.toUpperCase()
+            )}
+          </a>
           <form action={logout}>
             <button className="p-1.5 text-ink-faint active:text-ink transition-colors">
               <LogOut className="w-4 h-4" />

@@ -27,12 +27,13 @@ export default async function Home({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("is_admin, pseudo")
+    .select("is_admin, pseudo, avatar_url")
     .eq("id", user.id)
     .single();
 
   const isAdmin = profile?.is_admin ?? false;
   const pseudo = profile?.pseudo ?? "?";
+  const avatarUrl = profile?.avatar_url ?? null;
 
   const { all } = await searchParams;
   const showAll = all === "true";
@@ -52,7 +53,7 @@ export default async function Home({
 
   return (
     <main className="min-h-screen bg-base text-ink">
-      <Header pseudo={pseudo} />
+      <Header pseudo={pseudo} avatarUrl={avatarUrl} />
 
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
         {/* Title row */}
