@@ -20,10 +20,15 @@ export default function AvatarUpload({ currentUrl, pseudo }: AvatarUploadProps) 
     if (!file) return
     setPreview(URL.createObjectURL(file))
     setUploading(true)
-    const fd = new FormData()
-    fd.append('avatar', file)
-    await uploadAvatarAction(fd)
-    setUploading(false)
+    try {
+      const fd = new FormData()
+      fd.append('avatar', file)
+      await uploadAvatarAction(fd)
+    } catch {
+      // ignore — preview already shown, user can retry
+    } finally {
+      setUploading(false)
+    }
   }
 
   return (
