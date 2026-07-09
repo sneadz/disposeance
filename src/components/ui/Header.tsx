@@ -1,4 +1,4 @@
-import { Film, ChevronLeft, LogOut } from 'lucide-react'
+import { ChevronLeft, LogOut } from 'lucide-react'
 import { logout } from '@/app/auth/logout/actions'
 import Image from 'next/image'
 
@@ -11,9 +11,7 @@ interface HeaderProps {
 export default function Header({ pseudo, backHref, avatarUrl }: HeaderProps) {
   const brand = (
     <div className="flex items-center gap-2.5">
-      <div className="bg-accent-fill p-1.5 rounded-xl shadow-accent-glow">
-        <Film className="w-4 h-4 text-accent-fg" />
-      </div>
+      <Image src="/favicon.png" alt="DispoSéance" width={28} height={28} className="rounded-xl shadow-accent-glow" />
       <span className="font-label font-extrabold text-[15px] text-ink">
         Dispo<span className="text-accent">Séance</span>
       </span>
