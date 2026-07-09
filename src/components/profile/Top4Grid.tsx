@@ -63,7 +63,7 @@ function SortableSlot({
     >
       {film ? (
         <>
-          <div {...attributes} {...listeners} className="absolute inset-0 cursor-grab active:cursor-grabbing">
+          <div {...attributes} {...listeners} style={{ touchAction: 'none' }} className="absolute inset-0 cursor-grab active:cursor-grabbing">
             <Image
               src={getPosterUrl(film.poster_url, 'w200') ?? '/default-avatar.png'}
               alt={film.title}
