@@ -90,10 +90,10 @@ export default function ShareCardRing({ movieTitle, posterUrl, day, time, tag, p
             </p>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               {participants.map((pseudo) => (
-                <span key={pseudo} style={{ font: "700 12.5px 'Space Grotesk',sans-serif", color: '#F0B93A', background: 'rgba(255,196,38,.08)', border: '1px solid rgba(255,196,38,.35)', padding: '6px 14px', borderRadius: '999px' }}>{pseudo}</span>
+                <span key={pseudo} style={{ fontFamily: 'var(--font-cinzel), serif', fontWeight: 700, fontSize: '12.5px', color: '#F0B93A', background: 'rgba(255,196,38,.08)', border: '1px solid rgba(255,196,38,.35)', padding: '6px 14px', borderRadius: '999px' }}>{pseudo}</span>
               ))}
               {guests.map((name) => (
-                <span key={name} style={{ font: "700 12.5px 'Space Grotesk',sans-serif", color: '#F0B93A', background: 'rgba(255,196,38,.08)', border: '1px dashed rgba(255,196,38,.35)', padding: '6px 14px', borderRadius: '999px' }}>{name}</span>
+                <span key={name} style={{ fontFamily: 'var(--font-cinzel), serif', fontWeight: 700, fontSize: '12.5px', color: '#F0B93A', background: 'rgba(255,196,38,.08)', border: '1px dashed rgba(255,196,38,.35)', padding: '6px 14px', borderRadius: '999px' }}>{name}</span>
               ))}
             </div>
           </div>
