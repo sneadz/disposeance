@@ -58,33 +58,33 @@ export default async function Home({
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
         {/* Title row */}
         <div className="flex flex-col items-start justify-between gap-3">
-          <div>
+          <div className="w-full">
             <h1 className="font-display text-[26px] uppercase leading-none tracking-wide">
-              {showAll ? "Toutes les séances" : "Mes séances"}
+              Séances
             </h1>
-            <div className="mt-2.5">
+            <div className="mt-4">
               <SeancesToggle showAll={showAll} />
             </div>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <a href="/propose">
-              <Button variant="ghost">
+          <div className="flex items-center gap-2 flex-shrink-0 w-full md:w-auto">
+            <a href="/propose" className="flex-1 md:flex-none">
+              <Button variant="ghost" className="w-full">
                 <Megaphone className="w-4 h-4" />
                 Proposer
               </Button>
             </a>
             {isAdmin && (
               <>
-                <a href="/wishlist">
-                  <Button variant="ghost">
+                <a href="/wishlist" className="flex-1 md:flex-none">
+                  <Button variant="ghost" className="w-full">
                     <Bookmark className="w-4 h-4" />
                     À voir
                   </Button>
                 </a>
-                <a href="/movies/new">
-                  <Button variant="primary">
+                <a href="/movies/new" className="flex-1 md:flex-none">
+                  <Button variant="primary" className="w-full">
                     <Plus className="w-4 h-4" />
-                    Nouvelle
+                    Ajouter
                   </Button>
                 </a>
               </>

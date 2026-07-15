@@ -10,22 +10,29 @@ export default function SeancesToggle({ showAll }: SeancesToggleProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const toggle = () => {
+  const go = (all: boolean) => {
     const params = new URLSearchParams(searchParams.toString())
-    if (showAll) {
-      params.delete('all')
-    } else {
+    if (all) {
       params.set('all', 'true')
+    } else {
+      params.delete('all')
     }
     router.push(`/?${params.toString()}`)
   }
 
+  const seg = (active: boolean) =>
+    `flex-1 md:flex-none px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
+      active ? 'bg-accent-fill text-accent-fg shadow-accent-glow' : 'text-ink-muted'
+    }`
+
   return (
-    <button
-      onClick={toggle}
-      className="mt-1 text-sm font-semibold bg-white/[0.06] border border-border-subtle text-ink-muted px-3 py-1.5 rounded-xl active:scale-95 transition-transform"
-    >
-      {showAll ? 'Voir mes séances' : 'Voir toutes les séances'}
-    </button>
+    <div className="inline-flex w-full md:w-auto gap-1 p-1 rounded-xl bg-white/[0.04] border border-border-subtle">
+      <button onClick={() => go(false)} className={seg(!showAll)} aria-pressed={!showAll}>
+        Mes séances
+      </button>
+      <button onClick={() => go(true)} className={seg(showAll)} aria-pressed={showAll}>
+        Toutes
+      </button>
+    </div>
   )
 }
