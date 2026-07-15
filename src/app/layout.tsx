@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, Anton, Archivo } from "next/font/google";
+import { Space_Grotesk, Anton, Archivo, Cinzel } from "next/font/google";
 import "./globals.css";
 
 const font = Space_Grotesk({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
@@ -14,6 +14,13 @@ const anton = Anton({
 const archivo = Archivo({
   subsets: ["latin"],
   variable: "--font-archivo",
+  display: "swap",
+});
+
+const cinzel = Cinzel({
+  weight: ["500", "600", "700", "800"],
+  subsets: ["latin"],
+  variable: "--font-cinzel",
   display: "swap",
 });
 
@@ -33,7 +40,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className={`${anton.variable} ${archivo.variable} bg-base`}>
+    <html lang="fr" className={`${anton.variable} ${archivo.variable} ${cinzel.variable} bg-base`}>
       <body className={`${font.className} bg-base`}>{children}</body>
     </html>
   );

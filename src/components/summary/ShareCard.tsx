@@ -1,5 +1,7 @@
 'use client'
 
+import ShareCardRing from './ShareCardRing'
+
 interface ShareCardProps {
   movieTitle: string
   posterUrl: string | null
@@ -12,6 +14,10 @@ interface ShareCardProps {
 }
 
 export default function ShareCard({ movieTitle, posterUrl, day, time, tag, participants, guests, isRing }: ShareCardProps) {
+  if (isRing) {
+    return <ShareCardRing movieTitle={movieTitle} posterUrl={posterUrl} day={day} time={time} tag={tag} participants={participants} guests={guests} />
+  }
+
   const allCount = participants.length + guests.length
 
   return (
@@ -23,13 +29,12 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, tag, parti
         position: 'relative',
         overflow: 'hidden',
         isolation: 'isolate',
-        background: isRing ? 'linear-gradient(160deg,#221c0f,#191a1e 55%)' : '#191a1e',
+        background: '#191a1e',
         color: '#fff',
         borderRadius: '6px',
         fontFamily: "var(--font-archivo), sans-serif",
         WebkitFontSmoothing: 'antialiased',
         flexShrink: 0,
-        boxShadow: isRing ? 'inset 0 0 0 1.5px rgba(255,196,38,.55), inset 0 0 60px -10px rgba(255,196,38,.25)' : undefined,
       }}
     >
       {/* Poster */}
@@ -67,7 +72,7 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, tag, parti
               <path d="M2 6.2l2.6 2.6L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          {isRing ? 'Anneau' : 'Confirmé'}
+          Confirmé
         </div>
       </div>
 
@@ -77,8 +82,8 @@ export default function ShareCard({ movieTitle, posterUrl, day, time, tag, parti
         padding: '0 24px 26px', display: 'flex', flexDirection: 'column',
       }}>
         <div style={{ width: '46px', height: '3px', background: '#FFC426', borderRadius: '2px', marginBottom: '12px' }} />
-        <span style={{ fontSize: '10.5px', letterSpacing: '.22em', textTransform: 'uppercase' as const, color: isRing ? '#c9a860' : '#8a8a90', fontWeight: 700 }}>
-          {isRing ? "⌾ Séance de l'Anneau" : 'La séance'}
+        <span style={{ fontSize: '10.5px', letterSpacing: '.22em', textTransform: 'uppercase' as const, color: '#8a8a90', fontWeight: 700 }}>
+          La séance
         </span>
         <h1 style={{
           fontFamily: "var(--font-anton), sans-serif", lineHeight: 0.93, textTransform: 'uppercase' as const,

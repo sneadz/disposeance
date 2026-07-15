@@ -7,7 +7,6 @@ import FinalSummary from "@/components/summary/FinalSummary";
 import { deleteMovieAction } from "@/app/actions/movie";
 import Header from "@/components/ui/Header";
 import Badge from "@/components/ui/Badge";
-import RingBadge from "@/components/movies/RingBadge";
 import { Film } from "lucide-react";
 import { getPosterUrl } from "@/lib/tmdb/api";
 
@@ -103,6 +102,15 @@ export default async function MoviePage({ params }: { params: Promise<{ id: stri
                 <Film className="w-16 h-16 text-ink-faint" />
               </div>
             )}
+            {isRing && (
+              <div
+                aria-hidden
+                className="absolute top-3.5 left-3.5 w-[22px] h-[22px] rounded-full grid place-items-center"
+                style={{ background: 'rgba(0,0,0,.35)', boxShadow: 'inset 0 0 0 1px rgba(255,196,38,.35)', opacity: 0.85 }}
+              >
+                <span style={{ fontSize: '12px', color: '#FFC426', lineHeight: 1 }}>⌾</span>
+              </div>
+            )}
             <div className="absolute bottom-0 left-0 p-5 flex items-end gap-4 w-full">
               {movie.poster_url && (
                 <div className="relative w-16 h-24 rounded-xl overflow-hidden shadow-2xl flex-shrink-0 hidden sm:block">
@@ -110,10 +118,7 @@ export default async function MoviePage({ params }: { params: Promise<{ id: stri
                 </div>
               )}
               <div className="space-y-1.5 min-w-0">
-                <div className="flex items-center gap-2">
-                  <Badge status={s.status}>{s.label}</Badge>
-                  {isRing && <RingBadge />}
-                </div>
+                <Badge status={s.status}>{s.label}</Badge>
                 <h2 className="font-display text-2xl uppercase leading-tight line-clamp-2">{movie.title}</h2>
               </div>
             </div>
