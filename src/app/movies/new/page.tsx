@@ -6,6 +6,7 @@ import { Search, Plus, Calendar, Star, Check, ChevronLeft, ChevronRight, Film, U
 import { searchMoviesAction, getProfilesAction, createQuickCardAction } from './actions'
 import { getMovieDetailsAction, removeFromWishlistAction } from '@/app/wishlist/actions'
 import type { TmdbMovie } from '@/lib/tmdb/api'
+import RingBadge from '@/components/movies/RingBadge'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -55,6 +56,7 @@ export default function NewMoviePage() {
   const [submittingQuick, setSubmittingQuick] = useState(false)
   const [quickError, setQuickError] = useState<string | null>(null)
   const [wishlistId, setWishlistId] = useState<string | null>(null)
+  const [isToken, setIsToken] = useState(false)
   const dates = getWeekDays(weekOffset)
 
   // Pre-fill from wishlist card (?tmdbId=xxx&wishlistId=yyy)
@@ -62,6 +64,7 @@ export default function NewMoviePage() {
     const params = new URLSearchParams(window.location.search)
     const tmdbId = params.get('tmdbId')
     const wid = params.get('wishlistId')
+    if (params.get('token') === '1') setIsToken(true)
     if (!tmdbId) return
     if (wid) setWishlistId(wid)
     getMovieDetailsAction(parseInt(tmdbId)).then(movie => {
@@ -118,6 +121,7 @@ export default function NewMoviePage() {
           availableDates: selectedDates,
           participantIds: selectedParticipants,
           guests,
+          token: isToken,
         }),
       })
       const result = await res.json()
@@ -155,6 +159,7 @@ export default function NewMoviePage() {
               <ChevronLeft className="w-5 h-5" />
             </button>
             <span className="text-base font-semibold">Qui participe ?</span>
+            {isToken && <RingBadge className="ml-auto" />}
           </div>
         </header>
 
@@ -286,6 +291,7 @@ export default function NewMoviePage() {
               <ChevronLeft className="w-5 h-5" />
             </button>
             <span className="text-base font-semibold">Carte rapide</span>
+            {isToken && <RingBadge className="ml-auto" />}
           </div>
         </header>
 
@@ -342,6 +348,7 @@ export default function NewMoviePage() {
               <ChevronLeft className="w-5 h-5" />
             </button>
             <span className="text-base font-semibold">Choisir les jours</span>
+            {isToken && <RingBadge className="ml-auto" />}
           </div>
         </header>
 
@@ -428,6 +435,7 @@ export default function NewMoviePage() {
               <ChevronLeft className="w-5 h-5" />
             </a>
             <span className="text-base font-semibold">Nouvelle séance</span>
+            {isToken && <RingBadge className="ml-auto" />}
           </div>
         </div>
       </header>
