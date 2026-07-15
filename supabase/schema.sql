@@ -101,3 +101,16 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
+
+-- 8. Jeton de l'Anneau Unique
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS can_use_token BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE movies ADD COLUMN IF NOT EXISTS token_owner_id UUID REFERENCES profiles(id);
+
+CREATE TABLE IF NOT EXISTS token_spends (
+  user_id UUID NOT NULL REFERENCES profiles(id),
+  quarter TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (user_id, quarter)
+);
+ALTER TABLE token_spends ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "token_spends_readable_by_everyone" ON token_spends FOR SELECT USING (true);
