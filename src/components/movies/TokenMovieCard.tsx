@@ -1,10 +1,11 @@
 import Image from 'next/image'
 import { Film } from 'lucide-react'
 import { getPosterUrl } from '@/lib/tmdb/api'
+import Badge from '@/components/ui/Badge'
 import DeleteMovieButton from './DeleteMovieButton'
 
-// DA "Anneau Unique" — portée depuis Claude Design (DispoSeance Final.dc.html).
-// Styles inline conservés tels quels (valeurs or hors palette Tailwind).
+// DA "Anneau Unique" (Claude Design) mais dimensions/espacements identiques à la carte de base.
+// Le style (or, glow, filigrane) change ; le format (76px poster, m-2.5, px-3.5 py-3, Badge) reste.
 export default function TokenMovieCard({
   movie,
   isAdmin,
@@ -14,10 +15,8 @@ export default function TokenMovieCard({
 }) {
   return (
     <div
-      className="relative h-[104px] active:scale-[0.99] transition-transform"
+      className="relative h-[104px] rounded-2xl2 overflow-hidden active:scale-[0.99] transition-transform"
       style={{
-        borderRadius: 18,
-        overflow: 'hidden',
         background: 'linear-gradient(160deg,#2b230f,#1d1a12)',
         boxShadow:
           '0 0 0 1.5px rgba(255,196,38,.55),0 0 22px -4px rgba(255,196,38,.4),inset 0 0 0 1px rgba(255,255,255,.05)',
@@ -55,10 +54,10 @@ export default function TokenMovieCard({
         />
       </div>
 
-      <a href={`/movies/${movie.id}`} className="absolute inset-0 flex items-stretch">
+      <a href={`/movies/${movie.id}`} className="absolute inset-0 flex items-stretch text-ink">
         <div
-          className="relative w-[76px] flex-shrink-0 m-2.5 overflow-hidden"
-          style={{ borderRadius: 11, background: '#332913', boxShadow: '0 0 0 1px rgba(255,196,38,.4),0 6px 16px rgba(0,0,0,.4)' }}
+          className="relative w-[76px] flex-shrink-0 m-2.5 rounded-xl overflow-hidden"
+          style={{ background: '#332913', boxShadow: '0 0 0 1px rgba(255,196,38,.4),0 6px 16px rgba(0,0,0,.4)' }}
         >
           {movie.poster_url ? (
             <Image src={getPosterUrl(movie.poster_url, 'w200')!} alt={movie.title} fill sizes="76px" className="object-cover" />
@@ -68,29 +67,12 @@ export default function TokenMovieCard({
             </div>
           )}
         </div>
-        <div className="relative flex flex-col justify-center gap-1.5 min-w-0" style={{ padding: '12px 14px 12px 4px' }}>
-          <span
-            className="self-start"
-            style={{
-              font: "700 9.5px 'Archivo',sans-serif",
-              letterSpacing: '.14em',
-              textTransform: 'uppercase',
-              color: '#FFC426',
-              background: 'rgba(255,196,38,.15)',
-              border: '1px solid rgba(255,196,38,.3)',
-              padding: '3px 9px',
-              borderRadius: 999,
-            }}
-          >
-            Séance de l&apos;Anneau
-          </span>
-          <h3
-            className="line-clamp-2 pr-6"
-            style={{ margin: 0, font: "700 16px/1.25 'Space Grotesk',sans-serif", color: '#f5f5f1', textShadow: '0 0 14px rgba(255,196,38,.25)' }}
-          >
+        <div className="relative flex flex-col justify-center gap-1.5 px-3.5 py-3 flex-grow min-w-0">
+          <Badge status="pending" className="self-start">Séance de l&apos;Anneau</Badge>
+          <h3 className="font-bold text-base text-ink leading-snug line-clamp-2 pr-6" style={{ textShadow: '0 0 14px rgba(255,196,38,.25)' }}>
             {movie.title}
           </h3>
-          <p style={{ margin: 0, font: "500 11.5px 'Space Grotesk',sans-serif", color: '#c9a860' }}>Voir les votes →</p>
+          <p className="text-xs" style={{ color: '#c9a860' }}>Voir les votes →</p>
         </div>
       </a>
 
