@@ -125,10 +125,10 @@ export default async function Home({
           <div className="space-y-3">
             {/* Movies */}
             {movieList.map((movie) => {
-              if (movie.token_owner_id) {
-                return <TokenMovieCard key={movie.id} movie={movie} isAdmin={isAdmin} />;
-              }
               const s = STATUS[movie.status as keyof typeof STATUS] ?? STATUS.picking_days;
+              if (movie.token_owner_id) {
+                return <TokenMovieCard key={movie.id} movie={movie} isAdmin={isAdmin} statusLabel={s.label} badgeStatus={s.status} />;
+              }
               return (
                 <div key={movie.id} className="relative group h-[104px] rounded-2xl2 bg-surface overflow-hidden shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)] active:scale-[0.99] transition-transform">
                   <a href={`/movies/${movie.id}`} className="absolute inset-0 flex items-stretch text-ink">

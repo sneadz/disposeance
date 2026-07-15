@@ -9,9 +9,13 @@ import DeleteMovieButton from './DeleteMovieButton'
 export default function TokenMovieCard({
   movie,
   isAdmin,
+  statusLabel,
+  badgeStatus,
 }: {
   movie: { id: string; title: string; poster_url: string | null }
   isAdmin: boolean
+  statusLabel: string
+  badgeStatus: 'pending' | 'closed' | 'wishlist'
 }) {
   return (
     <div
@@ -68,7 +72,7 @@ export default function TokenMovieCard({
           )}
         </div>
         <div className="relative flex flex-col justify-center gap-1.5 px-3.5 py-3 flex-grow min-w-0">
-          <Badge status="pending" className="self-start">Séance du Jeton</Badge>
+          <Badge status={badgeStatus} className="self-start">{statusLabel}</Badge>
           <h3 className="font-bold text-base text-ink leading-snug line-clamp-2 pr-6" style={{ textShadow: '0 0 14px rgba(255,196,38,.25)' }}>
             {movie.title}
           </h3>
