@@ -8,6 +8,9 @@ import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import { Plus, Film, Megaphone, Bookmark } from "lucide-react";
 import { getPosterUrl } from "@/lib/tmdb/api";
+import { getTokenAvailability } from "@/lib/token";
+import TokenFab from "@/components/movies/TokenFab";
+import TokenMovieCard from "@/components/movies/TokenMovieCard";
 
 const STATUS = {
   picking_days:  { label: "Vote des jours",    status: "pending" as const },
@@ -35,12 +38,14 @@ export default async function Home({
   const pseudo = profile?.pseudo ?? "?";
   const avatarUrl = profile?.avatar_url ?? null;
 
+  const tokenAvailable = await getTokenAvailability(supabase, user.id);
+
   const { all } = await searchParams;
   const showAll = all === "true";
 
   const query = supabase
     .from("movies")
-    .select("id, title, poster_url, status")
+    .select("id, title, poster_url, status, token_owner_id")
     .order("created_at", { ascending: false });
 
   const [{ data: movies }, { data: wishlist }] = await Promise.all([
@@ -120,6 +125,9 @@ export default async function Home({
           <div className="space-y-3">
             {/* Movies */}
             {movieList.map((movie) => {
+              if (movie.token_owner_id) {
+                return <TokenMovieCard key={movie.id} movie={movie} isAdmin={isAdmin} />;
+              }
               const s = STATUS[movie.status as keyof typeof STATUS] ?? STATUS.picking_days;
               return (
                 <div key={movie.id} className="relative group h-[104px] rounded-2xl2 bg-surface overflow-hidden shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)] active:scale-[0.99] transition-transform">
@@ -177,6 +185,7 @@ export default async function Home({
           </div>
         )}
       </div>
+      {tokenAvailable && <TokenFab />}
     </main>
   );
 }
