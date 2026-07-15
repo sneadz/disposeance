@@ -139,7 +139,7 @@ export default function NewMoviePage() {
     if (!selectedMovie || selectedDates.length !== 1 || !selectedTime) return
     setSubmittingQuick(true)
     setQuickError(null)
-    const result = await createQuickCardAction(selectedMovie, selectedDates[0], selectedTime, selectedParticipants, guests)
+    const result = await createQuickCardAction(selectedMovie, selectedDates[0], selectedTime, selectedParticipants, guests, isToken)
     if (result.error) {
       setQuickError(result.error)
       setSubmittingQuick(false)

@@ -3,6 +3,8 @@
 import { createClient } from '@/lib/supabase-server'
 import { createAdminClient } from '@/lib/supabase-admin'
 import { searchMovies, TmdbMovie } from '@/lib/tmdb/api'
+import { getTokenAvailability } from '@/lib/token'
+import { currentQuarter } from '@/lib/quarter'
 
 export async function searchMoviesAction(query: string): Promise<{ movies: TmdbMovie[]; error: string | null }> {
   try {
@@ -77,7 +79,8 @@ export async function createQuickCardAction(
   date: string,        // format "YYYY-MM-DD"
   time: string,        // format "HH:MM"
   participantIds: string[],
-  guests: string[]
+  guests: string[],
+  token = false
 ): Promise<{ movieId: string | null; error: string | null }> {
   try {
     const supabase = await createClient()
@@ -85,12 +88,32 @@ export async function createQuickCardAction(
     if (authError || !user) return { movieId: null, error: 'Non authentifié' }
 
     const { data: profile } = await supabase.from('profiles').select('is_admin').eq('id', user.id).single()
-    if (!profile?.is_admin) return { movieId: null, error: 'Accès refusé' }
+
+    let db = supabase                    // client RLS (chemin admin)
+    let tokenOwnerId: string | null = null
+
+    if (token) {
+      const available = await getTokenAvailability(supabase, user.id)
+      if (!available) return { movieId: null, error: 'Jeton indisponible' }
+      db = createAdminClient()           // service-role : contourne la RLS movies pour les non-admins
+      tokenOwnerId = user.id
+    } else if (!profile?.is_admin) {
+      return { movieId: null, error: 'Accès refusé' }
+    }
 
     if (!participantIds || participantIds.length === 0) return { movieId: null, error: 'Sélectionne au moins un participant' }
 
+    // Registre anti-triche AVANT toute création : un jeton déjà dépensé ce trimestre
+    // (double-clic / course) ne laisse aucun film orphelin.
+    if (token) {
+      const { error: spendError } = await db
+        .from('token_spends')
+        .insert({ user_id: user.id, quarter: currentQuarter() })
+      if (spendError) return { movieId: null, error: 'Jeton déjà utilisé ce trimestre' }
+    }
+
     // 1. Créer le film directement fermé
-    const { data: rows, error: movieError } = await supabase
+    const { data: rows, error: movieError } = await db
       .from('movies')
       .insert({
         title: movie.title,
@@ -100,6 +123,7 @@ export async function createQuickCardAction(
         status: 'closed',
         participant_ids: participantIds,
         guests: guests ?? [],
+        token_owner_id: tokenOwnerId,
       })
       .select('id')
     if (movieError) return { movieId: null, error: movieError.message }
@@ -107,14 +131,14 @@ export async function createQuickCardAction(
     if (!created) return { movieId: null, error: 'Film non créé' }
 
     // 2. Insérer la date disponible
-    const { error: daysError } = await supabase
+    const { error: daysError } = await db
       .from('available_days')
       .insert({ movie_id: created.id, date })
     if (daysError) return { movieId: null, error: daysError.message }
 
     // 3. Insérer le showtime
     const datetime = `${date}T${time}:00`
-    const { data: showtimeRows, error: showtimeError } = await supabase
+    const { data: showtimeRows, error: showtimeError } = await db
       .from('showtimes')
       .insert({ movie_id: created.id, datetime })
       .select('id')
@@ -123,7 +147,7 @@ export async function createQuickCardAction(
     if (!showtime) return { movieId: null, error: 'Showtime non créé' }
 
     // 4. Mettre à jour final_showtime_id
-    const { error: updateError } = await supabase
+    const { error: updateError } = await db
       .from('movies')
       .update({ final_showtime_id: showtime.id })
       .eq('id', created.id)
