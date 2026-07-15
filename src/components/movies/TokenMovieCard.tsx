@@ -72,11 +72,11 @@ export default function TokenMovieCard({
           )}
         </div>
         <div className="relative flex flex-col justify-center gap-1.5 px-3.5 py-3 flex-grow min-w-0">
-          <Badge status={badgeStatus} className="self-start">{statusLabel}</Badge>
-          <h3 className="font-bold text-base text-ink leading-snug line-clamp-2 pr-6" style={{ textShadow: '0 0 14px rgba(255,196,38,.25)' }}>
+          <Badge status={badgeStatus} className="self-start" style={{ fontFamily: 'var(--font-cinzel), serif' }}>{statusLabel}</Badge>
+          <h3 className="font-bold text-base text-ink leading-snug line-clamp-2 pr-6" style={{ fontFamily: 'var(--font-cinzel), serif', textShadow: '0 0 14px rgba(255,196,38,.25)' }}>
             {movie.title}
           </h3>
-          <p className="text-xs" style={{ color: '#c9a860' }}>Voir les votes →</p>
+          <p className="text-xs" style={{ fontFamily: 'var(--font-cinzel), serif', color: '#c9a860' }}>Voir les votes →</p>
         </div>
       </a>
 
