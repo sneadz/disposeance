@@ -58,7 +58,7 @@ export default function ShareCardRing({ movieTitle, posterUrl, day, time, tag, p
 
         <div style={{ position: 'absolute', left: '20px', right: '20px', bottom: '18px' }}>
           <span style={{ display: 'inline-block', width: '34px', height: '2px', background: 'linear-gradient(90deg,#FFE8A3,#E8AC1F)', marginBottom: '9px', borderRadius: '2px' }} />
-          <p style={{ margin: '0 0 2px', font: "700 10.5px 'Archivo',sans-serif", letterSpacing: '.2em', textTransform: 'uppercase', color: '#d8b876' }}>Séance de l&apos;Anneau</p>
+          <p style={{ margin: '0 0 2px', font: "700 10.5px 'Archivo',sans-serif", letterSpacing: '.2em', textTransform: 'uppercase', color: '#d8b876' }}>Séance du Jeton</p>
           <h2 style={{ margin: 0, fontFamily: "var(--font-cinzel), serif", fontWeight: 800, fontSize: '29px', letterSpacing: '.02em', textTransform: 'uppercase', color: '#f8f0dc', lineHeight: 1.05, textShadow: '0 0 18px rgba(255,196,38,.3)' }}>
             {movieTitle}
           </h2>

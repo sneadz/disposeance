@@ -1,4 +1,4 @@
-// Marqueur "Séance de l'Anneau" — même pastille or que la carte (DA Claude Design).
+// Marqueur "Séance du Jeton" — même pastille or que la carte (DA Claude Design).
 export default function RingBadge({ className = '' }: { className?: string }) {
   return (
     <span
@@ -15,7 +15,7 @@ export default function RingBadge({ className = '' }: { className?: string }) {
         borderRadius: 999,
       }}
     >
-      ⌾ Séance de l&apos;Anneau
+      ⌾ Séance du Jeton
     </span>
   )
 }
