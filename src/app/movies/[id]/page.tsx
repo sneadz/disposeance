@@ -7,6 +7,7 @@ import FinalSummary from "@/components/summary/FinalSummary";
 import { deleteMovieAction } from "@/app/actions/movie";
 import Header from "@/components/ui/Header";
 import Badge from "@/components/ui/Badge";
+import RingBadge from "@/components/movies/RingBadge";
 import { Film } from "lucide-react";
 import { getPosterUrl } from "@/lib/tmdb/api";
 
@@ -35,12 +36,13 @@ export default async function MoviePage({ params }: { params: Promise<{ id: stri
 
   const { data: movie } = await supabase
     .from("movies")
-    .select("id, title, poster_url, status, final_showtime_id, participant_ids, guests")
+    .select("id, title, poster_url, status, final_showtime_id, participant_ids, guests, token_owner_id")
     .eq("id", id)
     .single();
 
   if (!movie) notFound();
 
+  const isRing = !!movie.token_owner_id;
   const participantCount = (movie.participant_ids ?? []).length;
   const isParticipant = (movie.participant_ids ?? []).includes(user.id);
 
@@ -108,7 +110,10 @@ export default async function MoviePage({ params }: { params: Promise<{ id: stri
                 </div>
               )}
               <div className="space-y-1.5 min-w-0">
-                <Badge status={s.status}>{s.label}</Badge>
+                <div className="flex items-center gap-2">
+                  <Badge status={s.status}>{s.label}</Badge>
+                  {isRing && <RingBadge />}
+                </div>
                 <h2 className="font-display text-2xl uppercase leading-tight line-clamp-2">{movie.title}</h2>
               </div>
             </div>
@@ -137,6 +142,7 @@ export default async function MoviePage({ params }: { params: Promise<{ id: stri
             isAdmin={isAdmin}
             movieId={movie.id}
             onReset={resetMovie}
+            isRing={isRing}
           />
         )}
       </div>

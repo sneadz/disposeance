@@ -14,6 +14,7 @@ interface FinalSummaryProps {
   isAdmin: boolean
   movieId: string
   onReset: () => void
+  isRing?: boolean
 }
 
 function formatIcsDate(date: Date): string {
@@ -42,7 +43,7 @@ async function toDataUrl(tmdbUrl: string): Promise<string> {
   })
 }
 
-export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, tag, participants, guests, isAdmin, movieId, onReset }: FinalSummaryProps) {
+export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, tag, participants, guests, isAdmin, movieId, onReset, isRing }: FinalSummaryProps) {
   const cardRef = useRef<HTMLDivElement>(null)
   const [sharing, setSharing] = useState(false)
   const [shared, setShared] = useState(false)
@@ -150,6 +151,7 @@ export default function FinalSummary({ movieTitle, posterUrl, finalDatetime, tag
             tag={tag}
             participants={participants}
             guests={guests}
+            isRing={isRing}
           />
         </div>
       </div>
